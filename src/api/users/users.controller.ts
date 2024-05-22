@@ -1,7 +1,28 @@
-import { Post,Controller,Body,HttpException,Get,Req } from "@nestjs/common";
-import {UserService} from './users.service'
+/* eslint-disable prettier/prettier */
+import { Post, Controller, Body, HttpException, Get } from "@nestjs/common";
+import  UserService  from './users.service'
 import * as usersDto from './users.dto'
-import {ApiBearerAuth, ApiTags} from '@nestjs/swagger'
-
+import { successResponse } from '../../helpers/responseHadnlers';
+import {  ApiTags } from '@nestjs/swagger'
+import { MESSAGES } from "src/constant";
+console.log("inside the controller");
 @ApiTags('USERS')
-@Controller('./users')
+@Controller('users')  
+export  class UserController {
+    constructor(private readonly userservice: UserService) { }
+    
+    @Get('status')
+    async healthCheck() {
+        return 'Server is Working';
+    }
+    @Post('register')
+    async register(@Body() body: usersDto.IUserRegisterLoginDto): Promise<any> {
+        try {
+            const result = await this.userservice.register(body);
+            return successResponse(MESSAGES.USER.SIGN_UP_SUCCESS, result)
+        }
+        catch(error){
+            throw new HttpException(error.message,error.status)
+        }
+    }
+}
