@@ -6,14 +6,14 @@ import { USER_REPOSITORY } from 'src/constant';
 
 @Injectable()
 export default class UsersService {
-    constructor(
-        @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
-    ) { }
+  constructor(
+    @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
+  ) {}
 
-    async register(
-        data: UserDto.IUserRegisterLoginDto): Promise<object> {
-        await this.userRepository.create({ ...data });
-        return { message: "registration successful" };
-    }
+  async register(
+    data: UserDto.IUserRegisterLoginDto
+  ): Promise<{ message: string }> {
+    await this.userRepository.create<User>({ ...data });
+    return { message: "Registration successful" };
+  }
 }
-
