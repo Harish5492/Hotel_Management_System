@@ -9,7 +9,7 @@ export const databaseConfig: IDatabaseConfig = {
     password: 'Harish@5492',
     database: 'HMS', // Add the database name here
     host: '127.0.0.1',
-    port: 3307,
+    port: 3306,
     dialect: 'mysql', // Ensure the dialect is set correctly
   },
 };

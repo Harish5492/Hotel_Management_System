@@ -34,18 +34,6 @@ export class IUserRegisterLoginDto {
   })
   mobileNo?: number;
 
-  @IsOptional()
-  @IsNumber()
-  @ValidateIf((object) => !object.mobileNo)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'countryCode',
-    description: 'only needed if sending mobile no',
-    example: '91',
-    required: true,
-  })
-  countryCode?: number;
-
   @IsNotEmpty()
   @MinLength(3)
   @ApiProperty({
@@ -74,7 +62,7 @@ export class IUserRegisterLoginDto {
     example: '12345678',
     required: true
   })
-  password: string;
+  password: string ;
 
   @IsNotEmpty()
   @ApiProperty({

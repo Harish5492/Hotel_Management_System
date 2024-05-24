@@ -7,7 +7,7 @@ import {  ApiTags } from '@nestjs/swagger'
 import { MESSAGES } from "src/constant";
 console.log("inside the controller");
 @ApiTags('USERS')
-@Controller('users')  
+@Controller('users') 
 export  class UserController {
     constructor(private readonly userservice: UserService) { }
     
@@ -25,4 +25,15 @@ export  class UserController {
             throw new HttpException(error.message,error.status)
         }
     }
+
+    // @Post('login')
+    // async login(@Body() body: usersDto.IUserRegisterLoginDto):Promise<any>{
+    //     try{
+    //         const result = await this.userservice.login(body);
+    //         return successResponse(MESSAGES.USER.SIGN_IN_SUCCESS,result)
+    //     }
+    //     catch(error){
+    //         throw new HttpException(error.message,error.status)
+    //     }
+    // }
 }
