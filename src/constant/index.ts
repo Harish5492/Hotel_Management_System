@@ -4,6 +4,7 @@ export const DEVELOPMENT = 'dev';
 export const STAGE = 'stage';
 export const PRODUCTION = 'prod';
 export const USER_REPOSITORY = 'USER_REPOSITORY';
+export const OTP_REPOSITORY = 'OTP_REPOSITORY'
 export const NOTIFICATION_REPOSITORY = 'NOTIFICATION_REPOSITORY';
 export const ADMIN_REPOSITORY = 'ADMIN_REPOSITORY';
 export const KYC_REPOSITORY = 'KYC_REPOSITORY';

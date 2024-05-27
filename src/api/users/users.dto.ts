@@ -113,18 +113,6 @@ export class updateEmailMobileStep {
   })
   mobileNo?: number;
 
-  @IsOptional()
-  @IsNumber()
-  @ValidateIf((object) => !object.mobileNo)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'countryCode',
-    description: 'only needed if sending mobile no',
-    example: '91',
-    required: true,
-  })
-  countryCode?: number;
-
   @IsNotEmpty()
   @ApiProperty({
     name: 'loginType',
@@ -162,17 +150,41 @@ export class IResendOneTimeCodeDto {
   })
   mobileNo?: number;
 
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'loginType',
+    description: 'loginType is emurable (MOBILE, EMAIL)',
+    example: 'EMIAL',
+    required: true,
+    enum: ['MOBILE', 'EMAIL'],
+  })
+  loginType: string;
+}
+export class ISendOneTimeCodeDto {
+  @ApiProperty()
   @IsOptional()
-  @IsNumber()
+  @IsEmail()
   @ValidateIf((object) => !object.mobileNo)
   @IsNotEmpty()
   @ApiProperty({
-    name: 'countryCode',
-    description: 'only needed if sending mobile no',
-    example: '91',
+    name: 'email',
+    description: 'Send email if using logintype=EMAIL',
+    example: 'note@wallet.com',
     required: true,
   })
-  countryCode?: number;
+  email?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @ValidateIf((object) => !object.email)
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'mobileNo',
+    description: 'Send mobileNo if using logintype=MOBILE',
+    example: '9090012214',
+    required: true,
+  })
+  mobileNo?: number;
 
   @IsNotEmpty()
   @ApiProperty({

@@ -2,6 +2,7 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { RabbitSubscribe, AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import UsersService from 'src/api/users/users.service';
 import * as utilities from '../../helpers/utilities.hleper';
+import { TokensService } from '../../api/tokens/token.service';
 
 @Injectable()
 export class RabbitMqService {
@@ -9,6 +10,8 @@ export class RabbitMqService {
     private readonly rabbitMq: AmqpConnection,
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersService,
+    @Inject(forwardRef(() => TokensService))
+    private readonly tokensService: TokensService,
   ) {}
 
   public publishMessage(
@@ -21,7 +24,7 @@ export class RabbitMqService {
   }
 
   @RabbitSubscribe({
-    exchange: 'exchange1',
+    exchange: 'exchange_name',
     routingKey: 'generate-otp',
     queue: 'generate-otp-queue',
     queueOptions: {
@@ -36,7 +39,7 @@ export class RabbitMqService {
   }
 
   @RabbitSubscribe({
-    exchange: 'exchange1',
+    exchange: 'exchange_name',
     routingKey: 'update-refresh-token',
     queue: 'update-refresh-token-queue',
     queueOptions: {

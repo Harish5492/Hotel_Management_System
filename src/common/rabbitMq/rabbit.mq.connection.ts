@@ -1,13 +1,12 @@
-// rabbitmq.config.ts
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
 
-export const RabbitMQConfig = ClientsModule.register([
-  {
-    name: 'RABBITMQ_CONNECTION',
-    transport: Transport.RMQ,
-    options: {
-      urls: ['amqp://localhost:15672'],
-      queue: 'otp_queue',
+export const RabbitMqConnection: RabbitMQConfig = {
+  uri: 'amqp://localhost:5672', // Use the correct RabbitMQ connection port
+  exchanges: [
+    {
+      name: 'exchange_name', // You can customize this as needed
+      type: 'topic',
     },
-  },
-]);
+  ],
+  connectionInitOptions: { wait: false },
+};

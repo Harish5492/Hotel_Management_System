@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
-import { RabbitMqService } from './rabbit-mq.service';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
-import { RabbitMqConnection } from './rabbit-mq.connection';
-import { UsersService } from '../../../src/api/users.servicers/';
-import { userProviders } from '../../../src/api/users/users.provider';
+import { RabbitMqConnection } from './rabbit.mq.connection';
+import { RabbitMqService } from './rabbit.mq.service';
+import { TokensModule } from '../../api/tokens/tokens.module'; // Ensure correct path
 
 @Module({
-  imports: [RabbitMQModule.forRoot(RabbitMQModule, RabbitMqConnection)],
-  providers: [RabbitMqService, UsersService, ...userProviders],
+  imports: [
+    RabbitMQModule.forRoot(RabbitMQModule, RabbitMqConnection),
+    TokensModule, // Import TokensModule to provide TokensService
+  ],
+  providers: [RabbitMqService],
   exports: [RabbitMqService],
 })
 export class RabbitMqModule {}

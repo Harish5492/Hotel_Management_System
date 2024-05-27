@@ -86,6 +86,7 @@ export class User extends Model<User> {
         allowNull: true,
     })
     refreshToken: string;
+    status: string;
 }
 
 export default User;

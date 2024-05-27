@@ -26,6 +26,17 @@ export  class UserController {
         }
     }
 
+    @Post('sendOTP')
+    async sendOTP(@Body() body:usersDto.IUserRegisterLoginDto):Promise<any>{
+        try{
+            const result = await this.userservice.sendOTP(body);
+            return successResponse(MESSAGES.USER.RESEND_OTP,result)
+        }
+        catch(error){
+            throw new HttpException(error.message,error.status)
+        }
+    }
+
     // @Post('login')
     // async login(@Body() body: usersDto.IUserRegisterLoginDto):Promise<any>{
     //     try{
