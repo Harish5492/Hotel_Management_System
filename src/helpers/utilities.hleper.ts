@@ -9,13 +9,20 @@ export async function hashPassword(password: string): Promise<string> {
   const hashed = await bcrypt.hash(password, saltRounds);
   return hashed;
 }
+export async function comparePassword(
+  password: string,
+  hashedPassword: string,
+): Promise<boolean> {
+  const isMatch = await bcrypt.compare(password, hashedPassword);
+  return isMatch;
+}
 export const encryptCipher = async (data: any) => {
-  const encryptionKey: any = process.env.ENCDECRYPT_KEY!;
+  const encryptionKey: any = '09836193421349832838@@!934%';
   return CryptoJS.AES.encrypt(JSON.stringify(data), encryptionKey).toString();
 };
 
 export const decryptCipher = (data: string) => {
-  const reqEncKey: any = process.env.ENCDECRYPT_KEY!;
+  const reqEncKey: any = '09836193421349832838@@!934%';
   return CryptoJS.AES.decrypt(data, reqEncKey).toString(CryptoJS.enc.Utf8);
 };
 

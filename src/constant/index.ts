@@ -39,6 +39,7 @@ export const MESSAGES = {
     GET_USER_DETAILE: 'Get user detaile successfully.',
     GET_S3_DETAILE: 'Get S3 detaile successfully.',
     RESEND_OTP: 'Your otp resend successfully.',
+    SEND_OTP: 'Your otp send successfully.',
     UPDATE_PASSWORD: 'Your password update successfully.',
     SECURTY_PIN_CREATE: 'Your securty pin created successfully.',
     CHANGE_PASSWORD: 'Your change password has been successfully.',

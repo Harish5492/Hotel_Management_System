@@ -148,7 +148,7 @@ export class IResendOneTimeCodeDto {
     example: '9090012214',
     required: true,
   })
-  mobileNo?: number;
+  mobileNo?: number ;
 
   @IsNotEmpty()
   @ApiProperty({

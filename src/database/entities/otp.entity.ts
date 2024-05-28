@@ -15,11 +15,11 @@ export class Otp extends Model<Otp> {
   })
   code: string;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  userId: string;
+  // @Column({
+  //   type: DataType.STRING,
+  //   allowNull: false,
+  // })
+  // userId: string;
 
   @Column({
     type: DataType.DATE,

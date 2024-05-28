@@ -19,7 +19,7 @@ export default class UsersService {
   async register(
     data: UserDto.IUserRegisterLoginDto
   ): Promise<{ message: string }> {
-    const user = await this.checkIFUserExists(data);
+    const user = await this.checkIfUserExists(data);
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
     data.password = await Utilities.hashPassword(data.password)
     await this.userRepository.create<User>({ ...data });
@@ -43,17 +43,23 @@ export default class UsersService {
     return user;
   }
 
-  async checkIFUserExists(
-    data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto,
-  ): Promise<User> {
+  async  checkIfUserExists(
+    data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto
+  ): Promise<User | null> {
+    if (typeof data === 'string' || typeof data === 'number') {
+     
+      return null;
+    }
+  
     const { email, mobileNo } = data;
-    /** checking user, if exists or not */
+  
+    // Checking if user exists by email or mobileNo
     const user = await this.userRepository.findOne({
       where: {
-        [Op.or]: [{ email }, { mobileNo }], // Check for either email or mobileNo
+        [Op.or]: [{ email }, { mobileNo }],
       },
     });
-    
+  
     return user;
   }
 
@@ -83,19 +89,57 @@ export default class UsersService {
     return user;
   }
 
-  async sendOTP(data:UserDto.IUserRegisterLoginDto | UserDto.ISendOneTimeCodeDto):Promise<any>{
-    const {email,mobileNo} = data;
-    const source = email ?? mobileNo;
-    if (!source) throw 'Email or Mobile is required'
-    // await this.checkIFUserExists(source)
-    const OTP = await this.generateOtp()
-    console.log(OTP)
-    Twilio.sendMessage({  
-      otp: OTP,
-      to: ""
-    })
-    
+ async sendOTP(data: UserDto.IUserRegisterLoginDto | UserDto.ISendOneTimeCodeDto): Promise<{ message: string }> {
+  let source: string | number;
+
+  if ('email' in data) {
+    source = data.email;
+  } else if ('mobileNo' in data) {
+    source = data.mobileNo;
+  } else {
+    throw new Error('Email or Mobile is required');
   }
+
+  console.log("before user");
+  const user = typeof source === 'string'
+  ? await this.checkIfUserExists({
+    email: source,
+    loginType: ""
+  })
+  : await this.checkIfUserExists({
+    mobileNo: source,
+    loginType: ""
+  });
+
+  console.log("after user");
+
+  if (!user) {
+    throwError(MESSAGES.ERROR.USER_NOT_FOUND);
+  }
+
+  const OTP = await this.generateOtp();
+  const EncryptOTP = await Utilities.encryptCipher(OTP);
+  
+  // Twilio.sendMessage({  
+  //   otp: OTP,
+  //   to: ""
+  // })
+
+  const expirationDate = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiration
+  
+  const Data = await this.otpRepository.create<Otp>({
+    code: EncryptOTP,
+    // userId: source,
+    expirationDate,
+    used: false,
+  });
+
+  console.log("otp model is", Data);
+
+  return { message: 'Otp Sent' };
+}
+
+
   async generateOtp(): Promise<string> {
     return Math.floor(1000 + Math.random() * 9000).toString();
   }

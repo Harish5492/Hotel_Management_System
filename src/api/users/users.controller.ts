@@ -30,7 +30,7 @@ export  class UserController {
     async sendOTP(@Body() body:usersDto.IUserRegisterLoginDto):Promise<any>{
         try{
             const result = await this.userservice.sendOTP(body);
-            return successResponse(MESSAGES.USER.RESEND_OTP,result)
+            return successResponse(MESSAGES.USER.SEND_OTP,result)
         }
         catch(error){
             throw new HttpException(error.message,error.status)
