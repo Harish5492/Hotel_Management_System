@@ -6,7 +6,7 @@ import {
   MinLength,
   IsNumber,
   IsOptional,
-  ValidateIf,
+  ValidateIf
 } from 'class-validator';
 
 export class IUserRegisterLoginDto {
@@ -22,13 +22,13 @@ export class IUserRegisterLoginDto {
   })
   email?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   @ValidateIf((object) => !object.email)
   @IsNotEmpty()
   @ApiProperty({
     name: 'mobileNo',
-    description: 'Send mobileNo if using logintype=MOBILE',
+    description: 'Send mobileNo if using logintype=MOBILE. Length of the mobileNo',
     example: '9090012214',
     required: true,
   })
@@ -64,15 +64,15 @@ export class IUserRegisterLoginDto {
   })
   password: string ;
 
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'loginType',
-    description: 'loginType is emurable (MOBILE or EMAIL)',
-    example: 'EMAIL',
-    required: true,
-    enum: ['MOBILE', 'EMAIL'],
-  })
-  loginType: string;
+//   @IsNotEmpty()
+//   @ApiProperty({
+//     name: 'loginType',
+//     description: 'loginType is emurable (MOBILE or EMAIL)',
+//     example: 'EMAIL',
+//     required: false,
+//     enum: ['MOBILE', 'EMAIL'],
+//   })
+//   loginType: string;
 }
 
 export class IVerifyOneTimeCodeDto {

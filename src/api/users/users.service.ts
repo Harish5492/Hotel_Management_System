@@ -28,20 +28,20 @@ export default class UsersService {
 
   // async login(data:UserDto.IUserRegisterLoginDto)
 
-  async getUserWithEmailOrMobile(
-    data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto,
-  ): Promise<User> {
-    const { loginType, email, mobileNo } = data;
-    /** changing match query accoring to the 'loginType' key */
-    let $match: object = { email };
-    if (loginType === 'MOBILE') $match = { mobileNo };
-    /** checking user, if exists or not */
-    const user = await this.userRepository.findOne({
-      where: { ...$match },
-    });
+  // async getUserWithEmailOrMobile(
+  //   data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto,
+  // ): Promise<User> {
+  //   const { loginType, email, mobileNo } = data;
+  //   /** changing match query accoring to the 'loginType' key */
+  //   let $match: object = { email };
+  //   if (loginType === 'MOBILE') $match = { mobileNo };
+  //   /** checking user, if exists or not */
+  //   const user = await this.userRepository.findOne({
+  //     where: { ...$match },
+  //   });
 
-    return user;
-  }
+  //   return user;
+  // }
 
   async  checkIfUserExists(
     data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto
