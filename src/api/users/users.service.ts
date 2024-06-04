@@ -19,6 +19,9 @@ export default class UsersService {
   async register(
     data: UserDto.IUserRegisterLoginDto
   ): Promise<{ message: string }> {
+    if (data.mobileNo.toString().length !== 10) {
+      throwError(MESSAGES.ERROR.INVALID_MOBILE_NO);
+    }
     const user = await this.checkIfUserExists(data);
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
     data.password = await Utilities.hashPassword(data.password)
@@ -43,23 +46,22 @@ export default class UsersService {
   //   return user;
   // }
 
-  async  checkIfUserExists(
+  async checkIfUserExists(
     data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto
   ): Promise<User | null> {
     if (typeof data === 'string' || typeof data === 'number') {
-     
+
       return null;
     }
-  
     const { email, mobileNo } = data;
-  
+
     // Checking if user exists by email or mobileNo
     const user = await this.userRepository.findOne({
       where: {
         [Op.or]: [{ email }, { mobileNo }],
       },
     });
-  
+
     return user;
   }
 
@@ -70,7 +72,7 @@ export default class UsersService {
   async getUserDetail(match: object,): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { ...match },
-      attributes: { exclude: ['otp', 'otpExpires', 'password', 'refreshToken', 'id'] }, // Specify additional attributes here
+      attributes: { include: ['otp', 'otpExpires', 'password', 'refreshToken', 'id'] }, // Specify additional attributes here
       include: [
         {
           model: User
@@ -83,67 +85,38 @@ export default class UsersService {
 
   async getUser(match: object): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { ...match },
+      where: { ...match }
     });
 
     return user;
   }
 
- async sendOTP(data: UserDto.IUserRegisterLoginDto | UserDto.ISendOneTimeCodeDto): Promise<{ message: string }> {
-  let source: string | number;
+  async sendOTP(data: UserDto.ISendOneTimeCodeDto): Promise<{ message: string }> {
+    console.log("inside the sendOTP")
+    const User = await this.getUser(data)
+    if(!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
+    const OTP = await this.generateOtp();
+    const EncryptOTP = await Utilities.encryptCipher(OTP);
+    // Twilio.sendMessage({  
+    //   otp: OTP,
+    //   to: ""
+    // })
+    const expirationDate = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiration
+    await this.otpRepository.create<Otp>({
+      code: EncryptOTP,
+      userId: User.id,
+      email: User.email,
+      expirationDate,
+      used: false,
+    });
 
-  if ('email' in data) {
-    source = data.email;
-  } else if ('mobileNo' in data) {
-    source = data.mobileNo;
-  } else {
-    throw new Error('Email or Mobile is required');
+    return { message: 'Otp Sent' };
   }
-
-  console.log("before user");
-  const user = typeof source === 'string'
-  ? await this.checkIfUserExists({
-    email: source,
-    loginType: ""
-  })
-  : await this.checkIfUserExists({
-    mobileNo: source,
-    loginType: ""
-  });
-
-  console.log("after user");
-
-  if (!user) {
-    throwError(MESSAGES.ERROR.USER_NOT_FOUND);
-  }
-
-  const OTP = await this.generateOtp();
-  const EncryptOTP = await Utilities.encryptCipher(OTP);
-  
-  // Twilio.sendMessage({  
-  //   otp: OTP,
-  //   to: ""
-  // })
-
-  const expirationDate = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiration
-  
-  const Data = await this.otpRepository.create<Otp>({
-    code: EncryptOTP,
-    // userId: source,
-    expirationDate,
-    used: false,
-  });
-
-  console.log("otp model is", Data);
-
-  return { message: 'Otp Sent' };
-}
-
 
   async generateOtp(): Promise<string> {
     return Math.floor(1000 + Math.random() * 9000).toString();
   }
-  
+
 
 
 }

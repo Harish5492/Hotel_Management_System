@@ -87,6 +87,7 @@ export const MESSAGES = {
     EMAIL_VERIFIED: 'Email is already verified.',
     MOBILE_EXISTS: 'Mobile no. is already exists.',
     MOBILE_VERIFIED: 'Mobile no. is already verified.',
+    INVALID_MOBILE_NO: 'Mobile no must has exactly 10 digits',
     DO_NOT_MATCHED: 'do not matched.'
   },
 };

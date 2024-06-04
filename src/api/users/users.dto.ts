@@ -63,16 +63,6 @@ export class IUserRegisterLoginDto {
     required: true
   })
   password: string ;
-
-//   @IsNotEmpty()
-//   @ApiProperty({
-//     name: 'loginType',
-//     description: 'loginType is emurable (MOBILE or EMAIL)',
-//     example: 'EMAIL',
-//     required: false,
-//     enum: ['MOBILE', 'EMAIL'],
-//   })
-//   loginType: string;
 }
 
 export class IVerifyOneTimeCodeDto {
@@ -150,15 +140,6 @@ export class IResendOneTimeCodeDto {
   })
   mobileNo?: number ;
 
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'loginType',
-    description: 'loginType is emurable (MOBILE, EMAIL)',
-    example: 'EMIAL',
-    required: true,
-    enum: ['MOBILE', 'EMAIL'],
-  })
-  loginType: string;
 }
 export class ISendOneTimeCodeDto {
   @ApiProperty()
@@ -186,13 +167,5 @@ export class ISendOneTimeCodeDto {
   })
   mobileNo?: number;
 
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'loginType',
-    description: 'loginType is emurable (MOBILE, EMAIL)',
-    example: 'EMIAL',
-    required: true,
-    enum: ['MOBILE', 'EMAIL'],
-  })
-  loginType: string;
+
 }

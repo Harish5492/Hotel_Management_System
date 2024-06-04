@@ -27,7 +27,7 @@ export  class UserController {
     }
 
     @Post('sendOTP')
-    async sendOTP(@Body() body:usersDto.IUserRegisterLoginDto):Promise<any>{
+    async sendOTP(@Body() body:usersDto.ISendOneTimeCodeDto):Promise<any>{
         try{
             const result = await this.userservice.sendOTP(body);
             return successResponse(MESSAGES.USER.SEND_OTP,result)
