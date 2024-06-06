@@ -17,15 +17,14 @@ export async function comparePassword(
   return isMatch;
 }
 export const encryptCipher = async (data: any) => {
-  const encryptionKey: any = '09836193421349832838@@!934%';
+  const encryptionKey: any = 'afjadsfdkasjbf@43o843nfdsfjasdf';
   return CryptoJS.AES.encrypt(JSON.stringify(data), encryptionKey).toString();
 };
 
 export const decryptCipher = (data: string) => {
-  const reqEncKey: any = '09836193421349832838@@!934%';
+  const reqEncKey: any = 'afjadsfdkasjbf@43o843nfdsfjasdf';
   return CryptoJS.AES.decrypt(data, reqEncKey).toString(CryptoJS.enc.Utf8);
 };
-
 export const generateOneTimeCode = (
   size: number,
 ): { otp: string; otpExpires: number } => {

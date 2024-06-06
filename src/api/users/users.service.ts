@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Inject, Injectable } from "@nestjs/common";
+import { All, Inject, Injectable } from "@nestjs/common";
 import { User, Otp } from '../../database/entities';
 import { throwError } from "../../helpers/responseHadnlers";
-import * as Utilities from '../../helpers/utilities.hleper'
+import * as Utilities from '../../helpers/utilities.helper'
 import Twilio from '../../helpers/twilio.helper'
 import * as UserDto from './users.dto';
 import { USER_REPOSITORY, MESSAGES, OTP_REPOSITORY } from 'src/constant';
@@ -94,18 +94,20 @@ export default class UsersService {
   async sendOTP(data: UserDto.ISendOneTimeCodeDto): Promise<{ message: string }> {
     console.log("inside the sendOTP")
     const User = await this.getUser(data)
-    if(!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
+    if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
     const OTP = await this.generateOtp();
-    const EncryptOTP = await Utilities.encryptCipher(OTP);
+    // const EncryptOTP = await Utilities.encryptCipher(OTP);
     // Twilio.sendMessage({  
     //   otp: OTP,
     //   to: ""
     // })
+    const token = await Utilities.encryptCipher(User.id)
     const expirationDate = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiration
     await this.otpRepository.create<Otp>({
-      code: EncryptOTP,
+      code: OTP,
       userId: User.id,
       email: User.email,
+      token: token,
       expirationDate,
       used: false,
     });
@@ -115,6 +117,23 @@ export default class UsersService {
 
   async generateOtp(): Promise<string> {
     return Math.floor(1000 + Math.random() * 9000).toString();
+  }
+  async verifyOTP(data: UserDto.IVerifyOneTimeCodeDto): Promise<{ message: string }> {
+    console.log("data is", data)
+    const { oneTimeCode, token } = data
+    // const DecyptOTP = await Utilities.decryptCipher(oneTimeCode)
+    const DecyptToken = await Utilities.decryptCipher(token)
+    console.log("token", typeof(DecyptToken))
+    console.log("token", DecyptToken)
+    const Otp = await this.otpRepository.findOne({
+      where: { userId: DecyptToken.trim() },
+      attributes:['userId','email']
+    });
+    // const matchString = JSON.stringify(userIdObject);
+    console.log("otpdaftafddddsfs", Otp)
+
+
+    return { message: "verified" }
   }
 
 

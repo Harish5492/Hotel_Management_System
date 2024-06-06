@@ -6,7 +6,8 @@ import {
   MinLength,
   IsNumber,
   IsOptional,
-  ValidateIf
+  ValidateIf,
+  IsString
 } from 'class-validator';
 
 export class IUserRegisterLoginDto {
@@ -37,22 +38,22 @@ export class IUserRegisterLoginDto {
   @IsNotEmpty()
   @MinLength(3)
   @ApiProperty({
-    name :'firstName',
-    description : 'firstName length should be 3 or more than that',
-    example:'Harish',
-    required:true
+    name: 'firstName',
+    description: 'firstName length should be 3 or more than that',
+    example: 'Harish',
+    required: true
   })
-  firstName:string;
+  firstName: string;
 
   @IsNotEmpty()
   @MinLength(3)
   @ApiProperty({
-    name :'lastName',
-    description : 'LastName length should be 3 or more than that',
-    example:'Rana',
-    required:true
+    name: 'lastName',
+    description: 'LastName length should be 3 or more than that',
+    example: 'Rana',
+    required: true
   })
-  lastName:string;
+  lastName: string;
 
   @IsNotEmpty()
   @MinLength(8)
@@ -62,7 +63,7 @@ export class IUserRegisterLoginDto {
     example: '12345678',
     required: true
   })
-  password: string ;
+  password: string;
 }
 
 export class IVerifyOneTimeCodeDto {
@@ -70,11 +71,21 @@ export class IVerifyOneTimeCodeDto {
   @IsNotEmpty()
   @ApiProperty({
     name: 'oneTimeCode',
-    description: 'OTP value is static at the moment = 123456, you can use it for each account',
+    description: 'You should provide OTP for verification',
     example: '123456',
     required: true,
   })
-  oneTimeCode: number;
+  oneTimeCode: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'token',
+    description: 'Please provide the Token for verification',
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx",
+    required: true,
+  })
+  token: string;
 }
 
 export class updateEmailMobileStep {
@@ -138,7 +149,7 @@ export class IResendOneTimeCodeDto {
     example: '9090012214',
     required: true,
   })
-  mobileNo?: number ;
+  mobileNo?: number;
 
 }
 export class ISendOneTimeCodeDto {

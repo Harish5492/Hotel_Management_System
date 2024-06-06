@@ -3,7 +3,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 @Table
 export class Otp extends Model<Otp> {
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
     primaryKey: true,
     autoIncrement: true,
   })
@@ -25,6 +25,12 @@ export class Otp extends Model<Otp> {
     allowNull: false,
   })
   email: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  token: string;
 
   @Column({
     type: DataType.DATE,

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as utilities from '../../helpers/utilities.hleper';
+import * as utilities from '../../helpers/utilities.helper';
 import UsersService from '../users/users.service';
 import { MESSAGES, TIME } from '../../constant';
 import { RabbitMqService } from '../../common/rabbitMq/rabbit.mq.service';

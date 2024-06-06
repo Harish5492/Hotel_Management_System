@@ -37,6 +37,17 @@ export  class UserController {
         }
     }
 
+    @Post('verifyOTP')
+    async verifyOTP(@Body() body:usersDto.IVerifyOneTimeCodeDto):Promise<any>{
+        try{
+            const result = await this.userservice.verifyOTP(body);
+            return successResponse(MESSAGES.USER.OTP_VERIFIED,result)
+        }
+        catch(error){
+            throw new HttpException(error.message,error.status)
+        }
+    }
+
     // @Post('login')
     // async login(@Body() body: usersDto.IUserRegisterLoginDto):Promise<any>{
     //     try{
