@@ -23,7 +23,9 @@ export const encryptCipher = async (data: any) => {
 
 export const decryptCipher = (data: string) => {
   const reqEncKey: any = 'afjadsfdkasjbf@43o843nfdsfjasdf';
-  return CryptoJS.AES.decrypt(data, reqEncKey).toString(CryptoJS.enc.Utf8);
+  return JSON.parse(
+    CryptoJS.AES.decrypt(data, reqEncKey).toString(CryptoJS.enc.Utf8),
+  );
 };
 export const generateOneTimeCode = (
   size: number,

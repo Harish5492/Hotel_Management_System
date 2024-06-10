@@ -71,6 +71,7 @@ export const MESSAGES = {
   ERROR: {
     INCORRECT_OTP: 'Incorrect OTP, Please try again with resend code.',
     EXPIRES_OTP: 'Your OTP, Expires please try again with resend otp code.',
+    INVALID_TOKEN : 'Invalid Token',
     INCORRECT_SECURTY_PIN:
       'Incorrect security pin, Please try again with Forgot Security Pin.',
     USER_EXIST: 'User is already exist.',

@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { All, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { User, Otp } from '../../database/entities';
 import { throwError } from "../../helpers/responseHadnlers";
 import * as Utilities from '../../helpers/utilities.helper'
 import Twilio from '../../helpers/twilio.helper'
+import { TIME } from '../../constant';
 import * as UserDto from './users.dto';
 import { USER_REPOSITORY, MESSAGES, OTP_REPOSITORY } from 'src/constant';
 import { Op } from "sequelize";
@@ -17,7 +18,7 @@ export default class UsersService {
   ) { }
 
   async register(
-    data: UserDto.IUserRegisterLoginDto
+    data: UserDto.IUserRegisterDto
   ): Promise<{ message: string }> {
     if (data.mobileNo.toString().length !== 10) {
       throwError(MESSAGES.ERROR.INVALID_MOBILE_NO);
@@ -29,25 +30,41 @@ export default class UsersService {
     return { message: "Registration successful" };
   }
 
-  // async login(data:UserDto.IUserRegisterLoginDto)
+  async login(data: UserDto.IUserLoginDto): Promise<{ message: string }> {
+    const { email, mobileNo, password } = data
+    const User = await this.getUserDetail(email, mobileNo)
+    console.log("andera")
+    if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
+    console.log("user", User)
+    if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
+    // const jwtToken = await ;
+    return { message: "login successfully" }
 
-  // async getUserWithEmailOrMobile(
-  //   data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto,
-  // ): Promise<User> {
-  //   const { loginType, email, mobileNo } = data;
-  //   /** changing match query accoring to the 'loginType' key */
-  //   let $match: object = { email };
-  //   if (loginType === 'MOBILE') $match = { mobileNo };
-  //   /** checking user, if exists or not */
-  //   const user = await this.userRepository.findOne({
-  //     where: { ...$match },
-  //   });
+  }
 
-  //   return user;
-  // }
+  async updatePassword(data: UserDto.IUserLoginDto): Promise<{ message: string }> {
+    const { email, mobileNo, password, newPassword } = data
+    const User = await this.getUserDetail(email,mobileNo)
+    if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
+    if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
+    const EncryptPassword = await Utilities.hashPassword(newPassword)
+    await this.updateUser({ email: email }, { password: EncryptPassword });
+    return { message: 'Password changed successfully' };
+  }
+
+  async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }> {
+    const { token, newPassword } = data
+    const DecyptToken = await Utilities.decryptCipher(token);
+    const User = await this.userWithError({ id: DecyptToken })
+    if (token !== User.token) throwError(MESSAGES.ERROR.INVALID_TOKEN)
+    const EncryptPassword = await Utilities.hashPassword(newPassword);
+    await this.updateUser({ id: DecyptToken }, { password: EncryptPassword });
+    return { message: 'Password changed successfully' };
+
+  }
 
   async checkIfUserExists(
-    data: UserDto.IUserRegisterLoginDto | UserDto.IResendOneTimeCodeDto
+    data: UserDto.IUserRegisterDto | UserDto.IUserLoginDto
   ): Promise<User | null> {
     if (typeof data === 'string' || typeof data === 'number') {
 
@@ -69,19 +86,23 @@ export default class UsersService {
     await this.userRepository.update({ ...data }, { where: { ...match } });
   }
 
-  async getUserDetail(match: object,): Promise<User> {
+  async getUserDetail(email?: string, mobileNo?: number ): Promise<User | undefined> {
+    const query: any = {};
+    if (email) query.email = email;
+    if (mobileNo) query.mobileNo = mobileNo;
+    console.log("fdfd",mobileNo)
+    console.log("query",query)
     const user = await this.userRepository.findOne({
-      where: { ...match },
-      attributes: { include: ['otp', 'otpExpires', 'password', 'refreshToken', 'id'] }, // Specify additional attributes here
-      include: [
-        {
-          model: User
-        }
-      ]
+      where: query,
+      attributes: ['password', 'id', 'email', 'mobileNo'],
     });
-
-    return user;
+    console.log("usssssssssseeeeeeeeeeeeeerrrrrrrrrrrrrrr",user)
+    console.log(`User query result: ${user ? JSON.stringify(user) : 'undefined'}`);
+    return user
   }
+
+
+
 
   async getUser(match: object): Promise<User> {
     const user = await this.userRepository.findOne({
@@ -91,10 +112,18 @@ export default class UsersService {
     return user;
   }
 
-  async sendOTP(data: UserDto.ISendOneTimeCodeDto): Promise<{ message: string }> {
-    console.log("inside the sendOTP")
+  async userWithError(data: object): Promise<User> {
     const User = await this.getUser(data)
     if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
+    return User;
+
+  }
+
+  async sendOTP(data: UserDto.ISendOneTimeCodeDto): Promise<any> {
+
+    // const User = await this.getUser(data)
+    // if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
+    const User = await this.userWithError(data)
     const OTP = await this.generateOtp();
     // const EncryptOTP = await Utilities.encryptCipher(OTP);
     // Twilio.sendMessage({  
@@ -102,7 +131,7 @@ export default class UsersService {
     //   to: ""
     // })
     const token = await Utilities.encryptCipher(User.id)
-    const expirationDate = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiration
+    const expirationDate = new Date(Date.now() + TIME.OTP.OTP_EXPIRES); // 5 minutes expiration
     await this.otpRepository.create<Otp>({
       code: OTP,
       userId: User.id,
@@ -112,28 +141,32 @@ export default class UsersService {
       used: false,
     });
 
-    return { message: 'Otp Sent' };
+    return token;
   }
 
   async generateOtp(): Promise<string> {
     return Math.floor(1000 + Math.random() * 9000).toString();
   }
-  async verifyOTP(data: UserDto.IVerifyOneTimeCodeDto): Promise<{ message: string }> {
-    console.log("data is", data)
-    const { oneTimeCode, token } = data
-    // const DecyptOTP = await Utilities.decryptCipher(oneTimeCode)
-    const DecyptToken = await Utilities.decryptCipher(token)
-    console.log("token", typeof(DecyptToken))
-    console.log("token", DecyptToken)
-    const Otp = await this.otpRepository.findOne({
-      where: { userId: DecyptToken.trim() },
-      attributes:['userId','email']
+  async verifyOTP(data: UserDto.IVerifyOneTimeCodeDto): Promise<any> {
+
+    const { oneTimeCode, token } = data;
+    const DecyptToken = await Utilities.decryptCipher(token);
+    const Otp = await this.findOtp(DecyptToken)
+    if (oneTimeCode !== Otp.code && token !== Otp.token)
+      throwError(MESSAGES.ERROR.INCORRECT_OTP)
+    if (new Date() > Otp.expirationDate)
+      throwError(MESSAGES.ERROR.EXPIRES_OTP)
+    const Token = await Utilities.encryptCipher(DecyptToken)
+    await this.updateUser({ id: DecyptToken }, { token: Token })
+    return Token;
+  }
+
+
+  async findOtp(decryptToken: string): Promise<Otp | undefined> {
+    return this.otpRepository.findOne({
+      where: { userId: decryptToken },
+      attributes: ['userId', 'email', 'code', 'token', 'expirationDate']
     });
-    // const matchString = JSON.stringify(userIdObject);
-    console.log("otpdaftafddddsfs", Otp)
-
-
-    return { message: "verified" }
   }
 
 

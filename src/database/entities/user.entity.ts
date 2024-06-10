@@ -73,21 +73,18 @@ export class User extends Model<User> {
     role: string;
 
     @Column({
-        type: DataType.STRING,
-    })
-    otp: string;
-
-    @Column({
-        type: DataType.DOUBLE,
-    })
-    otpExpires: number;
-
-    @Column({
         type: DataType.TEXT,
         allowNull: true,
     })
     refreshToken: string;
     status: string;
+    
+    @Column({
+        type: DataType.TEXT,
+        allowNull: true,
+    })
+    token: string;
+   
 }
 
 export default User;
