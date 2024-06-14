@@ -23,7 +23,6 @@ export class IUserRegisterDto {
   })
   email?: string;
 
-  @IsNotEmpty()
   @IsNumber()
   @ValidateIf((object) => !object.email)
   @IsNotEmpty()

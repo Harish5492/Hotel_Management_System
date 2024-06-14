@@ -16,6 +16,7 @@ export const databaseProviders = [
         host: config.host,
         port: config.port,
         dialect: config.dialect,
+        logging: console.log, // Enable logging to see SQL statements
       });
 
       // Add models to the Sequelize instance

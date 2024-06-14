@@ -84,6 +84,12 @@ export class User extends Model<User> {
         allowNull: true,
     })
     token: string;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+      })
+    IsTokenUsed: boolean;
    
 }
 

@@ -42,7 +42,13 @@ export class Otp extends Model<Otp> {
     type: DataType.BOOLEAN,
     defaultValue: false,
   })
-  used: boolean;
+  isTokenUsed: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  isOtpUsed: boolean;
 }
 
 export default Otp;

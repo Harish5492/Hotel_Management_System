@@ -1,15 +1,17 @@
-/* eslint-disable prettier/prettier */
+import { SWAGGER_OPERATION } from './swagger/operations.swagger';
+
 export const SEQUELIZE = 'SEQUELIZE';
 export const DEVELOPMENT = 'dev';
 export const STAGE = 'stage';
 export const PRODUCTION = 'prod';
 export const USER_REPOSITORY = 'USER_REPOSITORY';
-export const OTP_REPOSITORY = 'OTP_REPOSITORY'
+export const OTP_REPOSITORY = 'OTP_REPOSITORY';
 export const NOTIFICATION_REPOSITORY = 'NOTIFICATION_REPOSITORY';
 export const ADMIN_REPOSITORY = 'ADMIN_REPOSITORY';
 export const KYC_REPOSITORY = 'KYC_REPOSITORY';
 export const COUNTRY_REPOSITORY = 'COUNTRY_REPOSITORY';
 export const STATE_REPOSITORY = 'STATE_REPOSITORY';
+export const API_OPERATIONS = SWAGGER_OPERATION;
 
 export const TIME = {
   JWT: {
@@ -23,11 +25,11 @@ export const TIME = {
   },
 };
 
-export const EXCLUDES= {
-  USER_EXCLUDE: ["password", "refreshToken", "mPin", "otp", "otpExpires"],
-  KYC_EXCLUDE: ["password", "refreshToken", "mPin", "otp", "otpExpires"],
+export const EXCLUDES = {
+  USER_EXCLUDE: ['password', 'refreshToken', 'mPin', 'otp', 'otpExpires'],
+  KYC_EXCLUDE: ['password', 'refreshToken', 'mPin', 'otp', 'otpExpires'],
   ADMIN_EXCLUDE: ['password', 'id', 'google2FASecret', 'email'],
-}
+};
 
 export const MESSAGES = {
   USER: {
@@ -46,13 +48,8 @@ export const MESSAGES = {
     UPDATE_EMAIL_MOBILE_STEP: 'Code sent successfully.',
     LOGGED_OUT: 'You have been logged out successfully.',
     GET_RECORD: 'record get successfully.',
-    SEND_TRANSACTION_SUCCESSFULL:"Transaction successfull",
-    SEND_TRANSACTION_FAILED:"Transaction failed",
-  },
-  KYC: {
-    STATES_COUNTRIES: 'Data fetched successfully.',
-    KYC_UPDATE: "Kyc updated successfully.",
-    KYC_EXISTS: 'KYC already submitted.',
+    SEND_TRANSACTION_SUCCESSFULL: 'Transaction successfull',
+    SEND_TRANSACTION_FAILED: 'Transaction failed',
   },
   ADMIN: {
     SIGN_IN_SUCCESS: 'You have logged in successfully',
@@ -66,12 +63,12 @@ export const MESSAGES = {
   NOTIFICATION: {
     NOTIFICATION_SENT: 'Notification sent successfully.',
     NOTIFICATIONS_LIST: 'Notifications fetched successfully.',
-   
   },
   ERROR: {
     INCORRECT_OTP: 'Incorrect OTP, Please try again with resend code.',
     EXPIRES_OTP: 'Your OTP, Expires please try again with resend otp code.',
-    INVALID_TOKEN : 'Invalid Token',
+    INVALID_TOKEN: 'Invalid Token',
+    OTPANDTOKENUSED: 'Either OTP or Token is already used. Kindly resend.',
     INCORRECT_SECURTY_PIN:
       'Incorrect security pin, Please try again with Forgot Security Pin.',
     USER_EXIST: 'User is already exist.',
@@ -89,7 +86,7 @@ export const MESSAGES = {
     MOBILE_EXISTS: 'Mobile no. is already exists.',
     MOBILE_VERIFIED: 'Mobile no. is already verified.',
     INVALID_MOBILE_NO: 'Mobile no must has exactly 10 digits',
-    DO_NOT_MATCHED: 'do not matched.'
+    DO_NOT_MATCHED: 'do not matched.',
   },
 };
 // export const WALLET_GRPC_PACKAGE = 'gateway';
