@@ -39,7 +39,7 @@ export default class UsersService {
     if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
 
     if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
-    // const jwtToken = await ;
+
     return { message: "login successfully" }
 
   }
@@ -51,7 +51,7 @@ export default class UsersService {
  * @returns A promise that resolves to an object with a success message.
  * @throws Throws an error if the user does not exist or if the current password is incorrect.
  */
-async updatePassword(data: UserDto.IUserLoginDto): Promise<{ message: string }> {
+async updatePassword(data: UserDto.IChangePassword): Promise<{ message: string }> {
     const { email, mobileNo, password, newPassword } = data
     const User = await this.getUserDetail(email, mobileNo)
 
@@ -154,6 +154,7 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
 
     const User = await this.userWithError(data)
     const OTP = await this.generateOtp();
+    console.log(typeof OTP)
     // const EncryptOTP = await Utilities.encryptCipher(OTP);
     // Twilio.sendMessage({  
     //   otp: OTP,
@@ -184,13 +185,16 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
 
 
     const DecyptToken = await Utilities.decryptCipher(token);
+    console.log(DecyptToken)
     await this.IstokenAndOtpUsed(DecyptToken)
-
+    console.log("lllll")
     await this.OtpError(DecyptToken, oneTimeCode, token)
-
+  
     const Token = await Utilities.encryptCipher(DecyptToken)
     await this.updateUser({ id: DecyptToken }, { token: Token })
+    console.log("after update")
     await this.updateOtpTable({ id: DecyptToken }, { isTokenUsed: true });
+    console.log("before update")
 
     return Token;
   }
@@ -198,6 +202,7 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
   async OtpError(DecyptToken: string, oneTimeCode: string, token: string): Promise<void> {
     console.log(`dec ${DecyptToken},onetime ${oneTimeCode},token ${token}`)
     const Otp = await this.findOtp(DecyptToken)
+    console.log(Otp)
     if (!Otp) {
       throwError(MESSAGES.ERROR.DO_NOT_MATCHED);
     }
@@ -233,7 +238,8 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
   async findOtp(decryptToken: string): Promise<Otp | undefined> {
     return this.otpRepository.findOne({
       where: { userId: decryptToken },
-      attributes: ['userId', 'email', 'code', 'token', 'expirationDate', 'isTokenUsed', 'isOtpUsed']
+      attributes: ['userId', 'email', 'code', 'token', 'expirationDate', 'isTokenUsed', 'isOtpUsed'],
+      order: [['createdAt', 'DESC']],
     });
   }
 

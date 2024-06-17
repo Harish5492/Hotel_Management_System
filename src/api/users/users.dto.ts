@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -66,45 +66,15 @@ export class IUserRegisterDto {
 
 }
 
-export class IUserLoginDto {
-  @IsOptional()
-  @IsEmail()
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'email',
-    description: 'Send email if using logintype=EMAIL',
-    example: 'note@wallet.com',
-    required: true,
-  })
-  email?: string;
+export class IUserLoginDto extends PickType(IUserRegisterDto ,['email','mobileNo','password'] as const){
 
-  @IsOptional()
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'mobileNo',
-    description: 'Send mobileNo if using logintype=MOBILE. Length of the mobileNo',
-    example: '9090012214',
-    required: true,
-  })
-  mobileNo?: number;
+}
+export class IChangePassword extends PickType(IUserRegisterDto ,['email','mobileNo','password'] as const){
 
-  @IsOptional()
   @IsNotEmpty()
   @MinLength(8)
   @ApiProperty({
-    name: 'password',
-    description: 'Password length should be 8 or more than that',
-    example: '12345678',
-    required: true
-  })
-  password: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  @MinLength(8)
-  @ApiProperty({
-    name: 'password',
+    name: 'newPassword',
     description: 'Password length should be 8 or more than that',
     example: '12345678',
     required: false
@@ -119,7 +89,7 @@ export class IUpdatePassword {
   @ApiProperty({
     name: 'token',
     description: 'Please provide the Token for verification',
-    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx",
+    example: "11eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx",
     required: true,
   })
   token: string;
@@ -127,7 +97,7 @@ export class IUpdatePassword {
   @IsNotEmpty()
   @MinLength(8)
   @ApiProperty({
-    name: 'password',
+    name: 'newPassword',
     description: 'Password length should be 8 or more than that',
     example: '12345678',
     required: true
@@ -157,95 +127,6 @@ export class IVerifyOneTimeCodeDto {
   token: string;
 }
 
-export class updateEmailMobileStep {
-  @ApiProperty()
-  @IsOptional()
-  @IsEmail()
-  @ValidateIf((object) => !object.mobileNo)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'email',
-    description: 'Send email if using logintype=EMAIL',
-    example: 'note@wallet.com',
-    required: true,
-  })
-  email?: string;
-
-  @IsOptional()
-  @IsNumber()
-  @ValidateIf((object) => !object.email)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'mobileNo',
-    description: 'Send mobileNo if using logintype=MOBILE',
-    example: '9090012214',
-    required: true,
-  })
-  mobileNo?: number;
-
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'loginType',
-    description: 'loginType is emurable (MOBILE, EMAIL)',
-    example: 'EMIAL',
-    required: true,
-    enum: ['MOBILE', 'EMAIL'],
-  })
-  loginType: string;
-}
-
-export class IResendOneTimeCodeDto {
-  @ApiProperty()
-  @IsOptional()
-  @IsEmail()
-  @ValidateIf((object) => !object.mobileNo)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'email',
-    description: 'Send email if using logintype=EMAIL',
-    example: 'note@wallet.com',
-    required: true,
-  })
-  email?: string;
-
-  @IsOptional()
-  @IsNumber()
-  @ValidateIf((object) => !object.email)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'mobileNo',
-    description: 'Send mobileNo if using logintype=MOBILE',
-    example: '9090012214',
-    required: true,
-  })
-  mobileNo?: number;
-
-}
-export class ISendOneTimeCodeDto {
-  @ApiProperty()
-  @IsOptional()
-  @IsEmail()
-  @ValidateIf((object) => !object.mobileNo)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'email',
-    description: 'Send email if using logintype=EMAIL',
-    example: 'note@wallet.com',
-    required: true,
-  })
-  email?: string;
-
-  @IsOptional()
-  @IsNumber()
-  @ValidateIf((object) => !object.email)
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'mobileNo',
-    description: 'Send mobileNo if using logintype=MOBILE',
-    example: '9090012214',
-    required: true,
-  })
-  mobileNo?: number;
-
+export class ISendOneTimeCodeDto extends PickType(IUserRegisterDto,['email','mobileNo'] as const) {
 
 }
