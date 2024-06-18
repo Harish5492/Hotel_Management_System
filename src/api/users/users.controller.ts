@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
-import { Post, Controller, Body, HttpException, Get } from "@nestjs/common";
+import { Post, Controller, Body, HttpException, Get, UseGuards, Req } from "@nestjs/common";
 import UserService from './users.service'
 import * as usersDto from './users.dto'
 import { successResponse } from '../../helpers/responseHadnlers';
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { API_OPERATIONS, MESSAGES } from "src/constant"
+import { AccessTokenGuard } from "src/common/guard/accesstoken.guard";
 console.log("inside the controller");
 @ApiTags('USERS')
 @Controller('users')
@@ -97,7 +98,21 @@ export class UserController {
             throw new HttpException(error.message, error.status)
         }
     }
-    
+
+    @ApiBearerAuth()
+    @UseGuards(AccessTokenGuard)
+    @Get('logout')
+    async logout(@Req() req: Request | any) {
+        try {
+            const userId = req.user.userId;
+            await this.userservice.logout(userId);
+            return successResponse(MESSAGES.USER.LOGGED_OUT);
+        } catch (error) {
+            throw new HttpException(error.message, error.status);
+        }
+    }
+    @ApiBearerAuth()
+    @UseGuards(AccessTokenGuard)
     @ApiOperation(API_OPERATIONS.UPDATE_PASSWORD)
     @Post('updatePassword')
     async updatePassword(@Body() body: usersDto.IChangePassword): Promise<any> {
@@ -109,11 +124,12 @@ export class UserController {
             throw new HttpException(error.message, error.status)
         }
     }
+
     @ApiOperation(API_OPERATIONS.CHANGE_PASSWORD)
-    @Post('changePassword')
-    async changePassword(@Body() body: usersDto.IUpdatePassword): Promise<any> {
+    @Post('forgotPassword')
+    async forgotPassword(@Body() body: usersDto.IUpdatePassword): Promise<any> {
         try {
-            await this.userservice.changePassword(body);
+            await this.userservice.forgotPassword(body);
             return successResponse(MESSAGES.USER.CHANGE_PASSWORD)
         }
         catch (error) {

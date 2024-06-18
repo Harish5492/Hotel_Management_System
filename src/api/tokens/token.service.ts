@@ -36,12 +36,12 @@ export class TokensService {
       { userId: user.id },
       TIME.JWT.FIVE_DAYS,
     );
-    this.rabbitMqService.publishMessage(
-      'exchange1',
-      'update-refresh-token',
-      'channel-1',
-      JSON.stringify({ userId: user.id, refreshToken: tokens.refreshToken }),
-    );
+    // this.rabbitMqService.publishMessage(
+    //   'exchange1',
+    //   'update-refresh-token',
+    //   'channel-1',
+    //   JSON.stringify({ userId: user.id, refreshToken: tokens.refreshToken }),
+    // );
 
     return tokens;
   }
@@ -59,7 +59,7 @@ export class TokensService {
       this.jwtService.signAsync(
         { ...data },
         {
-          secret: this.configService.get<string>('JWT_SECRET'),
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
           expiresIn,
         },
       ),
@@ -67,7 +67,7 @@ export class TokensService {
       this.jwtService.signAsync(
         { userId: data.userId },
         {
-          secret: this.configService.get<string>('JWT_SECRET'),
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
           expiresIn: TIME.JWT.THIRTY_DAYS,
         },
       ),

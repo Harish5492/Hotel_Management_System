@@ -9,6 +9,7 @@ import { TIME } from '../../constant';
 import * as UserDto from './users.dto';
 import { USER_REPOSITORY, MESSAGES, OTP_REPOSITORY } from 'src/constant';
 import { Op } from "sequelize";
+import { TokensService } from "../tokens/token.service";
 
 
 @Injectable()
@@ -16,6 +17,7 @@ export default class UsersService {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
     @Inject(OTP_REPOSITORY) private readonly otpRepository: typeof Otp,
+    private readonly tokenService: TokensService,
   ) { }
 
   async register(
@@ -32,16 +34,32 @@ export default class UsersService {
     return { message: "Registration successful" };
   }
 
-  async login(data: UserDto.IUserLoginDto): Promise<{ message: string }> {
+  async login(data: UserDto.IUserLoginDto): Promise<object> {
     const { email, mobileNo, password } = data
     const User = await this.getUserDetail(email, mobileNo)
-
+    
     if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
 
     if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
+    return await this.getJwtTokens({ userId: User.id, email: User.email }, true, TIME.JWT.THIRTY_DAYS);
+  }
+  async getJwtTokens(
+    data: any,
+    isAccessNedeed: boolean,
+    time: string
+  ): Promise<object> {
+    const tokens = await this.tokenService.getTokens(data, time);
+    if (isAccessNedeed) return { accessToken: tokens.accessToken };
+    return tokens;
+  }
 
-    return { message: "login successfully" }
-
+  async logout(userId: string): Promise<void> {
+    const user = await this.getUser({ id: userId });
+    if (!user) throwError(MESSAGES.ERROR.ACCESS_DENIED);
+    await this.updateUser(
+      { id: user.id },
+      { refreshToken: null },
+    );
   }
 
   /**
@@ -51,7 +69,7 @@ export default class UsersService {
  * @returns A promise that resolves to an object with a success message.
  * @throws Throws an error if the user does not exist or if the current password is incorrect.
  */
-async updatePassword(data: UserDto.IChangePassword): Promise<{ message: string }> {
+  async updatePassword(data: UserDto.IChangePassword): Promise<{ message: string }> {
     const { email, mobileNo, password, newPassword } = data
     const User = await this.getUserDetail(email, mobileNo)
 
@@ -62,7 +80,7 @@ async updatePassword(data: UserDto.IChangePassword): Promise<{ message: string }
 
     await this.updateUser(email ? { email: email } : { mobileNo: mobileNo }, { password: EncryptPassword });
     return { message: 'Password changed successfully' };
-}
+  }
 
   /**
  * Change the user's password using a token.
@@ -71,7 +89,7 @@ async updatePassword(data: UserDto.IChangePassword): Promise<{ message: string }
  * @returns A promise that resolves to an object with a success message.
  * @throws Throws an error if the token is invalid, expired, or the user has already used it.
  */
-async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }> {
+  async forgotPassword(data: UserDto.IUpdatePassword): Promise<{ message: string }> {
     const { token, newPassword } = data
 
     // Decrypt the token to get the user ID
@@ -84,7 +102,7 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
     if (User.IsTokenUsed === true) throwError(MESSAGES.ERROR.OTPANDTOKENUSED)
 
     // Check if the provided token matches the one in the database
-    if (token!== User.token) throwError(MESSAGES.ERROR.INVALID_TOKEN)
+    if (token !== User.token) throwError(MESSAGES.ERROR.INVALID_TOKEN)
 
     // Hash the new password
     const EncryptPassword = await Utilities.hashPassword(newPassword);
@@ -95,7 +113,7 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
 
     // Return a success message
     return { message: 'Password changed successfully' };
-}
+  }
 
   async checkIfUserExists(
     data: UserDto.IUserRegisterDto | UserDto.IUserLoginDto
@@ -164,7 +182,7 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
     const token = await Utilities.encryptCipher(User.id)
     const expirationDate = new Date(Date.now() + TIME.OTP.OTP_EXPIRES); // 5 minutes expiration
     await this.otpRepository.create<Otp>({
-      code: OTP,
+      code: Number(OTP),
       userId: User.id,
       email: User.email,
       token: token,
@@ -185,21 +203,21 @@ async changePassword(data: UserDto.IUpdatePassword): Promise<{ message: string }
 
 
     const DecyptToken = await Utilities.decryptCipher(token);
-    console.log(DecyptToken)
+
     await this.IstokenAndOtpUsed(DecyptToken)
-    console.log("lllll")
     await this.OtpError(DecyptToken, oneTimeCode, token)
-  
+
     const Token = await Utilities.encryptCipher(DecyptToken)
     await this.updateUser({ id: DecyptToken }, { token: Token })
-    console.log("after update")
-    await this.updateOtpTable({ id: DecyptToken }, { isTokenUsed: true });
-    console.log("before update")
+
+    await this.updateOtpTable({ userId: DecyptToken }, { isTokenUsed: true });
+    await this.updateOtpTable({ userId: DecyptToken }, { isOtpUsed: true });
+
 
     return Token;
   }
 
-  async OtpError(DecyptToken: string, oneTimeCode: string, token: string): Promise<void> {
+  async OtpError(DecyptToken: string, oneTimeCode: number, token: string): Promise<void> {
     console.log(`dec ${DecyptToken},onetime ${oneTimeCode},token ${token}`)
     const Otp = await this.findOtp(DecyptToken)
     console.log(Otp)

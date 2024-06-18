@@ -1,7 +1,8 @@
 import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
+import { EM } from 'src/constant';
 
 export const RabbitMqConnection: RabbitMQConfig = {
-  uri: 'amqp://localhost:5672', // Use the correct RabbitMQ connection port
+  uri: EM.RABBIT_MQ_CONNECTION_URL, // Use the correct RabbitMQ connection port
   exchanges: [
     {
       name: 'exchange_name', // You can customize this as needed

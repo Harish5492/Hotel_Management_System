@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import * as CryptoJS from 'crypto-js';
 import * as otpGenerator from 'otp-generator';
 import { TIME } from '../constant';
+import { EM } from '../constant';
 
 const saltRounds = 10;
 
@@ -17,12 +18,12 @@ export async function comparePassword(
   return isMatch;
 }
 export const encryptCipher = async (data: any) => {
-  const encryptionKey: any = 'afjadsfdkasjbf@43o843nfdsfjasdf';
+  const encryptionKey: any = EM.ENCDECRYPT_KEY;
   return CryptoJS.AES.encrypt(JSON.stringify(data), encryptionKey).toString();
 };
 
 export const decryptCipher = (data: string) => {
-  const reqEncKey: any = 'afjadsfdkasjbf@43o843nfdsfjasdf';
+  const reqEncKey: any = EM.ENCDECRYPT_KEY;
   return JSON.parse(
     CryptoJS.AES.decrypt(data, reqEncKey).toString(CryptoJS.enc.Utf8),
   );

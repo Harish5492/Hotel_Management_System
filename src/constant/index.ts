@@ -1,6 +1,8 @@
 import { SWAGGER_OPERATION } from './swagger/operations.swagger';
+import { ENVIROMENT_MANAGER } from './environment.setup';
 
 export const SEQUELIZE = 'SEQUELIZE';
+export const EM = ENVIROMENT_MANAGER;
 export const DEVELOPMENT = 'dev';
 export const STAGE = 'stage';
 export const PRODUCTION = 'prod';

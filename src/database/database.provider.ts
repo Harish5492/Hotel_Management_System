@@ -9,14 +9,13 @@ export const databaseProviders = [
     useFactory: async () => {
       const config = databaseConfig.dev;
 
+      // Ensure the config is correctly typed
       const sequelize = new Sequelize({
         username: config.username,
         password: config.password,
         database: config.database,
         host: config.host,
-        port: config.port,
         dialect: config.dialect,
-        logging: console.log, // Enable logging to see SQL statements
       });
 
       // Add models to the Sequelize instance

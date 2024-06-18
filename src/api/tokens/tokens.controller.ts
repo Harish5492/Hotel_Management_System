@@ -1,6 +1,6 @@
 import { Controller, Get, HttpException, Req, UseGuards } from '@nestjs/common';
 import { TokensService } from './token.service';
-import { RefreshTokenGuard } from '../../common/guard/refresh.tokenguard';
+import { RefreshTokenGuard } from '../../common/guard/refreshToken.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { successResponse } from '../../helpers/responseHadnlers';
 import { MESSAGES } from 'src/constant';

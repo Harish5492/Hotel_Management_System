@@ -1,15 +1,14 @@
 import { IDatabaseConfig } from './database.interface';
-import * as dotenv from 'dotenv';
-
-dotenv.config({ path: '.env' }); // Load environment variables from .env file
+import { Dialect } from 'sequelize';
+import { EM } from 'src/constant';
 
 export const databaseConfig: IDatabaseConfig = {
   dev: {
-    username: 'harish',
-    password: 'Harish@5492',
-    database: 'HMS', // Add the database name here
-    host: '127.0.0.1',
-    port: 3306,
-    dialect: 'mysql', // Ensure the dialect is set correctly
+    username: EM.MYSQL.DB_USER,
+    password: EM.MYSQL.DB_PASS,
+    database: EM.MYSQL.DB_NAME, // Add the database name here
+    host: EM.MYSQL.DB_HOST,
+    port: EM.MYSQL.DB_PORT,
+    dialect: EM.MYSQL.DB_DIALECT as Dialect, // Ensure the dialect is set correctly
   },
 };

@@ -10,10 +10,10 @@ export class Otp extends Model<Otp> {
   id: number;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.NUMBER,
     allowNull: false,
   })
-  code: string;
+  code: number;
 
   @Column({
     type: DataType.STRING,

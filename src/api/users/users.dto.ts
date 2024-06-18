@@ -114,7 +114,7 @@ export class IVerifyOneTimeCodeDto {
     example: '123456',
     required: true,
   })
-  oneTimeCode: string;
+  oneTimeCode: number;
 
   @IsString()
   @IsNotEmpty()
