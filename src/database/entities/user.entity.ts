@@ -80,18 +80,19 @@ export class User extends Model<User> {
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: false,
+        allowNull: true,
     })
     IsTokenUsed: boolean;
 
     @Column({
         type: DataType.INTEGER,
-        allowNull: false,
+        allowNull: true,
     })
     otp: number;
 
     @Column({
         type: DataType.DATE,
-        allowNull: false,
+        allowNull: true,
     })
     expirationDate: Date;
 
@@ -99,6 +100,7 @@ export class User extends Model<User> {
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: false,
+        allowNull: true,
     })
     IsOtpUsed: boolean;
 
