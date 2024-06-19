@@ -8,7 +8,7 @@ import {
 
 @Table
 export class User extends Model<User> {
-    [x: string]: any;
+   
     @Column({
         type: DataType.UUID,
         defaultValue: DataType.UUIDV4,

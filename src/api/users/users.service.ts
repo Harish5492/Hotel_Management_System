@@ -184,8 +184,8 @@ export default class UsersService {
       otp: Number(OTP),
       token: token,
       expirationDate,
-      isTokenUsed: false,
-      isOtpUsed: false,
+      IsTokenUsed: false,
+      IsOtpUsed: false,
     });
 
     return { token };
@@ -220,7 +220,7 @@ export default class UsersService {
     if (!Otp) {
       throwError(MESSAGES.ERROR.DO_NOT_MATCHED);
     }
-    if (oneTimeCode !== Otp.code && token !== Otp.token)
+    if (oneTimeCode !== Otp.otp && token !== Otp.token)
       throwError(MESSAGES.ERROR.INCORRECT_OTP)
     if (new Date() > Otp.expirationDate)
       throwError(MESSAGES.ERROR.EXPIRES_OTP)
@@ -228,7 +228,7 @@ export default class UsersService {
 
   async IstokenAndOtpUsed(DecyptToken: string): Promise<void> {
     const OtpData = await this.findOtp(DecyptToken)
-    if (OtpData.isTokenUsed === true && OtpData.isOtpUsed === true) {
+    if (OtpData.IsTokenUsed === true && OtpData.IsOtpUsed === true) {
       throwError(MESSAGES.ERROR.OTPANDTOKENUSED)
     }
   }
@@ -251,7 +251,7 @@ export default class UsersService {
 
   async findOtp(decryptToken: string): Promise<User | undefined> {
     return this.userRepository.findOne({
-      where: { userId: decryptToken },
+      where: { id: decryptToken },
       attributes: ['id', 'email', 'otp', 'token', 'expirationDate', 'isTokenUsed', 'isOtpUsed'],
       order: [['createdAt', 'DESC']],
     });
