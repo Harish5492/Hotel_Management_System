@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { databaseConfig } from './database.config';
 import { SEQUELIZE } from '../constant';
-import { User, Otp } from './entities';
+import { User } from './entities';
 
 export const databaseProviders = [
   {
@@ -19,7 +19,7 @@ export const databaseProviders = [
       });
 
       // Add models to the Sequelize instance
-      sequelize.addModels([User, Otp]);
+      sequelize.addModels([User]);
       console.log('Models added to Sequelize:', sequelize.models);
 
       // Synchronize models with the database

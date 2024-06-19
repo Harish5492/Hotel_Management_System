@@ -23,8 +23,8 @@ export class User extends Model<User> {
     email: string;
 
     @Column({
-      type: DataType.BOOLEAN,
-      defaultValue: false,
+        type: DataType.BOOLEAN,
+        defaultValue: false,
     })
     isEmailVerified: boolean;
 
@@ -47,8 +47,8 @@ export class User extends Model<User> {
     mobileNo: number;
 
     @Column({
-      type: DataType.BOOLEAN,
-      defaultValue: false,
+        type: DataType.BOOLEAN,
+        defaultValue: false,
     })
     isMobVerified: boolean;
 
@@ -57,13 +57,6 @@ export class User extends Model<User> {
         allowNull: false,
     })
     password: string;
-
-    @Column({
-        type: DataType.ENUM('MOBILE', 'EMAIL'),
-        defaultValue: 'EMAIL',
-        allowNull: false,
-    })
-    loginType: string;
 
     @Column({
         type: DataType.ENUM('DOCTOR', 'MANAGEMENT', 'PATIENT'),
@@ -77,8 +70,7 @@ export class User extends Model<User> {
         allowNull: true,
     })
     refreshToken: string;
-    status: string;
-    
+
     @Column({
         type: DataType.TEXT,
         allowNull: true,
@@ -88,9 +80,29 @@ export class User extends Model<User> {
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: false,
-      })
+    })
     IsTokenUsed: boolean;
-   
+
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+    })
+    otp: number;
+
+    @Column({
+        type: DataType.DATE,
+        allowNull: false,
+    })
+    expirationDate: Date;
+
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
+    IsOtpUsed: boolean;
+
+  
 }
 
 export default User;
