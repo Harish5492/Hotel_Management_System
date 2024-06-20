@@ -66,13 +66,13 @@ export class User extends Model<User> {
     role: string;
 
     @Column({
-        type: DataType.TEXT,
+        type: DataType.STRING,
         allowNull: true,
     })
     refreshToken: string;
 
     @Column({
-        type: DataType.TEXT,
+        type: DataType.STRING,
         allowNull: true,
     })
     token: string;
@@ -100,7 +100,7 @@ export class User extends Model<User> {
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: false,
-        allowNull: true,
+        allowNull : true
     })
     IsOtpUsed: boolean;
 

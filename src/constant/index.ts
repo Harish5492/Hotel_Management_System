@@ -66,7 +66,7 @@ export const MESSAGES = {
     NOTIFICATIONS_LIST: 'Notifications fetched successfully.',
   },
   ERROR: {
-    INCORRECT_OTP: 'Incorrect OTP, Please try again with resend code.',
+    INCORRECT_OTP: 'Incorrect OTP or Token, Please try again with resend code.',
     EXPIRES_OTP: 'Your OTP, Expires please try again with resend otp code.',
     INVALID_TOKEN: 'Invalid Token',
     OTPANDTOKENUSED: 'Either OTP or Token is already used. Kindly resend.',

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Inject, Injectable } from "@nestjs/common";
-import { User} from '../../database/entities';
+import { User } from '../../database/entities';
 import { throwError } from "../../helpers/responseHadnlers";
 import * as Utilities from '../../helpers/utilities.helper'
 import Twilio from '../../helpers/twilio.helper'
@@ -91,26 +91,18 @@ export default class UsersService {
   async forgotPassword(data: UserDto.IUpdatePassword): Promise<{ message: string }> {
     const { token, newPassword } = data
 
-    // Decrypt the token to get the user ID
     const DecyptToken = await Utilities.decryptCipher(token);
 
-    // Fetch the user using the decrypted token
     const User = await this.userWithError({ id: DecyptToken })
 
-    // Check if the token has already been used
     if (User.IsTokenUsed === true) throwError(MESSAGES.ERROR.OTPANDTOKENUSED)
 
-    // Check if the provided token matches the one in the database
     if (token !== User.token) throwError(MESSAGES.ERROR.INVALID_TOKEN)
 
-    // Hash the new password
     const EncryptPassword = await Utilities.hashPassword(newPassword);
 
-    // Update the user's password and set the token as used
     await this.updateUser({ id: DecyptToken }, { password: EncryptPassword, IsTokenUsed: true });
-    // await this.updateUser({ id: DecyptToken }, { IsTokenUsed: true });
-
-    // Return a success message
+  
     return { message: 'Password changed successfully' };
   }
 
@@ -135,9 +127,7 @@ export default class UsersService {
   async updateUser(match: object, data: object): Promise<void> {
     await this.userRepository.update({ ...data }, { where: { ...match } });
   }
-  // async updateOtpTable(match: object, data: object): Promise<void> {
-  //   await this.otpRepository.update({ ...data }, { where: { ...match } });
-  // }
+
 
   async getUserDetail(email?: string, mobileNo?: number): Promise<User | undefined> {
     const query: any = {};
@@ -171,7 +161,6 @@ export default class UsersService {
 
     const User = await this.userWithError(data)
     const OTP = await this.generateOtp();
-    console.log(typeof OTP)
     // const EncryptOTP = await Utilities.encryptCipher(OTP);
     // Twilio.sendMessage({  
     //   otp: OTP,
@@ -180,13 +169,8 @@ export default class UsersService {
     // EmailService.sendMail()
     const token = await Utilities.encryptCipher(User.id)
     const expirationDate = new Date(Date.now() + TIME.OTP.OTP_EXPIRES); // 5 minutes expiration
-    await this.userRepository.create<User>({
-      otp: Number(OTP),
-      token: token,
-      expirationDate,
-      IsTokenUsed: false,
-      IsOtpUsed: false,
-    });
+
+    await this.updateUser({ id: User.id }, { otp: Number(OTP), token: token, expirationDate, IsOtpUsed: false, IsTokenUsed: false });
 
     return { token };
   }
@@ -199,28 +183,24 @@ export default class UsersService {
     const { oneTimeCode, token } = data;
 
     const DecyptToken = await Utilities.decryptCipher(token);
-
+ 
     await this.IstokenAndOtpUsed(DecyptToken)
+
     await this.OtpError(DecyptToken, oneTimeCode, token)
 
     const Token = await Utilities.encryptCipher(DecyptToken)
-    await this.updateUser({ id: DecyptToken }, { token: Token, isTokenUsed: true, isOtpUsed: true })
-
-    // await this.updateUser({ id: DecyptToken }, { isTokenUsed: true });
-    // await this.updateUser({ id: DecyptToken }, { isOtpUsed: true });
+    await this.updateUser({ id: DecyptToken }, { token: Token, IsTokenUsed: true, IsOtpUsed: true })
 
 
     return { Token };
   }
 
   async OtpError(DecyptToken: string, oneTimeCode: number, token: string): Promise<void> {
-    console.log(`dec ${DecyptToken},onetime ${oneTimeCode},token ${token}`)
     const Otp = await this.findOtp(DecyptToken)
-    console.log(Otp)
     if (!Otp) {
       throwError(MESSAGES.ERROR.DO_NOT_MATCHED);
     }
-    if (oneTimeCode !== Otp.otp && token !== Otp.token)
+    if (oneTimeCode !== Otp.otp || token !== Otp.token)
       throwError(MESSAGES.ERROR.INCORRECT_OTP)
     if (new Date() > Otp.expirationDate)
       throwError(MESSAGES.ERROR.EXPIRES_OTP)
@@ -228,7 +208,7 @@ export default class UsersService {
 
   async IstokenAndOtpUsed(DecyptToken: string): Promise<void> {
     const OtpData = await this.findOtp(DecyptToken)
-    if (OtpData.IsTokenUsed === true && OtpData.IsOtpUsed === true) {
+    if (OtpData.IsTokenUsed === true || OtpData.IsOtpUsed === true) {
       throwError(MESSAGES.ERROR.OTPANDTOKENUSED)
     }
   }
@@ -237,23 +217,21 @@ export default class UsersService {
     const { oneTimeCode, token } = data
 
     const DecyptToken = await Utilities.decryptCipher(token);
-
     await this.IstokenAndOtpUsed(DecyptToken)
 
     await this.OtpError(DecyptToken, oneTimeCode, token)
 
-    await this.updateUser({ id: DecyptToken }, { isMobVerified: true,isTokenUsed: true  })
-    // await this.updateOtpTable({ id: DecyptToken }, { isTokenUsed: true });
+    await this.updateUser({ id: DecyptToken }, { isMobVerified: true, isTokenUsed: true })
 
   }
 
 
 
   async findOtp(decryptToken: string): Promise<User | undefined> {
+    console.log("reahed")
     return this.userRepository.findOne({
       where: { id: decryptToken },
-      attributes: ['id', 'email', 'otp', 'token', 'expirationDate', 'isTokenUsed', 'isOtpUsed'],
-      order: [['createdAt', 'DESC']],
+      attributes: ['id', 'email', 'otp', 'token', 'expirationDate', 'IsTokenUsed', 'IsOtpUsed'],
     });
   }
 

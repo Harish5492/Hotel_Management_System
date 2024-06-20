@@ -5,13 +5,11 @@ import {
   IsNotEmpty,
   MinLength,
   IsNumber,
-  IsOptional,
   ValidateIf,
   IsString
 } from 'class-validator';
 
 export class IUserRegisterDto {
-  @IsOptional()
   @IsEmail()
   @ValidateIf((object) => !object.mobileNo)
   @IsNotEmpty()
@@ -53,6 +51,16 @@ export class IUserRegisterDto {
     required: true
   })
   lastName: string;
+  
+  @IsNotEmpty()
+  @MinLength(3)
+  @ApiProperty({
+    name: 'role',
+    description: 'role length should be 3 or more than that',
+    example: 'PATIENT OR DOCTOR',
+    required: true
+  })
+  role: string;
 
   @IsNotEmpty()
   @MinLength(8)
