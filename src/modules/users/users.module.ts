@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import UsersService from './users.service';
 import { UserController } from './users.controller';
-import { DatabaseModule } from '../../database/database.module';
+import { DatabaseModule } from '../../common/database/database.module';
 import { TokensService } from '../tokens/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { RabbitMqModule } from 'src/common/rabbitMq/rabbit.mq.module';

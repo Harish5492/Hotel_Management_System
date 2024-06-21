@@ -1,8 +1,8 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { RabbitSubscribe, AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import UsersService from 'src/api/users/users.service';
+import UsersService from 'src/modules/users/users.service';
 import * as utilities from '../../helpers/utilities.helper';
-import { TokensService } from '../../api/tokens/token.service';
+import { TokensService } from '../../modules/tokens/token.service';
 
 @Injectable()
 export class RabbitMqService {

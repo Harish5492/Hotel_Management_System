@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RabbitMqConnection } from './rabbit.mq.connection';
 import { RabbitMqService } from './rabbit.mq.service';
-import { TokensModule } from '../../api/tokens/tokens.module'; // Ensure correct path
-import UsersService from 'src/api/users/users.service';
-import { userProviders } from 'src/api/users/users.provider';
+import { TokensModule } from '../../modules/tokens/tokens.module'; // Ensure correct path
+import UsersService from 'src/modules/users/users.service';
+import { userProviders } from 'src/modules/users/users.provider';
 
 @Module({
   imports: [

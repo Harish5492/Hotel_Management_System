@@ -5,7 +5,7 @@ import { RefreshTokenStrategy } from './stratergies/refreshToken.strategy';
 import { AccessTokenStrategy } from './stratergies/accessToken.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import UsersService from '../users/users.service';
-import { DatabaseModule } from '../../database/database.module'; // Ensure DatabaseModule is imported
+import { DatabaseModule } from '../../common/database/database.module'; // Ensure DatabaseModule is imported
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { RabbitMqService } from '../../common/rabbitMq/rabbit.mq.service';
 import { RabbitMqConnection } from '../../common/rabbitMq/rabbit.mq.connection';

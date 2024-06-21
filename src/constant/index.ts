@@ -76,6 +76,7 @@ export const MESSAGES = {
     USER_NOT_EXIST: 'This user not exist.',
     USER_NOT_FOUND: 'Please, check you credentials. It do not match.',
     USER_BLOCKED: 'This account has been blocked by admin.',
+    USER_NOT_VERIFIED:'User is not verified. Kindly, verify your Mobile No. and Email Address',
     INCORRECT_PASSWORD: 'Incorrect old password, Please try again.',
     INCORRECT_SECURITY_PIN: 'Incorrect old security pin, Please try again.',
     ACCESS_DENIED: 'ACCESS_DENIED',

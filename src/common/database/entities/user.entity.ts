@@ -69,12 +69,6 @@ export class User extends Model<User> {
         type: DataType.STRING,
         allowNull: true,
     })
-    refreshToken: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: true,
-    })
     token: string;
 
     @Column({
@@ -91,19 +85,23 @@ export class User extends Model<User> {
     otp: number;
 
     @Column({
-        type: DataType.DATE,
-        allowNull: true,
-    })
-    expirationDate: Date;
-
-
-    @Column({
         type: DataType.BOOLEAN,
         defaultValue: false,
         allowNull : true
     })
     IsOtpUsed: boolean;
 
+    @Column({
+        type: DataType.TEXT,
+        allowNull: true,
+      })
+      refreshToken: string;
+    
+    @Column({
+    type: DataType.DATE,
+        allowNull: true,
+    })
+    expirationDate: Date;
   
 }
 

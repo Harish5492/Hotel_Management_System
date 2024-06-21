@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import { databaseConfig } from './database.config';
-import { SEQUELIZE } from '../constant';
+import { SEQUELIZE } from '../../constant';
 import { User } from './entities';
 
 export const databaseProviders = [

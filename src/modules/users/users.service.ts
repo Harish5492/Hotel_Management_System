@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Inject, Injectable } from "@nestjs/common";
-import { User } from '../../database/entities';
+import { User } from '../../common/database/entities';
 import { throwError } from "../../helpers/responseHadnlers";
 import * as Utilities from '../../helpers/utilities.helper'
 import Twilio from '../../helpers/twilio.helper'
@@ -38,17 +38,27 @@ export default class UsersService {
     const User = await this.getUserDetail(email, mobileNo)
 
     if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
+    // await this.IsMobileOrEmailValid(email, mobileNo)
 
     if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
-    return await this.getJwtTokens({ userId: User.id, email: User.email }, true, TIME.JWT.THIRTY_DAYS);
+    const tokens = await this.getJwtTokens({ userId: User.id, email: User.email }, true, TIME.JWT.THIRTY_DAYS);
+    console.log(tokens.refreshToken)
+    await this.updateUser({ email: User.email }, { refreshToken: tokens.refreshToken });
+    return tokens
+    
+  }
+
+  async IsMobileOrEmailValid(email: string, mobileNo: number): Promise<void> {
+    const User = await this.getUserDetail(email, mobileNo)
+    if (!User.isMobVerified || !User.isEmailVerified) throwError(MESSAGES.ERROR.USER_NOT_VERIFIED);
   }
   async getJwtTokens(
     data: any,
     isAccessNedeed: boolean,
     time: string
-  ): Promise<object> {
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const tokens = await this.tokenService.getTokens(data, time);
-    if (isAccessNedeed) return { accessToken: tokens.accessToken };
+    if (isAccessNedeed) return { accessToken: tokens.accessToken, refreshToken: tokens.refreshToken };
     return tokens;
   }
 
@@ -102,7 +112,7 @@ export default class UsersService {
     const EncryptPassword = await Utilities.hashPassword(newPassword);
 
     await this.updateUser({ id: DecyptToken }, { password: EncryptPassword, IsTokenUsed: true });
-  
+
     return { message: 'Password changed successfully' };
   }
 
@@ -183,7 +193,7 @@ export default class UsersService {
     const { oneTimeCode, token } = data;
 
     const DecyptToken = await Utilities.decryptCipher(token);
- 
+
     await this.IstokenAndOtpUsed(DecyptToken)
 
     await this.OtpError(DecyptToken, oneTimeCode, token)

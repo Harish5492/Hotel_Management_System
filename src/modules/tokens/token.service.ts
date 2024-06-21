@@ -1,4 +1,4 @@
-import User from '../../database/entities/user.entity';
+import User from '../../common/database/entities/user.entity';
 import {
   Inject,
   Injectable,
@@ -33,7 +33,7 @@ export class TokensService {
       throw new UnauthorizedException(MESSAGES.ERROR.ACCESS_DENIED);
 
     const tokens = await this.getTokens(
-      { userId: user.id },
+      { userId: user.id, emailId: user.email },
       TIME.JWT.FIVE_DAYS,
     );
     // this.rabbitMqService.publishMessage(
@@ -60,7 +60,7 @@ export class TokensService {
         { ...data },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-          expiresIn,
+          expiresIn: TIME.JWT.FIVE_DAYS,
         },
       ),
 
