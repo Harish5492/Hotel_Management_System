@@ -6,7 +6,6 @@ import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { API_OPERATIONS, MESSAGES } from "src/constant"
 import { AccessTokenGuard } from "src/common/guard/accesstoken.guard";
-console.log("inside the controller");
 @ApiTags('USERS')
 @Controller('users')
 export class UserController {
@@ -23,7 +22,7 @@ export class UserController {
  * @returns A Promise that resolves to a success response with the user details.
  * @throws An HttpException if the registration fails.
  */
-    @ApiOperation(API_OPERATIONS.REGISTER_USER)
+    @ApiOperation(API_OPERATIONS.USER.REGISTER_USER)
     @Post('register')
     async register(@Body() body: usersDto.IUserRegisterDto): Promise<any> {
         try {
@@ -41,7 +40,7 @@ export class UserController {
  * @returns A Promise that resolves to a success response with the OTP details.
  * @throws An HttpException if sending the OTP fails.
  */
-    @ApiOperation(API_OPERATIONS.SEND_OTP)
+    @ApiOperation(API_OPERATIONS.USER.SEND_OTP)
     @Post('sendOTP')
     async sendOTP(@Body() body: usersDto.ISendOneTimeCodeDto): Promise<any> {
         try {
@@ -59,7 +58,7 @@ export class UserController {
  * @returns A Promise that resolves to a success response with the verification result.
  * @throws An HttpException if the OTP verification fails.
  */
-    @ApiOperation(API_OPERATIONS.VERIFY_OTP)
+    @ApiOperation(API_OPERATIONS.USER.VERIFY_OTP)
     @Post('verifyOTP')
     async verifyOTP(@Body() body: usersDto.IVerifyOneTimeCodeDto): Promise<any> {
         try {
@@ -76,7 +75,7 @@ export class UserController {
    * @returns A Promise that resolves to a success response with the verification result.
    * @throws An HttpException if the OTP verification fails.
    */
-    @ApiOperation(API_OPERATIONS.MOB_AND_EMAIL_VERIFICATION)
+    @ApiOperation(API_OPERATIONS.USER.MOB_AND_EMAIL_VERIFICATION)
     @Post('mobAndEmailVerification')
     async mobAndEmailVerification(@Body() body: usersDto.IVerifyOneTimeCodeDto): Promise<any> {
         try {
@@ -87,7 +86,7 @@ export class UserController {
             throw new HttpException(error.message, error.status)
         }
     }
-    @ApiOperation(API_OPERATIONS.LOGIN_USER)
+    @ApiOperation(API_OPERATIONS.USER.LOGIN_USER)
     @Post('login')
     async login(@Body() body: usersDto.IUserLoginDto): Promise<any> {
         try {
@@ -113,7 +112,7 @@ export class UserController {
     }
     @ApiBearerAuth()
     @UseGuards(AccessTokenGuard)
-    @ApiOperation(API_OPERATIONS.UPDATE_PASSWORD)
+    @ApiOperation(API_OPERATIONS.USER.UPDATE_PASSWORD)
     @Post('updatePassword')
     async updatePassword(@Body() body: usersDto.IChangePassword): Promise<any> {
         try {
@@ -125,7 +124,7 @@ export class UserController {
         }
     }
 
-    @ApiOperation(API_OPERATIONS.CHANGE_PASSWORD)
+    @ApiOperation(API_OPERATIONS.USER.CHANGE_PASSWORD)
     @Post('forgotPassword')
     async forgotPassword(@Body() body: usersDto.IUpdatePassword): Promise<any> {
         try {

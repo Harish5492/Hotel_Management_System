@@ -21,7 +21,7 @@ export default class UsersService {
 
   async register(
     data: UserDto.IUserRegisterDto
-  ): Promise<{ message: string }> {
+  ): Promise<{ message: string }> { 
     if (data.mobileNo.toString().length !== 10) {
       throwError(MESSAGES.ERROR.INVALID_MOBILE_NO);
     }

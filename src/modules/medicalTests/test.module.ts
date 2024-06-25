@@ -1,23 +1,24 @@
 import { Module } from '@nestjs/common';
-import UsersService from './users.service';
-import { UserController } from './users.controller';
+import TestService from './tests.service';
+import { TestController } from './test.controller';
 import { DatabaseModule } from '../../common/database/database.module';
 import { TokensService } from '../tokens/token.service';
 import { JwtService } from '@nestjs/jwt';
 import { RabbitMqModule } from 'src/common/rabbitMq/rabbit.mq.module';
 import { RabbitMqService } from 'src/common/rabbitMq/rabbit.mq.service';
-import { userProviders } from './users.provider';
-
+import { testProvider } from './tests.provider';
+import UsersService from '../users/users.service';
 @Module({
   imports: [DatabaseModule, RabbitMqModule],
-  controllers: [UserController],
+  controllers: [TestController],
   providers: [
+    TestService,
     UsersService,
     TokensService,
     JwtService,
     RabbitMqService,
-    ...userProviders,
+    ...testProvider,
   ],
-  exports: [...userProviders, UsersService],
+  exports: [...testProvider, TestService],
 })
-export class UsersModule {}
+export class TestsModule {}

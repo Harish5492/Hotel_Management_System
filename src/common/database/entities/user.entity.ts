@@ -4,11 +4,13 @@ import {
     Column,
     Model,
     DataType,
+    HasMany,
 } from 'sequelize-typescript';
+import Test from './test.entity';
 
 @Table
 export class User extends Model<User> {
-   
+
     @Column({
         type: DataType.UUID,
         defaultValue: DataType.UUIDV4,
@@ -87,22 +89,24 @@ export class User extends Model<User> {
     @Column({
         type: DataType.BOOLEAN,
         defaultValue: false,
-        allowNull : true
+        allowNull: true
     })
     IsOtpUsed: boolean;
 
     @Column({
         type: DataType.TEXT,
         allowNull: true,
-      })
-      refreshToken: string;
-    
+    })
+    refreshToken: string;
+
     @Column({
-    type: DataType.DATE,
+        type: DataType.DATE,
         allowNull: true,
     })
     expirationDate: Date;
-  
-}
 
+    @HasMany(() => Test)
+    tests: Test[];
+
+}
 export default User;

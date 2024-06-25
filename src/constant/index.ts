@@ -7,6 +7,7 @@ export const DEVELOPMENT = 'dev';
 export const STAGE = 'stage';
 export const PRODUCTION = 'prod';
 export const USER_REPOSITORY = 'USER_REPOSITORY';
+export const TEST_REPOSITORY = 'TEST_REPOSITORY';
 export const NOTIFICATION_REPOSITORY = 'NOTIFICATION_REPOSITORY';
 export const ADMIN_REPOSITORY = 'ADMIN_REPOSITORY';
 export const KYC_REPOSITORY = 'KYC_REPOSITORY';
@@ -52,6 +53,9 @@ export const MESSAGES = {
     SEND_TRANSACTION_SUCCESSFULL: 'Transaction successfull',
     SEND_TRANSACTION_FAILED: 'Transaction failed',
   },
+  TEST: {
+    ADD_TEST_SUCCESS: 'Test added successfully.',
+  },
   ADMIN: {
     SIGN_IN_SUCCESS: 'You have logged in successfully',
     PASSWORD_UPDATED: 'Password updated successfully',
@@ -76,7 +80,8 @@ export const MESSAGES = {
     USER_NOT_EXIST: 'This user not exist.',
     USER_NOT_FOUND: 'Please, check you credentials. It do not match.',
     USER_BLOCKED: 'This account has been blocked by admin.',
-    USER_NOT_VERIFIED:'User is not verified. Kindly, verify your Mobile No. and Email Address',
+    USER_NOT_VERIFIED:
+      'User is not verified. Kindly, verify your Mobile No. and Email Address',
     INCORRECT_PASSWORD: 'Incorrect old password, Please try again.',
     INCORRECT_SECURITY_PIN: 'Incorrect old security pin, Please try again.',
     ACCESS_DENIED: 'ACCESS_DENIED',
@@ -88,7 +93,8 @@ export const MESSAGES = {
     MOBILE_EXISTS: 'Mobile no. is already exists.',
     MOBILE_VERIFIED: 'Mobile no. is already verified.',
     INVALID_MOBILE_NO: 'Mobile no must has exactly 10 digits',
-    DO_NOT_MATCHED: 'do not matched.',
+    DO_NOT_MATCHED: 'Do not matched.',
+    TEST_EXISTS: 'Test already exists.',
   },
 };
 // export const WALLET_GRPC_PACKAGE = 'gateway';

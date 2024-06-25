@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { databaseProviders } from './database.provider';
-import { USER_REPOSITORY } from '../../constant';
-import { User } from './entities/user.entity';
+import { TEST_REPOSITORY, USER_REPOSITORY } from '../../constant';
+import { Test, User } from './entities';
 @Module({
   providers: [
     ...databaseProviders,
@@ -9,7 +9,11 @@ import { User } from './entities/user.entity';
       provide: USER_REPOSITORY,
       useValue: User,
     },
+    {
+      provide: TEST_REPOSITORY,
+      useValue: Test,
+    },
   ],
-  exports: [...databaseProviders, USER_REPOSITORY],
+  exports: [...databaseProviders, USER_REPOSITORY, TEST_REPOSITORY],
 })
 export class DatabaseModule {}

@@ -36,12 +36,12 @@ export class TokensService {
       { userId: user.id, emailId: user.email },
       TIME.JWT.FIVE_DAYS,
     );
-    // this.rabbitMqService.publishMessage(
-    //   'exchange1',
-    //   'update-refresh-token',
-    //   'channel-1',
-    //   JSON.stringify({ userId: user.id, refreshToken: tokens.refreshToken }),
-    // );
+    this.rabbitMqService.publishMessage(
+      'exchange1',
+      'update-refresh-token',
+      'channel-1',
+      JSON.stringify({ userId: user.id, refreshToken: tokens.refreshToken }),
+    );
 
     return tokens;
   }
