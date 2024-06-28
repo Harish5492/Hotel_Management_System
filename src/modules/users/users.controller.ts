@@ -1,11 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Post, Controller, Body, HttpException, Get, UseGuards, Req } from "@nestjs/common";
+import { Post, Controller, Body, HttpException, Get, UseGuards, Req, Query, Param } from "@nestjs/common";
 import UserService from './users.service'
 import * as usersDto from './users.dto'
 import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { API_OPERATIONS, MESSAGES } from "src/constant"
 import { AccessTokenGuard } from "src/common/guard/accesstoken.guard";
+
+
 @ApiTags('USERS')
 @Controller('users')
 export class UserController {
@@ -110,6 +112,25 @@ export class UserController {
             throw new HttpException(error.message, error.status);
         }
     }
+
+    // @ApiBearerAuth()
+    // @UseGuards(AccessTokenGuard)
+    @Get('searchUser/:page/:limit')
+    async getDetailOfuser(
+        @Param() params: usersDto.GetParamsRequestDto,
+        @Query() querys: usersDto.GetFiltersDto): Promise<any> {
+        try {
+            console.log("yooo")
+            // const cleanedQuery = JSON.parse(querys.filters.replace(/\s/g, ''));
+            const result = await this.userservice.searchUser(params,querys)
+            return successResponse(MESSAGES.USER.GET_USER_DETAILE, result);
+        }
+        catch (error) {
+            throw new HttpException(error.message, error.status)
+
+        }
+    }
+
     @ApiBearerAuth()
     @UseGuards(AccessTokenGuard)
     @ApiOperation(API_OPERATIONS.USER.UPDATE_PASSWORD)

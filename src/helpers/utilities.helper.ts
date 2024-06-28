@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import * as CryptoJS from 'crypto-js';
+import * as crypto from 'crypto';
 import * as otpGenerator from 'otp-generator';
 import { TIME } from '../constant';
 import { EM } from '../constant';
@@ -29,6 +30,30 @@ export const decryptCipher = (data: string) => {
   );
   return parsedToken;
 };
+
+export const generateHexadecimal = (name: string) => {
+  // Combine name, email, and a random component with the current time
+  const seed = `${name}${Math.floor(Math.random() * 1e6)}${Date.now()}`;
+
+  // Create a SHA-256 hash of the seed
+  const hash = crypto.createHash('sha256');
+  hash.update(seed);
+
+  // Get the hexadecimal representation of the hash
+  const hexNumber = hash.digest('hex');
+
+  // Extract the first 16 characters (or adjust as needed)
+  const uniqueHex = hexNumber.slice(0, 16);
+
+  // Reflect the first 3 characters of the name and email
+  const reflectedFirstName = name.slice(0, 3).toUpperCase(); // Ensure uppercase, adjust as needed
+
+  // Concatenate the unique hex with reflected parts
+  const combinedId = `${reflectedFirstName}-${uniqueHex}`;
+
+  return combinedId;
+};
+
 export const generateOneTimeCode = (
   size: number,
 ): { otp: string; otpExpires: number } => {

@@ -2,15 +2,23 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as cors from 'cors';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn'],
+  });
+  initMiddlewares(app);
   initSwaggerDocs(app); // Initialize Swagger before listening to ensure it's set up
   await app.listen(3307);
   console.log('Server is running on http://localhost:3307');
 }
-
+async function initMiddlewares(app: INestApplication) {
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  // app.setGlobalPrefix('api/v1');
+  app.enableCors({ origin: '*' });
+  app.use(cors());
+}
 async function initSwaggerDocs(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('User')

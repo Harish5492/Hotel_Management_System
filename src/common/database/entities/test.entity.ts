@@ -51,9 +51,8 @@ export class Test extends Model<Test> {
     type: DataType.STRING,
     allowNull: true,
   })
-  remarks: string; // Uncommented this line
+  remarks: string;
 
-  // Define association with User model
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,

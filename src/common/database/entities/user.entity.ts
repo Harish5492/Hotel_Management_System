@@ -19,6 +19,13 @@ export class User extends Model<User> {
     id: string;
 
     @Column({
+        type:DataType.UUID,
+        defaultValue: DataType.UUIDV4,
+        allowNull : false,
+    })
+    employeeId: string;
+
+    @Column({
         type: DataType.STRING,
         allowNull: false,
     })
@@ -34,13 +41,7 @@ export class User extends Model<User> {
         type: DataType.STRING,
         allowNull: false,
     })
-    firstName: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: false,
-    })
-    lastName: string;
+    fullName: string;
 
     @Column({
         type: DataType.DOUBLE,

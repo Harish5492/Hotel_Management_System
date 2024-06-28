@@ -8,7 +8,7 @@ import Twilio from '../../helpers/twilio.helper'
 import { TIME } from '../../constant';
 import * as UserDto from './users.dto';
 import { USER_REPOSITORY, MESSAGES } from 'src/constant';
-import { Op } from "sequelize";
+import { Op, WhereOptions } from "sequelize";
 import { TokensService } from "../tokens/token.service";
 
 
@@ -21,7 +21,7 @@ export default class UsersService {
 
   async register(
     data: UserDto.IUserRegisterDto
-  ): Promise<{ message: string }> { 
+  ): Promise<{ message: string }> {
     if (data.mobileNo.toString().length !== 10) {
       throwError(MESSAGES.ERROR.INVALID_MOBILE_NO);
     }
@@ -29,7 +29,8 @@ export default class UsersService {
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
 
     data.password = await Utilities.hashPassword(data.password)
-    await this.userRepository.create<User>({ ...data });
+    const employeeId = await Utilities.generateHexadecimal(data.fullName)
+    await this.userRepository.create<User>({ ...data, employeeId: employeeId });
     return { message: "Registration successful" };
   }
 
@@ -45,7 +46,7 @@ export default class UsersService {
     console.log(tokens.refreshToken)
     await this.updateUser({ email: User.email }, { refreshToken: tokens.refreshToken });
     return tokens
-    
+
   }
 
   async IsMobileOrEmailValid(email: string, mobileNo: number): Promise<void> {
@@ -146,7 +147,7 @@ export default class UsersService {
 
     const user = await this.userRepository.findOne({
       where: query,
-      attributes: ['password', 'id', 'email', 'mobileNo'],
+      attributes: ['id', 'email', 'mobileNo'],
     });
 
     return user
@@ -158,6 +159,33 @@ export default class UsersService {
     });
 
     return user;
+  }
+
+  async searchUser(
+    params: UserDto.GetParamsRequestDto,
+    filters: UserDto.GetFiltersDto
+  ): Promise<{ list: Array<User>; totalCount: number }> {
+    const { page, limit } = params;
+    console.log("params", params);
+    console.log(typeof limit,typeof page)
+    const { email, employeeId, fullName, mobileNo } = filters
+    const where: WhereOptions<User> = {};
+    if (email) where.email = email;
+    if (employeeId) where.employeeId = employeeId;
+    if (fullName) where.fullName = fullName;
+    // if (mobileNo.toString()) where.mobileNo = mobileNo;
+    console.log("data",{email,employeeId,fullName,mobileNo})
+    const { count, rows: users } = await this.userRepository.findAndCountAll({
+      where,
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [
+        ['createdAt', 'DESC'],
+      ],
+      attributes: ['email', 'fullName', 'employeeId', 'mobileNo']
+    });
+
+    return { list: users, totalCount: count };
   }
 
   async userWithError(data: object): Promise<User> {

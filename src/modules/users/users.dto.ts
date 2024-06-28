@@ -1,12 +1,14 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty, PickType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
   MinLength,
   IsNumber,
   ValidateIf,
-  IsString
+  IsString,
+  IsOptional
 } from 'class-validator';
 
 export class IUserRegisterDto {
@@ -16,7 +18,7 @@ export class IUserRegisterDto {
   @ApiProperty({
     name: 'email',
     description: 'Send email if using logintype=EMAIL',
-    example: 'note@wallet.com',
+    example: 'note@gmail.com',
     required: true,
   })
   email?: string;
@@ -25,7 +27,7 @@ export class IUserRegisterDto {
   @ValidateIf((object) => !object.email)
   @IsNotEmpty()
   @ApiProperty({
-    name: 'mobileNo',
+    name: 'mobileNo', 
     description: 'Send mobileNo if using logintype=MOBILE. Length of the mobileNo',
     example: '9090012214',
     required: true,
@@ -35,22 +37,12 @@ export class IUserRegisterDto {
   @IsNotEmpty()
   @MinLength(3)
   @ApiProperty({
-    name: 'firstName',
-    description: 'firstName length should be 3 or more than that',
-    example: 'Harish',
+    name: 'fullName',
+    description: 'fullname length should be 3 or more than that',
+    example: 'Harish Rana',
     required: true
   })
-  firstName: string;
-
-  @IsNotEmpty()
-  @MinLength(3)
-  @ApiProperty({
-    name: 'lastName',
-    description: 'LastName length should be 3 or more than that',
-    example: 'Rana',
-    required: true
-  })
-  lastName: string;
+  fullName: string;
   
   @IsNotEmpty()
   @MinLength(3)
@@ -76,6 +68,73 @@ export class IUserRegisterDto {
 
 export class IUserLoginDto extends PickType(IUserRegisterDto ,['email','mobileNo','password'] as const){
 
+}
+export class GetFiltersDto {
+  @IsOptional()
+  @IsEmail()
+  @ApiProperty({
+    name: 'email',
+    description: 'Send email if using logintype=EMAIL',
+    example: 'note@gmail.com',
+    required:false
+  })
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'employeeId',
+    description: 'get the unique id of the employee',
+    example: 'HAR-7a53046d66c93b5e',
+    required:false
+  })
+  employeeId?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({
+    name: 'mobileNo', 
+    description: 'Send mobileNo if using logintype=MOBILE. Length of the mobileNo',
+    example: '9090012214',
+    required:false,
+  })
+  mobileNo?: number;
+
+  @IsOptional()
+  @ApiProperty({
+    name: 'fullName',
+    description: 'fullname length should be 3 or more than that',
+    example: 'Harish Rana',
+    required:false
+  })
+  fullName?: string;
+
+  @IsOptional()
+  filters?: Record<string, any>; // Allow any filter types
+}
+
+export class GetParamsRequestDto {
+  @ApiProperty({
+    name: 'page',
+    description: 'Default page = 1, Enter more than that to retrieve data.',
+    example: 1,
+    default: 1,
+    required: true,
+  },)
+  @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value,10))
+  page: number;
+
+  @ApiProperty({
+    name: 'limit',
+    description: 'Default page = 10, Enter more than that to retrieve data.',
+    example: 10,
+    default: 10,
+    required: true,
+  })
+  @IsNotEmpty()
+  @Transform(({ value }) => parseInt(value,10))
+  limit: number;
 }
 export class IChangePassword extends PickType(IUserRegisterDto ,['email','mobileNo','password'] as const){
 
