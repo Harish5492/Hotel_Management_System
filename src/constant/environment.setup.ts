@@ -27,4 +27,12 @@ export const ENVIROMENT_MANAGER = {
     REDIS_PORT: process.env.REDIS_PORT,
   },
   RABBIT_MQ_CONNECTION_URL: process.env.RABBIT_MQ_CONNECTION_URL,
+  TWILIO: {
+    ACCOUNTSID: process.env.ACCOUNTSID,
+    AUTHTOKEN: process.env.AUTHTOKEN,
+  },
+  MAILTRAP: {
+    USERNAME: process.env.MAILTRAP_USERNAME,
+    PASSWORD: process.env.MAILTRAP_PASSWORD,
+  },
 };

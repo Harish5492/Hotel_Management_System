@@ -38,6 +38,7 @@ export const MESSAGES = {
     SIGN_UP_SUCCESS: 'You have registered successfully.',
     SIGN_IN_SUCCESS: 'You have logged in successfully',
     ACCOUNT_VERIFIED: 'Your account has been verified successfully.',
+    ACCOUNT_DELETED: 'Your account has been deleted successfully.',
     REFRESH_TOKEN: 'Refresh token successfully',
     OTP_VERIFIED: 'One time password has been verified successfully.',
     GET_USER_DETAILE: 'Get user detaile successfully.',

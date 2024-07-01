@@ -2,6 +2,7 @@
 import { Post, Controller, Body, HttpException, Get, UseGuards, Req, Query, Param } from "@nestjs/common";
 import UserService from './users.service'
 import * as usersDto from './users.dto'
+import { User } from '../../common/decorators'
 import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { API_OPERATIONS, MESSAGES } from "src/constant"
@@ -92,6 +93,7 @@ export class UserController {
     @Post('login')
     async login(@Body() body: usersDto.IUserLoginDto): Promise<any> {
         try {
+            console.log("enter in api")
             const result = await this.userservice.login(body);
             return successResponse(MESSAGES.USER.SIGN_IN_SUCCESS, result)
         }
@@ -112,9 +114,26 @@ export class UserController {
             throw new HttpException(error.message, error.status);
         }
     }
+    @ApiBearerAuth()
+    @UseGuards(AccessTokenGuard)
+    @Post('deleteAccount')
+    async deleteAccount(
+        @User() user: Record<string, any>
+    ) {
+        try {
+            const userId = user.userId
+            await this.userservice.deleteAccount(userId);
+            return successResponse(MESSAGES.USER.ACCOUNT_DELETED);
+        }
+        catch (error) {
+            throw new HttpException(error.message, error.status)
+        }
+    }
 
-    // @ApiBearerAuth()
-    // @UseGuards(AccessTokenGuard)
+
+
+    @ApiBearerAuth()
+    @UseGuards(AccessTokenGuard)
     @Get('searchUser/:page/:limit')
     async getDetailOfuser(
         @Param() params: usersDto.GetParamsRequestDto,
@@ -122,7 +141,7 @@ export class UserController {
         try {
             console.log("yooo")
             // const cleanedQuery = JSON.parse(querys.filters.replace(/\s/g, ''));
-            const result = await this.userservice.searchUser(params,querys)
+            const result = await this.userservice.searchUser(params, querys)
             return successResponse(MESSAGES.USER.GET_USER_DETAILE, result);
         }
         catch (error) {

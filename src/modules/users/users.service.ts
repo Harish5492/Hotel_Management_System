@@ -4,7 +4,7 @@ import { User } from '../../common/database/entities';
 import { throwError } from "../../helpers/responseHadnlers";
 import * as Utilities from '../../helpers/utilities.helper'
 import Twilio from '../../helpers/twilio.helper'
-// import EmailService from '../../helpers/smtp.helper'
+import EmailService from '../../helpers/smtp.helper'
 import { TIME } from '../../constant';
 import * as UserDto from './users.dto';
 import { USER_REPOSITORY, MESSAGES } from 'src/constant';
@@ -42,6 +42,7 @@ export default class UsersService {
     // await this.IsMobileOrEmailValid(email, mobileNo)
 
     if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
+    console.log("enter in api")
     const tokens = await this.getJwtTokens({ userId: User.id, email: User.email }, true, TIME.JWT.THIRTY_DAYS);
     console.log(tokens.refreshToken)
     await this.updateUser({ email: User.email }, { refreshToken: tokens.refreshToken });
@@ -72,6 +73,12 @@ export default class UsersService {
     );
   }
 
+  async deleteAccount(userId: string): Promise<void> {
+    const user = await this.getUser({ id: userId });
+    if (!user) throwError(MESSAGES.ERROR.ACCESS_DENIED);
+    await this.userRepository.destroy({ where: { id: userId } });
+    await this.tokenService.updateRefreshToken(userId, null);
+  }
   /**
  * Updates the password of a user.
  *
@@ -167,14 +174,14 @@ export default class UsersService {
   ): Promise<{ list: Array<User>; totalCount: number }> {
     const { page, limit } = params;
     console.log("params", params);
-    console.log(typeof limit,typeof page)
+    console.log(typeof limit, typeof page)
     const { email, employeeId, fullName, mobileNo } = filters
     const where: WhereOptions<User> = {};
     if (email) where.email = email;
     if (employeeId) where.employeeId = employeeId;
     if (fullName) where.fullName = fullName;
-    // if (mobileNo.toString()) where.mobileNo = mobileNo;
-    console.log("data",{email,employeeId,fullName,mobileNo})
+    if (mobileNo.toString()) where.mobileNo = mobileNo;
+    console.log("data", { email, employeeId, fullName, mobileNo })
     const { count, rows: users } = await this.userRepository.findAndCountAll({
       where,
       limit: limit,
@@ -200,11 +207,11 @@ export default class UsersService {
     const User = await this.userWithError(data)
     const OTP = await this.generateOtp();
     // const EncryptOTP = await Utilities.encryptCipher(OTP);
-    // Twilio.sendMessage({  
+    // await Twilio.sendMessage({
     //   otp: OTP,
     //   to: ""
     // })
-    // EmailService.sendMail()
+    // await EmailService.sendMail('',OTP)
     const token = await Utilities.encryptCipher(User.id)
     const expirationDate = new Date(Date.now() + TIME.OTP.OTP_EXPIRES); // 5 minutes expiration
 

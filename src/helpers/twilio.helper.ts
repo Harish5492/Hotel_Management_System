@@ -1,12 +1,13 @@
 import * as twilio from 'twilio';
+import { EM } from '../constant';
 
 class TwilioHelper {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private client: any; // You may want to provide a specific type for the Twilio client.
 
   constructor() {
-    const accountSid = 'AC4c167fc67bd899ac6ab911d41ef14e90';
-    const authToken = 'c0f98fccc3186ac2cbbfe6640aaabfdf';
+    const accountSid = EM.TWILIO.ACCOUNTSID;
+    const authToken = EM.TWILIO.AUTHTOKEN;
     this.client = twilio(accountSid, authToken);
   }
   // Adjust the function definition to accept an options object
