@@ -96,6 +96,7 @@ export const MESSAGES = {
     INVALID_MOBILE_NO: 'Mobile no must has exactly 10 digits',
     DO_NOT_MATCHED: 'Do not matched.',
     TEST_EXISTS: 'Test already exists.',
+    TEST_NOT_EXISTS: 'Test not exists.',
   },
 };
 // export const WALLET_GRPC_PACKAGE = 'gateway';

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 
 export class ITestDto {
   @IsNotEmpty()
@@ -48,7 +48,6 @@ export class ITestDto {
     example: 500,
   })
   cost: number;
-
-//   @IsString()
-//   remarks: string;
 }
+
+export class IRemoveTest extends PickType(ITestDto, ['testName'] as const) {}

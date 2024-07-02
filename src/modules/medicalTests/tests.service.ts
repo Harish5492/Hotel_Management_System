@@ -3,7 +3,7 @@ import { Test } from ' ../../../src/common/database/entities';
 import { TIME } from '../../constant';
 import * as testDto from './test.dto';
 import { TEST_REPOSITORY, MESSAGES } from '../../constant';
-import { throwError } from 'rxjs';
+import { throwError } from '../../helpers/responseHadnlers';
 
 @Injectable()
 export default class TestService {
@@ -24,5 +24,16 @@ export default class TestService {
       where: { ...match },
     });
     return test;
+  }
+
+  async removeTest(data: testDto.IRemoveTest): Promise<{ message: string }> {
+    const test = await this.IsTestExists(data);
+    if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
+    await this.testRepository.destroy({
+      where: {
+        testName: data.testName,
+      },
+    });
+    return { message: 'test removed successfully' };
   }
 }

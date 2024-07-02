@@ -4,7 +4,6 @@ import {
     Column,
     Model,
     DataType,
-    HasMany,
 } from 'sequelize-typescript';
 import Test from './test.entity';
 
@@ -106,8 +105,6 @@ export class User extends Model<User> {
     })
     expirationDate: Date;
 
-    @HasMany(() => Test)
-    tests: Test[];
 
 }
 export default User;

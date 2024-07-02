@@ -29,4 +29,16 @@ export class TestController {
       throw new HttpException(error.message, error.status);
     }
   }
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.TEST.ADD_USER)
+  @Post('removeTest')
+  async removeTest(@Body() body: testDto.IRemoveTest): Promise<any> {
+    try {
+      const result = await this.testService.removeTest(body);
+      return successResponse(MESSAGES.TEST.ADD_TEST_SUCCESS, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
 }

@@ -1,12 +1,4 @@
-import {
-  Table,
-  Model,
-  DataType,
-  Column,
-  BelongsTo,
-  ForeignKey,
-} from 'sequelize-typescript';
-import User from './user.entity';
+import { Table, Model, DataType, Column } from 'sequelize-typescript';
 
 @Table
 export class Test extends Model<Test> {
@@ -52,16 +44,6 @@ export class Test extends Model<Test> {
     allowNull: true,
   })
   remarks: string;
-
-  @ForeignKey(() => User)
-  @Column({
-    type: DataType.UUID,
-    allowNull: false,
-  })
-  userId: string;
-
-  @BelongsTo(() => User)
-  user: User;
 }
 
 export default Test;

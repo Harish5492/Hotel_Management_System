@@ -27,8 +27,8 @@ export default class UsersService {
     }
     const user = await this.checkIfUserExists(data);
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
-
     data.password = await Utilities.hashPassword(data.password)
+
     const employeeId = await Utilities.generateHexadecimal(data.fullName)
     await this.userRepository.create<User>({ ...data, employeeId: employeeId });
     return { message: "Registration successful" };
@@ -40,11 +40,9 @@ export default class UsersService {
 
     if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
     // await this.IsMobileOrEmailValid(email, mobileNo)
-
     if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
-    console.log("enter in api")
     const tokens = await this.getJwtTokens({ userId: User.id, email: User.email }, true, TIME.JWT.THIRTY_DAYS);
-    console.log(tokens.refreshToken)
+
     await this.updateUser({ email: User.email }, { refreshToken: tokens.refreshToken });
     return tokens
 
@@ -154,7 +152,7 @@ export default class UsersService {
 
     const user = await this.userRepository.findOne({
       where: query,
-      attributes: ['id', 'email', 'mobileNo'],
+      attributes: ['id', 'email', 'mobileNo','password'],
     });
 
     return user
@@ -173,15 +171,12 @@ export default class UsersService {
     filters: UserDto.GetFiltersDto
   ): Promise<{ list: Array<User>; totalCount: number }> {
     const { page, limit } = params;
-    console.log("params", params);
-    console.log(typeof limit, typeof page)
     const { email, employeeId, fullName, mobileNo } = filters
     const where: WhereOptions<User> = {};
     if (email) where.email = email;
     if (employeeId) where.employeeId = employeeId;
     if (fullName) where.fullName = fullName;
     if (mobileNo.toString()) where.mobileNo = mobileNo;
-    console.log("data", { email, employeeId, fullName, mobileNo })
     const { count, rows: users } = await this.userRepository.findAndCountAll({
       where,
       limit: limit,
