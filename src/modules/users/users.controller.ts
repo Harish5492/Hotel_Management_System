@@ -129,6 +129,22 @@ export class UserController {
             throw new HttpException(error.message, error.status)
         }
     }
+    @ApiBearerAuth()
+    @UseGuards(AccessTokenGuard)
+    @Post('updateProfile')
+    async updateProfile(
+        @User() user: Record<string, any>,
+        @Body() body: usersDto.IUserRegisterDto
+    ) {
+        try {
+            const userId = user.userId
+            await this.userservice.updateUser(userId, body);
+            return successResponse(MESSAGES.USER.ACCOUNT_DELETED);
+        }
+        catch (error) {
+            throw new HttpException(error.message, error.status)
+        }
+    }
 
 
 

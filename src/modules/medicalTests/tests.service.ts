@@ -36,4 +36,9 @@ export default class TestService {
     });
     return { message: 'test removed successfully' };
   }
+
+  async patientTestData(data: testDto.ITestDto): Promise<{ message: string }> {
+    // const
+    return { message: 'all the test of patient ' };
+  }
 }

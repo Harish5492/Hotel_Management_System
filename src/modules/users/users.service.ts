@@ -77,6 +77,8 @@ export default class UsersService {
     await this.userRepository.destroy({ where: { id: userId } });
     await this.tokenService.updateRefreshToken(userId, null);
   }
+
+
   /**
  * Updates the password of a user.
  *
@@ -152,7 +154,7 @@ export default class UsersService {
 
     const user = await this.userRepository.findOne({
       where: query,
-      attributes: ['id', 'email', 'mobileNo','password'],
+      attributes: ['id', 'email', 'mobileNo', 'password'],
     });
 
     return user

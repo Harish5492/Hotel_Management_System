@@ -41,6 +41,16 @@ export class TestController {
       throw new HttpException(error.message, error.status);
     }
   }
-
-  
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.TEST.ADD_USER)
+  @Post('patientTestData')
+  async patientTestData(@Body() body: testDto.ITestDto): Promise<any> {
+    try {
+      const result = await this.testService.patientTestData(body);
+      return successResponse(MESSAGES.TEST.ADD_TEST_SUCCESS, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
 }
