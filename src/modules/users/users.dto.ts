@@ -21,7 +21,47 @@ export class IUserRegisterDto {
     example: 'note@gmail.com',
     required: true,
   })
-  email?: string;
+  email?: string; 
+  
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'dateOfBirth',
+    description: 'Enter the date of birth of the user',
+    example: '10/June/2022',
+    required: true,
+  })
+  dateOfBirth?: string;
+  
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'userId',
+    description: 'get the unique id of the employee',
+    example: 'HAR-7a53046d66c93b5e',
+    required:false
+  })
+  userId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'sex',
+    description: 'Enter the gender of the user',
+    example: 'MALE',
+    required: true,
+  })
+  sex?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'address',
+    description: 'Enter the address please',
+    example: 'village surajpur P.O. dhaliara Teh. Dehra Distt. Kangra HP. Pin-177103',
+    required: true,
+  })
+  address?: string;
 
   @IsNumber()
   @ValidateIf((object) => !object.email)
@@ -83,12 +123,12 @@ export class GetFiltersDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    name: 'employeeId',
+    name: 'userId',
     description: 'get the unique id of the employee',
     example: 'HAR-7a53046d66c93b5e',
     required:false
   })
-  employeeId?: string;
+  userId?: string;
 
   @IsOptional()
   @IsNumber()

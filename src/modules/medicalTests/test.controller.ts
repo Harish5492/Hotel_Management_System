@@ -11,6 +11,7 @@ import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { API_OPERATIONS, MESSAGES } from 'src/constant';
 import { AccessTokenGuard } from 'src/common/guard/accesstoken.guard';
+import { User } from 'src/common/decorators';
 
 @ApiTags('MedicalTest')
 @Controller('tests')
@@ -21,7 +22,7 @@ export class TestController {
   @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.TEST.ADD_USER)
   @Post('addTest')
-  async addTest(@Body() body: testDto.ITestDto): Promise<any> {
+  async addTest(@Body() body: testDto.IAddTEst): Promise<any> {
     try {
       const result = await this.testService.addTest(body);
       return successResponse(MESSAGES.TEST.ADD_TEST_SUCCESS, result);
@@ -45,9 +46,12 @@ export class TestController {
   @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.TEST.ADD_USER)
   @Post('patientTestData')
-  async patientTestData(@Body() body: testDto.ITestDto): Promise<any> {
+  async patientTestData(
+    @Body() body: testDto.IPatientTest,
+    @User() user: string,
+  ): Promise<any> {
     try {
-      const result = await this.testService.patientTestData(body);
+      const result = await this.testService.patientTestTaken(body, user);
       return successResponse(MESSAGES.TEST.ADD_TEST_SUCCESS, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);

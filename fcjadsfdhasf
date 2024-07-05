@@ -56,7 +56,7 @@
 [31m-[32m+[m[32m        defaultValue: DataType.UUIDV4,[m[m
 [31m-[32m+[m[32m        allowNull : false,[m[m
 [31m-[32m+[m[32m    })[m[m
-[31m-[32m+[m[32m    employeeId: string;[m[m
+[31m-[32m+[m[32m    userId: string;[m[m
 [31m-[32m+[m[m
 [31m-     @Column({[m[m
 [31m-         type: DataType.STRING,[m[m
@@ -278,12 +278,12 @@
 [31m-[32m+[m[32m  @IsOptional()[m[m
 [31m-[32m+[m[32m  @IsString()[m[m
 [31m-[32m+[m[32m  @ApiProperty({[m[m
-[31m-[32m+[m[32m    name: 'employeeId',[m[m
+[31m-[32m+[m[32m    name: 'userId',[m[m
 [31m-[32m+[m[32m    description: 'get the unique id of the employee',[m[m
 [31m-[32m+[m[32m    example: 'HAR-7a53046d66c93b5e',[m[m
 [31m-[32m+[m[32m    required:false[m[m
 [31m-[32m+[m[32m  })[m[m
-[31m-[32m+[m[32m  employeeId?: string;[m[m
+[31m-[32m+[m[32m  userId?: string;[m[m
 [31m-[32m+[m[m
 [31m-[32m+[m[32m  @IsOptional()[m[m
 [31m-[32m+[m[32m  @IsNumber()[m[m
@@ -360,8 +360,8 @@
 [31m- [m[m
 [31m-     data.password = await Utilities.hashPassword(data.password)[m[m
 [31m-[31m-    await this.userRepository.create<User>({ ...data });[m[m
-[31m-[32m+[m[32m    const employeeId = await Utilities.generateHexadecimal(data.fullName)[m[m
-[31m-[32m+[m[32m    await this.userRepository.create<User>({ ...data, employeeId: employeeId });[m[m
+[31m-[32m+[m[32m    const userId = await Utilities.generateHexadecimal(data.fullName)[m[m
+[31m-[32m+[m[32m    await this.userRepository.create<User>({ ...data, userId: userId });[m[m
 [31m-     return { message: "Registration successful" };[m[m
 [31m-   }[m[m
 [31m- [m[m
@@ -394,13 +394,13 @@
 [31m-[32m+[m[32m    const { page, limit } = params;[m[m
 [31m-[32m+[m[32m    console.log("params", params);[m[m
 [31m-[32m+[m[32m    console.log(typeof limit,typeof page)[m[m
-[31m-[32m+[m[32m    const { email, employeeId, fullName, mobileNo } = filters[m[m
+[31m-[32m+[m[32m    const { email, userId, fullName, mobileNo } = filters[m[m
 [31m-[32m+[m[32m    const where: WhereOptions<User> = {};[m[m
 [31m-[32m+[m[32m    if (email) where.email = email;[m[m
-[31m-[32m+[m[32m    if (employeeId) where.employeeId = employeeId;[m[m
+[31m-[32m+[m[32m    if (userId) where.userId = userId;[m[m
 [31m-[32m+[m[32m    if (fullName) where.fullName = fullName;[m[m
 [31m-[32m+[m[32m    // if (mobileNo.toString()) where.mobileNo = mobileNo;[m[m
-[31m-[32m+[m[32m    console.log("data",{email,employeeId,fullName,mobileNo})[m[m
+[31m-[32m+[m[32m    console.log("data",{email,userId,fullName,mobileNo})[m[m
 [31m-[32m+[m[32m    const { count, rows: users } = await this.userRepository.findAndCountAll({[m[m
 [31m-[32m+[m[32m      where,[m[m
 [31m-[32m+[m[32m      limit: limit,[m[m
@@ -408,7 +408,7 @@
 [31m-[32m+[m[32m      order: [[m[m
 [31m-[32m+[m[32m        ['createdAt', 'DESC'],[m[m
 [31m-[32m+[m[32m      ],[m[m
-[31m-[32m+[m[32m      attributes: ['email', 'fullName', 'employeeId', 'mobileNo'][m[m
+[31m-[32m+[m[32m      attributes: ['email', 'fullName', 'userId', 'mobileNo'][m[m
 [31m-[32m+[m[32m    });[m[m
 [31m-[32m+[m[m
 [31m-[32m+[m[32m    return { list: users, totalCount: count };[m[m
@@ -763,15 +763,15 @@
      console.log("params", params);[m
 [31m-    console.log(typeof limit,typeof page)[m
 [32m+[m[32m    console.log(typeof limit, typeof page)[m
-     const { email, employeeId, fullName, mobileNo } = filters[m
+     const { email, userId, fullName, mobileNo } = filters[m
      const where: WhereOptions<User> = {};[m
      if (email) where.email = email;[m
-     if (employeeId) where.employeeId = employeeId;[m
+     if (userId) where.userId = userId;[m
      if (fullName) where.fullName = fullName;[m
 [31m-    // if (mobileNo.toString()) where.mobileNo = mobileNo;[m
-[31m-    console.log("data",{email,employeeId,fullName,mobileNo})[m
+[31m-    console.log("data",{email,userId,fullName,mobileNo})[m
 [32m+[m[32m    if (mobileNo.toString()) where.mobileNo = mobileNo;[m
-[32m+[m[32m    console.log("data", { email, employeeId, fullName, mobileNo })[m
+[32m+[m[32m    console.log("data", { email, userId, fullName, mobileNo })[m
      const { count, rows: users } = await this.userRepository.findAndCountAll({[m
        where,[m
        limit: limit,[m

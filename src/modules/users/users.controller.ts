@@ -28,11 +28,12 @@ export class UserController {
     @ApiOperation(API_OPERATIONS.USER.REGISTER_USER)
     @Post('register')
     async register(@Body() body: usersDto.IUserRegisterDto): Promise<any> {
-        try {
+        try { console.log("yoooo")
             const result = await this.userservice.register(body);
             return successResponse(MESSAGES.USER.SIGN_UP_SUCCESS, result)
         }
         catch (error) {
+            console.log(error)
             throw new HttpException(error.message, error.status)
         }
     }

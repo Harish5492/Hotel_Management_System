@@ -29,8 +29,8 @@ export default class UsersService {
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
     data.password = await Utilities.hashPassword(data.password)
 
-    const employeeId = await Utilities.generateHexadecimal(data.fullName)
-    await this.userRepository.create<User>({ ...data, employeeId: employeeId });
+    const userId = await Utilities.generateHexadecimal(data.fullName)
+    await this.userRepository.create<User>({ ...data, userId: userId });
     return { message: "Registration successful" };
   }
 
@@ -173,10 +173,10 @@ export default class UsersService {
     filters: UserDto.GetFiltersDto
   ): Promise<{ list: Array<User>; totalCount: number }> {
     const { page, limit } = params;
-    const { email, employeeId, fullName, mobileNo } = filters
+    const { email, userId, fullName, mobileNo } = filters
     const where: WhereOptions<User> = {};
     if (email) where.email = email;
-    if (employeeId) where.employeeId = employeeId;
+    if (userId) where.userId = userId;
     if (fullName) where.fullName = fullName;
     if (mobileNo.toString()) where.mobileNo = mobileNo;
     const { count, rows: users } = await this.userRepository.findAndCountAll({
@@ -186,7 +186,7 @@ export default class UsersService {
       order: [
         ['createdAt', 'DESC'],
       ],
-      attributes: ['email', 'fullName', 'employeeId', 'mobileNo']
+      attributes: ['email', 'fullName', 'userId', 'mobileNo']
     });
 
     return { list: users, totalCount: count };

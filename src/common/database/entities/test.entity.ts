@@ -1,4 +1,12 @@
-import { Table, Model, DataType, Column } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  DataType,
+  Column,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import User from './user.entity';
 
 @Table
 export class Test extends Model<Test> {
@@ -21,29 +29,30 @@ export class Test extends Model<Test> {
   })
   referredFrom: string;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  testDate: string;
+  @Column
+  sampleCollectedAt: Date;
 
+  @Column
+  reportIssuedAt: Date;
+
+  @Column
+  reportContent: string;
+
+  @ForeignKey(() => User)
   @Column({
-    type: DataType.STRING,
-    allowNull: true,
+    type: DataType.UUID,
+    allowNull: false,
   })
-  testResult: string;
+  userId: string;
+
+  @BelongsTo(() => User)
+  user: User;
 
   @Column({
     type: DataType.DECIMAL,
     allowNull: false,
   })
   cost: number;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  remarks: string;
 }
 
 export default Test;

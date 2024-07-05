@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 
-export class ITestDto {
+export class IPatientTest {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
@@ -26,28 +26,50 @@ export class ITestDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    name: 'TestDate',
-    description: 'testDate length must be in valid, string and is not empty',
+    name: 'sameCollectedDate',
+    description:
+      'sameCollectedDate length must be in valid, string and is not empty',
     example: '12-02-2024',
   })
-  testDate: string;
+  sameCollectedDate: Date;
 
   @IsString()
   @ApiProperty({
-    name: 'TestResult',
-    description: 'testDate length must be in valid, string and is not empty',
+    name: 'reportIssuedDate',
+    description:
+      'reportIssuedDate length must be in valid, string and is not empty',
     example: '12-02-2024',
   })
-  testResult: string;
+  reportIssuedDate: Date;
+
+  @IsString()
+  @ApiProperty({
+    name: 'reportContent',
+    description:
+      'reportContent length must be in valid, string and is not empty',
+    example: '12-02-2024',
+  })
+  reportContent: string;
 
   @IsNotEmpty()
-  @IsString()
   @ApiProperty({
-    name: 'Cost',
+    name: 'cost',
     description: 'Cost of the test, should be in number value',
     example: 500,
   })
   cost: number;
+
+  userId: string;
 }
 
-export class IRemoveTest extends PickType(ITestDto, ['testName'] as const) {}
+export class IRemoveTest extends PickType(IPatientTest, [
+  'testName',
+] as const) {}
+
+export class IAddTEst extends OmitType(IPatientTest, [
+  'userId',
+  'reportIssuedDate',
+  'reportContent',
+  'sameCollectedDate',
+  'referredFrom',
+] as const) {}

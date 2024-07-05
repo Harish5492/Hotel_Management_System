@@ -12,7 +12,7 @@ export default class TestService {
     private readonly testRepository: typeof Test,
   ) {}
 
-  async addTest(data: testDto.ITestDto): Promise<{ message: string }> {
+  async addTest(data: testDto.IAddTEst): Promise<{ message: string }> {
     const test = await this.IsTestExists(data);
     if (test) throwError(MESSAGES.ERROR.TEST_EXISTS);
     await this.testRepository.create<Test>({ ...data });
@@ -37,8 +37,12 @@ export default class TestService {
     return { message: 'test removed successfully' };
   }
 
-  async patientTestData(data: testDto.ITestDto): Promise<{ message: string }> {
-    // const
-    return { message: 'all the test of patient ' };
+  async patientTestTaken(
+    data: testDto.IPatientTest,
+    user: string,
+  ): Promise<{ message: string }> {
+    data.userId = user;
+    await this.testRepository.create<Test>({ ...data });
+    return { message: 'Test has been taken by user' };
   }
 }
