@@ -174,6 +174,12 @@ export default class UsersService {
   ): Promise<{ list: Array<User>; totalCount: number }> {
     const { page, limit } = params;
     const { email, userId, fullName, mobileNo } = filters
+    // const where: WhereOptions<User> = {
+    //   ...(email && { email }),
+    //   ...(userId && { userId }),
+    //   ...(fullName && { fullName }),
+    //   ...(mobileNo && { mobileNo: mobileNo.toString() }),
+    // };
     const where: WhereOptions<User> = {};
     if (email) where.email = email;
     if (userId) where.userId = userId;

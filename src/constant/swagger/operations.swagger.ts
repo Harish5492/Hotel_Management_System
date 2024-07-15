@@ -31,9 +31,25 @@ export const SWAGGER_OPERATION = {
     },
   },
   TEST: {
-    ADD_USER: {
+    ADD_TEST: {
       summary: 'Add Your Test to the Database',
       description: 'Add the Test so that it can be executed',
+    },
+    REMOVE_TEST: {
+      summary: 'Delete Your Test to the Database',
+      description: 'Delete the Test from the entire database',
+    },
+    PATIENT_TEST_TAKEN: {
+      summary: 'test taken by patient ',
+      description: 'test taken by patient in the array in database',
+    },
+    TOTAL_TEST_TO_PATIENT: {
+      summary: 'total test taken by the patient',
+      description: 'fetch all the test taken by the patient by his user id',
+    },
+    DISEASES_TO_PATIENT: {
+      summary: 'add the disease of patient',
+      description: 'disease suffering from patient is added here',
     },
   },
 };

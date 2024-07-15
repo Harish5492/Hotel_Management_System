@@ -20,7 +20,7 @@ export class TestController {
 
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
-  @ApiOperation(API_OPERATIONS.TEST.ADD_USER)
+  @ApiOperation(API_OPERATIONS.TEST.ADD_TEST)
   @Post('addTest')
   async addTest(@Body() body: testDto.IAddTEst): Promise<any> {
     try {
@@ -32,7 +32,7 @@ export class TestController {
   }
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
-  @ApiOperation(API_OPERATIONS.TEST.ADD_USER)
+  @ApiOperation(API_OPERATIONS.TEST.REMOVE_TEST)
   @Post('removeTest')
   async removeTest(@Body() body: testDto.IRemoveTest): Promise<any> {
     try {
@@ -44,7 +44,7 @@ export class TestController {
   }
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
-  @ApiOperation(API_OPERATIONS.TEST.ADD_USER)
+  @ApiOperation(API_OPERATIONS.TEST.PATIENT_TEST_TAKEN)
   @Post('patientTestData')
   async patientTestData(
     @Body() body: testDto.IPatientTest,
@@ -57,4 +57,13 @@ export class TestController {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // @ApiBearerAuth()
+  // @UseGuards(AccessTokenGuard)
+  // @ApiOperation(API_OPERATIONS.TEST.DISEASES_TO_PATIENT)
+  // @Post('diseaseToPatient')
+  // async diseaseToPatient(
+  //   @Body () body: testDto.
+  // )
+
 }

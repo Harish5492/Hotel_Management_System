@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
-import Test from './test.entity';
+import { Tests, Treatment } from './index';
 
 @Table
 export class User extends Model<User> {
@@ -79,8 +79,14 @@ export class User extends Model<User> {
   })
   sex: string;
 
-  @HasMany(() => Test)
-  tests: Test[];
+  @HasMany(() => Treatment, 'userId')
+  treatments: Treatment[];
+
+  @HasMany(() => Treatment, 'doctorId')
+  treatedPatients: Treatment[];
+
+  @HasMany(() => Tests, 'prescribedByDoctorId')
+  prescribedTests: Tests[];
 
   @Column({
     type: DataType.STRING,
