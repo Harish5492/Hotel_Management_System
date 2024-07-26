@@ -1,4 +1,11 @@
-import { Column, Model, Table, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Column,
+  Model,
+  Table,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import User from './user.entity';
 
 @Table
@@ -8,7 +15,7 @@ export class Tests extends Model<Tests> {
     primaryKey: true,
     autoIncrement: true,
   })
-  TestID: number;
+  id: number;
 
   @Column({
     type: DataType.STRING,
@@ -18,7 +25,13 @@ export class Tests extends Model<Tests> {
 
   @Column({
     type: DataType.STRING,
-    allowNull: true,
+    allowNull: false,
+  })
+  LabName: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
   })
   Description: string;
 

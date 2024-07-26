@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as utilities from '../../helpers/utilities.helper';
 import UsersService from '../users/users.service';
 import { MESSAGES, TIME } from '../../constant';
-import { RabbitMqService } from '../../common/rabbitMq/rabbit.mq.service';
+// import { RabbitMqService } from '../../common/rabbitMq/rabbit.mq.service';
 
 @Injectable()
 export class TokensService {
@@ -18,8 +18,8 @@ export class TokensService {
     @Inject(forwardRef(() => UsersService)) private userService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
-    @Inject(forwardRef(() => RabbitMqService))
-    private rabbitMqService: RabbitMqService,
+    // @Inject(forwardRef(() => RabbitMqService))
+    // private rabbitMqService: RabbitMqService,
   ) {}
 
   async refreshTokens(userId: string, refreshToken: string) {
@@ -36,12 +36,12 @@ export class TokensService {
       { userId: user.id, emailId: user.email },
       TIME.JWT.FIVE_DAYS,
     );
-    this.rabbitMqService.publishMessage(
-      'exchange1',
-      'update-refresh-token',
-      'channel-1',
-      JSON.stringify({ userId: user.id, refreshToken: tokens.refreshToken }),
-    );
+    // this.rabbitMqService.publishMessage(
+    //   'exchange1',
+    //   'update-refresh-token',
+    //   'channel-1',
+    //   JSON.stringify({ userId: user.id, refreshToken: tokens.refreshToken }),
+    // );
 
     return tokens;
   }

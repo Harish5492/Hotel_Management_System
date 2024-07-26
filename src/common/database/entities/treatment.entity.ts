@@ -65,3 +65,5 @@ export class Treatment extends Model<Treatment> {
   })
   fullyCuredAt: Date;
 }
+
+export default Treatment;

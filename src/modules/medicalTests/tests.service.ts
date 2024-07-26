@@ -1,25 +1,30 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Test } from ' ../../../src/common/database/entities';
-import { TIME } from '../../constant';
+import { Tests, User } from ' ../../../src/common/database/entities';
+import { USER_REPOSITORY, TEST_REPOSITORY, MESSAGES } from '../../constant';
 import * as testDto from './test.dto';
-import { TEST_REPOSITORY, MESSAGES } from '../../constant';
 import { throwError } from '../../helpers/responseHadnlers';
 
 @Injectable()
 export default class TestService {
   constructor(
     @Inject(TEST_REPOSITORY)
-    private readonly testRepository: typeof Test,
+    private readonly testRepository: typeof Tests,
+    @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
   ) {}
 
-  async addTest(data: testDto.IAddTEst): Promise<{ message: string }> {
+  async addTest(
+    data: testDto.IAddTEst,
+    userId: string,
+  ): Promise<{ message: string }> {
+    await this.checkRole(userId);
     const test = await this.IsTestExists(data);
     if (test) throwError(MESSAGES.ERROR.TEST_EXISTS);
-    await this.testRepository.create<Test>({ ...data });
+    console.log('==============================');
+    await this.testRepository.create<Tests>({ ...data });
     return { message: 'Test added successfully' };
   }
 
-  async IsTestExists(match: object): Promise<Test> {
+  async IsTestExists(match: object): Promise<Tests> {
     const test = await this.testRepository.findOne({
       where: { ...match },
     });
@@ -31,18 +36,20 @@ export default class TestService {
     if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
     await this.testRepository.destroy({
       where: {
-        testName: data.testName,
+        TestName: data.TestName,
       },
     });
     return { message: 'test removed successfully' };
   }
 
-  async patientTestTaken(
-    data: testDto.IPatientTest,
-    user: string,
-  ): Promise<{ message: string }> {
-    data.userId = user;
-    await this.testRepository.create<Test>({ ...data });
-    return { message: 'Test has been taken by user' };
+  async checkRole(userId: string) {
+    console.log('yooyoyooyoyoyoy');
+    const userType = await this.userRepository.findOne({
+      where: { id: userId },
+      attributes: ['role'],
+    });
+    console.log(userType.role);
+    if (userType.role !== 'MANAGEMENT')
+      throwError(MESSAGES.ROLE.ONLY_MANAGEMENT);
   }
 }

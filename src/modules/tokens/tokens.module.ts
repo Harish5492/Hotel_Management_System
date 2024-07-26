@@ -7,15 +7,15 @@ import { JwtModule } from '@nestjs/jwt';
 import UsersService from '../users/users.service';
 import TestService from '../medicalTests/tests.service';
 import { DatabaseModule } from '../../common/database/database.module'; // Ensure DatabaseModule is imported
-import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
-import { RabbitMqService } from '../../common/rabbitMq/rabbit.mq.service';
-import { RabbitMqConnection } from '../../common/rabbitMq/rabbit.mq.connection';
+// import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+// import { RabbitMqService } from '../../common/rabbitMq/rabbit.mq.service';
+// import { RabbitMqConnection } from '../../common/rabbitMq/rabbit.mq.connection';
 
 @Module({
   imports: [
     JwtModule.register({}),
     DatabaseModule, // Import DatabaseModule to provide repositories
-    RabbitMQModule.forRoot(RabbitMQModule, RabbitMqConnection),
+    // RabbitMQModule.forRoot(RabbitMQModule, RabbitMqConnection),
   ],
   controllers: [TokensController],
   providers: [
@@ -24,7 +24,7 @@ import { RabbitMqConnection } from '../../common/rabbitMq/rabbit.mq.connection';
     TestService,
     AccessTokenStrategy,
     RefreshTokenStrategy,
-    RabbitMqService,
+    // RabbitMqService,
   ],
   exports: [TokensService],
 })

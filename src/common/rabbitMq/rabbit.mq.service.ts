@@ -1,53 +1,53 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { RabbitSubscribe, AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import UsersService from 'src/modules/users/users.service';
-import * as utilities from '../../helpers/utilities.helper';
-import { TokensService } from '../../modules/tokens/token.service';
+// import { Inject, Injectable, forwardRef } from '@nestjs/common';
+// import { RabbitSubscribe, AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+// import UsersService from 'src/modules/users/users.service';
+// import * as utilities from '../../helpers/utilities.helper';
+// import { TokensService } from '../../modules/tokens/token.service';
 
-@Injectable()
-export class RabbitMqService {
-  constructor(
-    private readonly rabbitMq: AmqpConnection,
-    @Inject(forwardRef(() => UsersService))
-    private readonly usersService: UsersService,
-    @Inject(forwardRef(() => TokensService))
-    private readonly tokensService: TokensService,
-  ) {}
+// @Injectable()
+// export class RabbitMqService {
+//   constructor(
+//     private readonly rabbitMq: AmqpConnection,
+//     @Inject(forwardRef(() => UsersService))
+//     private readonly usersService: UsersService,
+//     @Inject(forwardRef(() => TokensService))
+//     private readonly tokensService: TokensService,
+//   ) {}
 
-  public publishMessage(
-    exchange: string,
-    routingKey: string,
-    channel: string,
-    data: string,
-  ) {
-    this.rabbitMq.publish(exchange, routingKey, data);
-  }
+//   public publishMessage(
+//     exchange: string,
+//     routingKey: string,
+//     channel: string,
+//     data: string,
+//   ) {
+//     this.rabbitMq.publish(exchange, routingKey, data);
+//   }
 
-  @RabbitSubscribe({
-    exchange: 'exchange_name',
-    routingKey: 'generate-otp',
-    queue: 'generate-otp-queue',
-    queueOptions: {
-      channel: 'channel-1',
-    },
-  })
-  private async generateOneTimePassword(data: string) {
-    const { userId } = JSON.parse(data);
-    const oneTimePass = utilities.generateOneTimeCode(6);
-    oneTimePass.otp = await utilities.encryptCipher(oneTimePass.otp);
-    await this.usersService.updateUser({ id: userId }, { ...oneTimePass });
-  }
+//   @RabbitSubscribe({
+//     exchange: 'exchange_name',
+//     routingKey: 'generate-otp',
+//     queue: 'generate-otp-queue',
+//     queueOptions: {
+//       channel: 'channel-1',
+//     },
+//   })
+//   private async generateOneTimePassword(data: string) {
+//     const { userId } = JSON.parse(data);
+//     const oneTimePass = utilities.generateOneTimeCode(6);
+//     oneTimePass.otp = await utilities.encryptCipher(oneTimePass.otp);
+//     await this.usersService.updateUser({ id: userId }, { ...oneTimePass });
+//   }
 
-  @RabbitSubscribe({
-    exchange: 'exchange_name',
-    routingKey: 'update-refresh-token',
-    queue: 'update-refresh-token-queue',
-    queueOptions: {
-      channel: 'channel-1',
-    },
-  })
-  private async updateRefreshToken(data: string) {
-    const { userId, refreshToken } = JSON.parse(data);
-    this.tokensService.updateRefreshToken(userId, refreshToken);
-  }
-}
+//   @RabbitSubscribe({
+//     exchange: 'exchange_name',
+//     routingKey: 'update-refresh-token',
+//     queue: 'update-refresh-token-queue',
+//     queueOptions: {
+//       channel: 'channel-1',
+//     },
+//   })
+//   private async updateRefreshToken(data: string) {
+//     const { userId, refreshToken } = JSON.parse(data);
+//     this.tokensService.updateRefreshToken(userId, refreshToken);
+//   }
+// }

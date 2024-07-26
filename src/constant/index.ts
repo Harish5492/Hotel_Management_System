@@ -70,6 +70,11 @@ export const MESSAGES = {
     NOTIFICATION_SENT: 'Notification sent successfully.',
     NOTIFICATIONS_LIST: 'Notifications fetched successfully.',
   },
+  ROLE:{
+    ONLY_MANAGEMENT: 'Only Mangement have the access to do the particular task',
+    ONLY_DOCTOR: 'Only Doctor have the access to do the particular task',
+    ONLY_PATIENT: 'Only Patient have the access to do the particular task',
+  },
   ERROR: {
     INCORRECT_OTP: 'Incorrect OTP or Token, Please try again with resend code.',
     EXPIRES_OTP: 'Your OTP, Expires please try again with resend otp code.',
