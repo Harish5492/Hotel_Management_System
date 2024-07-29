@@ -56,6 +56,8 @@ export const MESSAGES = {
   },
   TEST: {
     ADD_TEST_SUCCESS: 'Test added successfully.',
+    REMOVED_TEST: 'Test removed successfully',
+    TEST_TAKEN_OF_PATIENT: 'Test has been taken successfully',
   },
   ADMIN: {
     SIGN_IN_SUCCESS: 'You have logged in successfully',
@@ -70,7 +72,7 @@ export const MESSAGES = {
     NOTIFICATION_SENT: 'Notification sent successfully.',
     NOTIFICATIONS_LIST: 'Notifications fetched successfully.',
   },
-  ROLE:{
+  ROLE: {
     ONLY_MANAGEMENT: 'Only Mangement have the access to do the particular task',
     ONLY_DOCTOR: 'Only Doctor have the access to do the particular task',
     ONLY_PATIENT: 'Only Patient have the access to do the particular task',

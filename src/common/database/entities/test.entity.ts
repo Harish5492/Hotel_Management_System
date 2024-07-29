@@ -19,34 +19,27 @@ export class Tests extends Model<Tests> {
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   TestName: string;
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   LabName: string;
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   Description: string;
 
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
   Cost: number;
-
-  @ForeignKey(() => User) // Refer to the User model for doctor
-  @Column
-  prescribedByDoctorId: number;
-
-  @BelongsTo(() => User, 'prescribedByDoctorId') // Refer to the User model for doctor
-  prescribedByDoctor: User;
 
   @Column({
     type: DataType.BOOLEAN,
@@ -55,10 +48,54 @@ export class Tests extends Model<Tests> {
   Availability: boolean;
 
   @Column({
-    type: DataType.DATE,
-    defaultValue: DataType.NOW,
+    type: DataType.JSON,
+    allowNull: true,
   })
-  CreatedAt: Date;
+  DayTiming: {
+    startTime: string;
+    endTime: string;
+  };
+
+  @Column({
+    type: DataType.STRING, // Storing as comma-separated values (e.g., 'Monday,Tuesday,Wednesday')
+    allowNull: true,
+  })
+  WeekSchedule: string;
+
+  @Column({
+    type: DataType.ENUM('Pending', 'Completed', 'Cancelled'),
+    allowNull: true,
+    defaultValue: 'Pending',
+  })
+  status: string;
+
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.UUID,
+    allowNull: true,
+  })
+  patientId: string;
+
+  @BelongsTo(() => User, 'id')
+  patient: User;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  TestTakenAt: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  ReportIssuedAt: string;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  ReportContent: string;
 }
 
 export default Tests;

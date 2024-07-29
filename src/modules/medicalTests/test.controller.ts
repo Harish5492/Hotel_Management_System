@@ -4,6 +4,7 @@ import {
   Body,
   HttpException,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import * as testDto from './test.dto';
 import TestService from './tests.service';
@@ -23,7 +24,7 @@ export class TestController {
   @ApiOperation(API_OPERATIONS.TEST.ADD_TEST)
   @Post('addTest')
   async addTest(
-    @Body() body: testDto.IAddTEst,
+    @Body() body: testDto.IAddTest,
     @User() user: Record<string, any>,
   ): Promise<any> {
     try {
@@ -37,11 +38,26 @@ export class TestController {
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.TEST.REMOVE_TEST)
-  @Post('removeTest')
+  @Delete('removeTest')
   async removeTest(@Body() body: testDto.IRemoveTest): Promise<any> {
     try {
       const result = await this.testService.removeTest(body);
-      return successResponse(MESSAGES.TEST.ADD_TEST_SUCCESS, result);
+      return successResponse(MESSAGES.TEST.REMOVED_TEST, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  // @ApiBearerAuth()
+  // @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.TEST.TEST_STATUS)
+  @Post('testTakenByPatient')
+  async testTakenByPatient(
+    @Body() body: testDto.ITestTakenByPatient,
+  ): Promise<any> {
+    try {
+      const result = await this.testService.testTakenByPatient(body);
+      return successResponse(MESSAGES.TEST.TEST_TAKEN_OF_PATIENT, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

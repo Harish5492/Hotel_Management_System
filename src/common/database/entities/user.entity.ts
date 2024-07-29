@@ -11,11 +11,10 @@ export class User extends Model<User> {
   id: string;
 
   @Column({
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
+    type: DataType.STRING,
     allowNull: false,
   })
-  userId: string;
+  employeeId: string;
 
   @Column({
     type: DataType.STRING,

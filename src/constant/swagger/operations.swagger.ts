@@ -39,17 +39,9 @@ export const SWAGGER_OPERATION = {
       summary: 'Delete Your Test to the Database',
       description: 'Delete the Test from the entire database',
     },
-    PATIENT_TEST_TAKEN: {
-      summary: 'test taken by patient ',
-      description: 'test taken by patient in the array in database',
-    },
-    TOTAL_TEST_TO_PATIENT: {
-      summary: 'total test taken by the patient',
-      description: 'fetch all the test taken by the patient by his user id',
-    },
-    DISEASES_TO_PATIENT: {
-      summary: 'add the disease of patient',
-      description: 'disease suffering from patient is added here',
+    TEST_STATUS: {
+      summary: 'Status of the Test ',
+      description: 'Status of the Test of the patient',
     },
   },
 };

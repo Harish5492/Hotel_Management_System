@@ -12,21 +12,30 @@ import Tests from './test.entity';
 @Table
 export class Treatment extends Model<Treatment> {
   @ForeignKey(() => User)
-  @Column
-  userId: number;
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  userId: string;
 
   @BelongsTo(() => User, 'userId')
   user: User;
 
   @ForeignKey(() => User) // Refer to the User model for doctor
-  @Column
-  doctorId: number;
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  doctorId: string;
 
   @BelongsTo(() => User, 'doctorId') // Refer to the User model for doctor
   doctor: User;
 
   @ForeignKey(() => Tests)
-  @Column
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
   testId: number;
 
   @BelongsTo(() => Tests)

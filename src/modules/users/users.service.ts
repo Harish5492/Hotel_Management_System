@@ -30,7 +30,7 @@ export default class UsersService {
     data.password = await Utilities.hashPassword(data.password)
 
     const userId = await Utilities.generateHexadecimal(data.fullName)
-    await this.userRepository.create<User>({ ...data, userId: userId });
+    await this.userRepository.create<User>({ ...data, employeeId: userId });
     return { message: "Registration successful" };
   }
 
@@ -182,7 +182,7 @@ export default class UsersService {
     // };
     const where: WhereOptions<User> = {};
     if (email) where.email = email;
-    if (userId) where.userId = userId;
+    if (userId) where.id = userId;
     if (fullName) where.fullName = fullName;
     if (mobileNo.toString()) where.mobileNo = mobileNo;
     const { count, rows: users } = await this.userRepository.findAndCountAll({
