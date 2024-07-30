@@ -65,7 +65,6 @@ export class Tests extends Model<Tests> {
   @Column({
     type: DataType.ENUM('Pending', 'Completed', 'Cancelled'),
     allowNull: true,
-    defaultValue: 'Pending',
   })
   status: string;
 
@@ -89,7 +88,7 @@ export class Tests extends Model<Tests> {
     type: DataType.STRING,
     allowNull: true,
   })
-  ReportIssuedAt: string;
+  ReportGivenAt: string;
 
   @Column({
     type: DataType.TEXT,

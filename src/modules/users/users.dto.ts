@@ -36,12 +36,12 @@ export class IUserRegisterDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    name: 'userId',
+    name: 'employeeId',
     description: 'get the unique id of the employee',
     example: 'HAR-7a53046d66c93b5e',
     required:false
   })
-  userId?: string;
+  employeeId?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -69,7 +69,7 @@ export class IUserRegisterDto {
   @ApiProperty({
     name: 'mobileNo', 
     description: 'Send mobileNo if using logintype=MOBILE. Length of the mobileNo',
-    example: '9090012214',
+    example: '8872512811',
     required: true,
   })
   mobileNo?: number;
@@ -123,18 +123,17 @@ export class GetFiltersDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    name: 'userId',
+    name: 'employeeId',
     description: 'get the unique id of the employee',
     example: 'HAR-7a53046d66c93b5e',
     required:false
   })
-  userId?: string;
+  employeeId?: string;
 
   @IsOptional()
-  @IsNumber()
   @ApiProperty({
     name: 'mobileNo', 
-    description: 'Send mobileNo if using logintype=MOBILE. Length of the mobileNo',
+    description: 'Send mobileNo if using Length of the mobileNo',
     example: '9090012214',
     required:false,
   })

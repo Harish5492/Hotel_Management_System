@@ -2,11 +2,13 @@ import {
   IsNotEmpty,
   IsNumber,
   IsObject,
+  IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+import * as userDto from '../users/users.dto';
 
 export class IAddTest {
   @IsNotEmpty()
@@ -91,25 +93,97 @@ export class ITestTakenByPatient extends PickType(IAddTest, [
     required: true,
   })
   patientId: string;
+
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    name: 'TestTakenAT',
+    name: 'TestTakenAt',
     description:
       'A string containing the day and time when the test was taken, formatted as "Day:HH:mm" (e.g., "Monday:14:00,Tuesday:09:30").',
     example: 'Monday:14:00,Tuesday:09:30',
     required: true,
   })
-  TestTakenAT: string;
+  TestTakenAt: string;
+
+  @ApiProperty({
+    name: 'status',
+    description: 'status of the test ',
+    example: 'Pending',
+  })
+  status: string;
+}
+
+export class IReportGivenOrDecline extends PickType(ITestTakenByPatient, [
+  'patientId',
+  'LabName',
+  'TestName',
+]) {
+  @ApiProperty({
+    name: 'Status',
+    description: 'status of the test ',
+    example: 'Pending',
+    required: true,
+  })
+  status: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'ReportContent',
+    description: 'You are HIV positive || if test Canceled provide reason',
+    example: 'You are HIV positive',
+    required: true,
+  })
+  ReportContent: string;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({
-    name: 'ReportIssuedAt',
+    name: 'ReportGivenAt',
     description:
       'A string containing the day and time when the report was issued, formatted as "Day:HH:mm" (e.g., "Monday:16:00,Tuesday:11:00").',
     example: 'Monday:16:00,Tuesday:11:00',
     required: true,
   })
-  ReportIssuedAt: string;
+  ReportGivenAt: string;
 }
+
+export class IGetFilterDto {
+  @IsOptional()
+  @IsUUID()
+  @ApiProperty({
+    name: 'patientId', // Corrected name
+    description: 'The ID of the patient who took the test.',
+    example: '123e4567-e89b-12d3-a456-426614174000', // Example UUID
+    required: false,
+  })
+  patientId: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'TestName',
+    description: 'Test name must be a non-empty string.',
+    example: 'Blood Test',
+    required: false,
+  })
+  TestName: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'LabName',
+    description: 'Name of the lab conducting the test.',
+    example: 'LalPaths Labs',
+    required: false,
+  })
+  LabName: string;
+
+  @IsOptional()
+  filters?: Record<string, any>;
+}
+
+export class IGetParamsRequestDto extends PickType(
+  userDto.GetParamsRequestDto,
+  ['page', 'limit'],
+) {}

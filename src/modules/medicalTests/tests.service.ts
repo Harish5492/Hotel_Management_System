@@ -3,6 +3,7 @@ import { Tests, User } from ' ../../../src/common/database/entities';
 import { USER_REPOSITORY, TEST_REPOSITORY, MESSAGES } from '../../constant';
 import * as testDto from './test.dto';
 import { throwError } from '../../helpers/responseHadnlers';
+import { WhereOptions } from 'sequelize';
 
 @Injectable()
 export default class TestService {
@@ -23,16 +24,20 @@ export default class TestService {
     return { message: 'Test added successfully' };
   }
 
-  async IsTestExists(LabName: string, TestName: string): Promise<Tests> {
+  async IsTestExists(LabName: string, TestName: string) {
     console.log(LabName, TestName);
     const test = await this.testRepository.findOne({
       where: { LabName, TestName },
-      attributes: ['TestName', 'LabName'],
+      attributes: ['TestName', 'LabName', 'Cost'],
     });
     return test;
   }
 
-  async removeTest(data: testDto.IRemoveTest): Promise<{ message: string }> {
+  async removeTest(
+    data: testDto.IRemoveTest,
+    userId: string,
+  ): Promise<{ message: string }> {
+    await this.checkRole(userId);
     const test = await this.IsTestExists(data.LabName, data.TestName);
     if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
     await this.testRepository.destroy({
@@ -46,9 +51,87 @@ export default class TestService {
 
   async testTakenByPatient(
     data: testDto.ITestTakenByPatient,
+    userId: string,
   ): Promise<{ message: string }> {
-    await this.testRepository.create<Tests>({ ...data });
+    const test = await this.IsTestExists(data.LabName, data.TestName);
+    if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
+    await this.checkRole(userId);
+    const testTaken = await this.patientTestExists(
+      data.patientId,
+      data.LabName,
+      data.TestName,
+    );
+    if (testTaken) throwError(MESSAGES.ERROR.TEST_EXISTS);
+    await this.testRepository.create<Tests>({ ...data, Cost: test.Cost });
     return { message: 'test has been taken successfully' };
+  }
+
+  async reportGivenOrDecline(
+    data: testDto.IReportGivenOrDecline,
+    userId: string,
+  ): Promise<{ message: string }> {
+    await this.checkRole(userId);
+    await this.updateTest(
+      {
+        patientId: data.patientId,
+        LabName: data.LabName,
+        TestName: data.TestName,
+      },
+      {
+        status: data.status,
+        ReportContent: data.ReportContent,
+        ReportGivenAt: data.ReportGivenAt,
+      },
+    );
+    return { message: 'test report has been given successfully' };
+  }
+
+  async getAllTests(
+    params: testDto.IGetParamsRequestDto,
+    filters: testDto.IGetFilterDto,
+  ): Promise<{ list: Array<Tests>; countNumber: number }> {
+    const { page, limit } = params;
+    console.log("yo babay params are chko",page, limit);
+    const { patientId, LabName, TestName } = filters;
+    const where: WhereOptions<Tests> = {};
+    if (patientId) where.patientId = patientId;
+    if (LabName) where.LabName = LabName;
+    if (TestName) where.TestName = TestName;
+    console.log(filters, '=========>', params);
+    const { count, rows: tests } = await this.testRepository.findAndCountAll({
+      where,
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [['createdAt', 'DESC']],
+      attributes: [
+        'TestName',
+        'LabName',
+        'Cost',
+        'WeekSchedule',
+        'status',
+        'patientId',
+        'TestTakenAt',
+        'ReportGivenAt',
+        'ReportContent',
+      ],
+    });
+    return { list: tests, countNumber: count };
+  }
+
+  async updateTest(match: object, data: object): Promise<void> {
+    await this.testRepository.update({ ...data }, { where: { ...match } });
+  }
+
+  async patientTestExists(
+    patientId: string,
+    LabName: string,
+    TestName: string,
+  ) {
+    const patientTest = await this.testRepository.findOne({
+      where: { patientId, LabName, TestName },
+      attributes: ['TestName', 'LabName', 'patientId'],
+    });
+    return patientTest;
   }
 
   async checkRole(userId: string) {

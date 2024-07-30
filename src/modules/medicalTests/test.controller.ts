@@ -5,6 +5,9 @@ import {
   HttpException,
   UseGuards,
   Delete,
+  Get,
+  Query,
+  Param,
 } from '@nestjs/common';
 import * as testDto from './test.dto';
 import TestService from './tests.service';
@@ -39,25 +42,63 @@ export class TestController {
   @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.TEST.REMOVE_TEST)
   @Delete('removeTest')
-  async removeTest(@Body() body: testDto.IRemoveTest): Promise<any> {
+  async removeTest(
+    @Body() body: testDto.IRemoveTest,
+    @User() user: Record<string, any>,
+  ): Promise<any> {
     try {
-      const result = await this.testService.removeTest(body);
+      const userId = user.userId;
+      const result = await this.testService.removeTest(body, userId);
       return successResponse(MESSAGES.TEST.REMOVED_TEST, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
-  // @ApiBearerAuth()
-  // @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.TEST.TEST_STATUS)
   @Post('testTakenByPatient')
   async testTakenByPatient(
     @Body() body: testDto.ITestTakenByPatient,
+    @User() user: Record<string, any>,
   ): Promise<any> {
     try {
-      const result = await this.testService.testTakenByPatient(body);
+      const userId = user.userId;
+      const result = await this.testService.testTakenByPatient(body, userId);
       return successResponse(MESSAGES.TEST.TEST_TAKEN_OF_PATIENT, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.TEST.TEST_STATUS)
+  @Post('reportGivenOrDecline')
+  async reportGivenOrDecline(
+    @Body() body: testDto.IReportGivenOrDecline,
+    @User() user: Record<string, any>,
+  ): Promise<any> {
+    try {
+      const userId = user.userId;
+      const result = await this.testService.reportGivenOrDecline(body, userId);
+      return successResponse(MESSAGES.TEST.REPORT_GIVEN, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.TEST.TEST_STATUS)
+  @Get('getAllTests/:page/:limit')
+  async getAllTests(
+    @Param() params: testDto.IGetParamsRequestDto,
+    @Query() query: testDto.IGetFilterDto,
+  ): Promise<any> {
+    try {
+      const result = await this.testService.getAllTests(params, query);
+      return successResponse(MESSAGES.TEST.REPORT_GIVEN, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

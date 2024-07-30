@@ -173,7 +173,7 @@ export default class UsersService {
     filters: UserDto.GetFiltersDto
   ): Promise<{ list: Array<User>; totalCount: number }> {
     const { page, limit } = params;
-    const { email, userId, fullName, mobileNo } = filters
+    const { email, employeeId, fullName, mobileNo } = filters
     // const where: WhereOptions<User> = {
     //   ...(email && { email }),
     //   ...(userId && { userId }),
@@ -182,9 +182,9 @@ export default class UsersService {
     // };
     const where: WhereOptions<User> = {};
     if (email) where.email = email;
-    if (userId) where.id = userId;
+    if (employeeId) where.id = employeeId;
     if (fullName) where.fullName = fullName;
-    if (mobileNo.toString()) where.mobileNo = mobileNo;
+    if (mobileNo) where.mobileNo = mobileNo;
     const { count, rows: users } = await this.userRepository.findAndCountAll({
       where,
       limit: limit,
@@ -192,7 +192,7 @@ export default class UsersService {
       order: [
         ['createdAt', 'DESC'],
       ],
-      attributes: ['email', 'fullName', 'userId', 'mobileNo']
+      attributes: ['email', 'fullName', 'employeeId', 'mobileNo']
     });
 
     return { list: users, totalCount: count };

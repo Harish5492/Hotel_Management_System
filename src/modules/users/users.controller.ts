@@ -94,7 +94,6 @@ export class UserController {
     @Post('login')
     async login(@Body() body: usersDto.IUserLoginDto): Promise<any> {
         try {
-            console.log("enter in api")
             const result = await this.userservice.login(body);
             return successResponse(MESSAGES.USER.SIGN_IN_SUCCESS, result)
         }
@@ -156,8 +155,6 @@ export class UserController {
         @Param() params: usersDto.GetParamsRequestDto,
         @Query() querys: usersDto.GetFiltersDto): Promise<any> {
         try {
-            console.log("yooo")
-            // const cleanedQuery = JSON.parse(querys.filters.replace(/\s/g, ''));
             const result = await this.userservice.searchUser(params, querys)
             return successResponse(MESSAGES.USER.GET_USER_DETAILE, result);
         }

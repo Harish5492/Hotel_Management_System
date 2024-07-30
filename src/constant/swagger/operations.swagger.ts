@@ -43,5 +43,10 @@ export const SWAGGER_OPERATION = {
       summary: 'Status of the Test ',
       description: 'Status of the Test of the patient',
     },
+    GET_ALL_TESTS: {
+      summary: 'Get all the Tests',
+      description:
+        'User gets all the test which is added and which is taken by labs',
+    },
   },
 };
