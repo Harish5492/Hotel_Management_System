@@ -18,7 +18,7 @@ export class Treatment extends Model<Treatment> {
   })
   userId: string;
 
-  @BelongsTo(() => User, 'userId')
+  @BelongsTo(() => User, 'id')
   user: User;
 
   @ForeignKey(() => User) // Refer to the User model for doctor
@@ -41,7 +41,10 @@ export class Treatment extends Model<Treatment> {
   @BelongsTo(() => Tests)
   test: Tests;
 
-  @Column
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
   disease: string;
 
   @Column({

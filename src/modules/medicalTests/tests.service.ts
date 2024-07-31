@@ -25,7 +25,6 @@ export default class TestService {
   }
 
   async IsTestExists(LabName: string, TestName: string) {
-    console.log(LabName, TestName);
     const test = await this.testRepository.findOne({
       where: { LabName, TestName },
       attributes: ['TestName', 'LabName', 'Cost'],
@@ -91,13 +90,11 @@ export default class TestService {
     filters: testDto.IGetFilterDto,
   ): Promise<{ list: Array<Tests>; countNumber: number }> {
     const { page, limit } = params;
-    console.log("yo babay params are chko",page, limit);
     const { patientId, LabName, TestName } = filters;
     const where: WhereOptions<Tests> = {};
     if (patientId) where.patientId = patientId;
     if (LabName) where.LabName = LabName;
     if (TestName) where.TestName = TestName;
-    console.log(filters, '=========>', params);
     const { count, rows: tests } = await this.testRepository.findAndCountAll({
       where,
       limit: limit,
