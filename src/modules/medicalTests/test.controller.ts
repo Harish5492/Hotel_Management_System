@@ -10,7 +10,7 @@ import {
   Param,
 } from '@nestjs/common';
 import * as testDto from './test.dto';
-import TestService from './tests.service';
+import { TestService } from './tests.service';
 import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { API_OPERATIONS, MESSAGES } from 'src/constant';

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import TestService from './tests.service';
+import { TestService } from './tests.service';
 import { TestController } from './test.controller';
 import { DatabaseModule } from '../../common/database/database.module';
 import { TokensService } from '../tokens/token.service';
@@ -8,8 +8,9 @@ import { JwtService } from '@nestjs/jwt';
 // import { RabbitMqService } from 'src/common/rabbitMq/rabbit.mq.service';
 import { testProvider } from './tests.provider';
 import UsersService from '../users/users.service';
+import { UsersModule } from '../users/users.module';
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, UsersModule],
   controllers: [TestController],
   providers: [
     TestService,

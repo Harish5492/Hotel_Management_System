@@ -89,7 +89,7 @@ export class IUserRegisterDto {
   @ApiProperty({
     name: 'role',
     description: 'role length should be 3 or more than that',
-    example: 'PATIENT OR DOCTOR',
+    example: 'MANAGEMENT',
     required: true
   })
   role: string;

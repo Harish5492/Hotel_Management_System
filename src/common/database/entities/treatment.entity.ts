@@ -14,11 +14,12 @@ export class Treatment extends Model<Treatment> {
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
     allowNull: false,
   })
   userId: string;
 
-  @BelongsTo(() => User, 'id')
+  @BelongsTo(() => User)
   user: User;
 
   @ForeignKey(() => User) // Refer to the User model for doctor

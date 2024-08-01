@@ -1,16 +1,28 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Tests, User } from ' ../../../src/common/database/entities';
-import { USER_REPOSITORY, TEST_REPOSITORY, MESSAGES } from '../../constant';
+import {
+  PatientTestRecord,
+  Tests,
+  User,
+} from ' ../../../src/common/database/entities';
+import {
+  TEST_REPOSITORY,
+  MESSAGES,
+  PATIENT_TEST_REPOSITORY,
+  USER_REPOSITORY,
+} from '../../constant';
 import * as testDto from './test.dto';
 import { throwError } from '../../helpers/responseHadnlers';
 import { WhereOptions } from 'sequelize';
 
 @Injectable()
-export default class TestService {
+export class TestService {
   constructor(
     @Inject(TEST_REPOSITORY)
     private readonly testRepository: typeof Tests,
-    @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: typeof User,
+    @Inject(PATIENT_TEST_REPOSITORY)
+    private readonly patientTestRepository: typeof PatientTestRecord,
   ) {}
 
   async addTest(
@@ -55,13 +67,17 @@ export default class TestService {
     const test = await this.IsTestExists(data.LabName, data.TestName);
     if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
     await this.checkRole(userId);
+    console.log('chin tapak dham dham');
     const testTaken = await this.patientTestExists(
       data.patientId,
-      data.LabName,
-      data.TestName,
+      // data.LabName,
+      // data.TestName,
     );
     if (testTaken) throwError(MESSAGES.ERROR.TEST_EXISTS);
-    await this.testRepository.create<Tests>({ ...data, Cost: test.Cost });
+    await this.patientTestRepository.create<PatientTestRecord>({
+      ...data,
+      // Cost: test.Cost,
+    });
     return { message: 'test has been taken successfully' };
   }
 
@@ -90,9 +106,10 @@ export default class TestService {
     filters: testDto.IGetFilterDto,
   ): Promise<{ list: Array<Tests>; countNumber: number }> {
     const { page, limit } = params;
-    const { patientId, LabName, TestName } = filters;
+    // const { patientId, LabName, TestName } = filters;
+    const { LabName, TestName } = filters;
     const where: WhereOptions<Tests> = {};
-    if (patientId) where.patientId = patientId;
+    // if (patientId) where.patientId = patientId;
     if (LabName) where.LabName = LabName;
     if (TestName) where.TestName = TestName;
     const { count, rows: tests } = await this.testRepository.findAndCountAll({
@@ -121,12 +138,15 @@ export default class TestService {
 
   async patientTestExists(
     patientId: string,
-    LabName: string,
-    TestName: string,
+    // LabName: string,
+    // TestName: string,
   ) {
-    const patientTest = await this.testRepository.findOne({
-      where: { patientId, LabName, TestName },
-      attributes: ['TestName', 'LabName', 'patientId'],
+    const patientTest = await this.patientTestRepository.findOne({
+      where: { patientId },
+      include: {
+        model: this.testRepository,
+      },
+      // attributes: ['TestName', 'LabName', 'patientId'],
     });
     return patientTest;
   }

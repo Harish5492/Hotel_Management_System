@@ -1,12 +1,5 @@
-import {
-  Column,
-  Model,
-  Table,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-} from 'sequelize-typescript';
-import User from './user.entity';
+import { Column, Model, Table, DataType, HasMany } from 'sequelize-typescript';
+import { PatientTestRecord } from './patientTestRecord.entity';
 
 @Table
 export class Tests extends Model<Tests> {
@@ -57,44 +50,13 @@ export class Tests extends Model<Tests> {
   };
 
   @Column({
-    type: DataType.STRING, // Storing as comma-separated values (e.g., 'Monday,Tuesday,Wednesday')
+    type: DataType.STRING,
     allowNull: true,
   })
   WeekSchedule: string;
 
-  @Column({
-    type: DataType.ENUM('Pending', 'Completed', 'Cancelled'),
-    allowNull: true,
-  })
-  status: string;
-
-  @ForeignKey(() => User)
-  @Column({
-    type: DataType.UUID,
-    allowNull: true,
-  })
-  patientId: string;
-
-  @BelongsTo(() => User, 'id')
-  patient: User;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  TestTakenAt: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  ReportGivenAt: string;
-
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  ReportContent: string;
+  @HasMany(() => PatientTestRecord)
+  patientTestRecords: PatientTestRecord[];
 }
 
 export default Tests;
