@@ -32,7 +32,7 @@ export class TokensService {
     if (refreshToken !== user.refreshToken)
       throw new UnauthorizedException(MESSAGES.ERROR.ACCESS_DENIED);
 
-    const tokens = await this.getTokens(
+    const tokens = await this.getTokens( 
       { userId: user.id, emailId: user.email },
       TIME.JWT.FIVE_DAYS,
     );
