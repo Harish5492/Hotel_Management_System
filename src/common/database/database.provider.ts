@@ -18,8 +18,8 @@ export const databaseProviders = [
       });
 
       // Add models to the Sequelize instance
-      // sequelize.addModels([User, Tests, Treatment]);
-      sequelize.addModels([__dirname + '/entities/**/*.entity{.ts,.js}']);
+      sequelize.addModels([User, Tests, Treatment]);
+      // sequelize.addModels([__dirname + '/entities/**/*.entity{.ts,.js}']);
       console.log('Models added to Sequelize:', sequelize.models);
 
       // Synchronize models with the database

@@ -42,10 +42,10 @@ export class Tests extends Model<Tests> {
   Cost: number;
 
   @Column({
-    type: DataType.BOOLEAN,
-    defaultValue: true,
+    type: DataType.ENUM('Available', 'NotAvailable'),
+    defaultValue: 'Available',
   })
-  Availability: boolean;
+  Availability: string;
 
   @Column({
     type: DataType.JSON,
@@ -75,7 +75,7 @@ export class Tests extends Model<Tests> {
   })
   patientId: string;
 
-  @BelongsTo(() => User, 'id')
+  @BelongsTo(() => User)
   patient: User;
 
   @Column({

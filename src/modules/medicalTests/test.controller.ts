@@ -4,10 +4,10 @@ import {
   Body,
   HttpException,
   UseGuards,
-  Delete,
   Get,
   Query,
   Param,
+  Put,
 } from '@nestjs/common';
 import * as testDto from './test.dto';
 import TestService from './tests.service';
@@ -41,15 +41,15 @@ export class TestController {
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.TEST.REMOVE_TEST)
-  @Delete('removeTest')
-  async removeTest(
+  @Put('disableTest')
+  async disableTest(
     @Body() body: testDto.IRemoveTest,
     @User() user: Record<string, any>,
   ): Promise<any> {
     try {
       const userId = user.userId;
-      const result = await this.testService.removeTest(body, userId);
-      return successResponse(MESSAGES.TEST.REMOVED_TEST, result);
+      const result = await this.testService.disableTest(body, userId);
+      return successResponse(MESSAGES.TEST.DISABLE_TEST, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

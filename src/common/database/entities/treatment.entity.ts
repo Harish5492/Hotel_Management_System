@@ -14,11 +14,13 @@ export class Treatment extends Model<Treatment> {
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    primaryKey: true,
     allowNull: false,
   })
   userId: string;
 
-  @BelongsTo(() => User, 'id')
+  @BelongsTo(() => User)
   user: User;
 
   @ForeignKey(() => User) // Refer to the User model for doctor
@@ -28,7 +30,7 @@ export class Treatment extends Model<Treatment> {
   })
   doctorId: string;
 
-  @BelongsTo(() => User, 'doctorId') // Refer to the User model for doctor
+  @BelongsTo(() => User) // Refer to the User model for doctor
   doctor: User;
 
   @ForeignKey(() => Tests)
@@ -36,7 +38,7 @@ export class Treatment extends Model<Treatment> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  testId: number;
+  id: number;
 
   @BelongsTo(() => Tests)
   test: Tests;

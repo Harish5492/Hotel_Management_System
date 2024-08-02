@@ -111,9 +111,11 @@ export default class UsersService {
 
     const DecyptToken = await Utilities.decryptCipher(token);
 
-    const User = await this.userWithError({ id: DecyptToken })
+    const User = await this.userWithError({ id: DecyptToken }) 
 
     if (User.IsTokenUsed === true) throwError(MESSAGES.ERROR.OTPANDTOKENUSED)
+    console.log("toooooooooooooooooo")
+
 
     if (token !== User.token) throwError(MESSAGES.ERROR.INVALID_TOKEN)
 
@@ -228,7 +230,7 @@ export default class UsersService {
   }
   async verifyOTP(data: UserDto.IVerifyOneTimeCodeDto): Promise<object> {
 
-    const { oneTimeCode, token } = data;
+    const { oneTimeCode, token } = data; 
 
     const DecyptToken = await Utilities.decryptCipher(token);
 
@@ -237,7 +239,7 @@ export default class UsersService {
     await this.OtpError(DecyptToken, oneTimeCode, token)
 
     const Token = await Utilities.encryptCipher(DecyptToken)
-    await this.updateUser({ id: DecyptToken }, { token: Token, IsTokenUsed: true, IsOtpUsed: true })
+    await this.updateUser({ id: DecyptToken }, { token: Token, IsTokenUsed: false, IsOtpUsed: true })
 
 
     return { Token };

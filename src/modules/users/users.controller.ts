@@ -65,7 +65,7 @@ export class UserController {
     @ApiOperation(API_OPERATIONS.USER.VERIFY_OTP)
     @Post('verifyOTP')
     async verifyOTP(@Body() body: usersDto.IVerifyOneTimeCodeDto): Promise<any> {
-        try {
+        try {  console.log("yooooooooooooo ")   
             const result = await this.userservice.verifyOTP(body);
             return successResponse(MESSAGES.USER.OTP_VERIFIED, result)
         }

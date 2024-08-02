@@ -56,10 +56,12 @@ export const MESSAGES = {
   },
   TEST: {
     ADD_TEST_SUCCESS: 'Test added successfully.',
-    REMOVED_TEST: 'Test removed successfully',
+    DISABLE_TEST: 'Test disabled successfully',
     TEST_TAKEN_OF_PATIENT: 'Test has been taken successfully',
     REPORT_GIVEN: 'Test report has been given successfully',
     ALL_TESTS: 'Tests has benn fetched successfully',
+    TEST_NOT_AVAILABLE: 'Test not availabe, Sorry visit again',
+    WRONG_PATIENT_ID: 'You have given wrong patientId kindly check again',
   },
   ADMIN: {
     SIGN_IN_SUCCESS: 'You have logged in successfully',

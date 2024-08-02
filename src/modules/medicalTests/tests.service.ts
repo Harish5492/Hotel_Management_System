@@ -27,24 +27,29 @@ export default class TestService {
   async IsTestExists(LabName: string, TestName: string) {
     const test = await this.testRepository.findOne({
       where: { LabName, TestName },
-      attributes: ['TestName', 'LabName', 'Cost'],
+      attributes: ['TestName', 'LabName', 'Cost', 'Availability'],
     });
     return test;
   }
 
-  async removeTest(
+  async disableTest(
     data: testDto.IRemoveTest,
     userId: string,
   ): Promise<{ message: string }> {
     await this.checkRole(userId);
     const test = await this.IsTestExists(data.LabName, data.TestName);
     if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
-    await this.testRepository.destroy({
-      where: {
-        TestName: data.TestName,
-        LabName: data.LabName,
+    await this.testRepository.update(
+      {
+        Availability: 'NotAvailable',
       },
-    });
+      {
+        where: {
+          TestName: data.TestName,
+          LabName: data.LabName,
+        },
+      },
+    );
     return { message: 'test removed successfully' };
   }
 
@@ -53,14 +58,19 @@ export default class TestService {
     userId: string,
   ): Promise<{ message: string }> {
     const test = await this.IsTestExists(data.LabName, data.TestName);
+    if (test.Availability !== 'Available')
+      throwError(MESSAGES.TEST.TEST_NOT_AVAILABLE);
     if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
     await this.checkRole(userId);
+    await this.checkPatientId(data.patientId);
+    console.log("yooooo")
     const testTaken = await this.patientTestExists(
       data.patientId,
       data.LabName,
       data.TestName,
     );
-    if (testTaken) throwError(MESSAGES.ERROR.TEST_EXISTS);
+    if (testTaken.ReportGivenAt === null)
+      throwError(MESSAGES.ERROR.TEST_EXISTS);
     await this.testRepository.create<Tests>({ ...data, Cost: test.Cost });
     return { message: 'test has been taken successfully' };
   }
@@ -70,6 +80,7 @@ export default class TestService {
     userId: string,
   ): Promise<{ message: string }> {
     await this.checkRole(userId);
+    await this.checkPatientId(data.patientId);
     await this.updateTest(
       {
         patientId: data.patientId,
@@ -126,7 +137,7 @@ export default class TestService {
   ) {
     const patientTest = await this.testRepository.findOne({
       where: { patientId, LabName, TestName },
-      attributes: ['TestName', 'LabName', 'patientId'],
+      attributes: ['TestName', 'LabName', 'patientId', 'ReportGivenAt'],
     });
     return patientTest;
   }
@@ -138,5 +149,14 @@ export default class TestService {
     });
     if (userType.role !== 'MANAGEMENT')
       throwError(MESSAGES.ROLE.ONLY_MANAGEMENT);
+  }
+
+  async checkPatientId(patientId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: patientId },
+    });
+    if (!user) {
+      throw new Error(MESSAGES.TEST.WRONG_PATIENT_ID);
+    }
   }
 }
