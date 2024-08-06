@@ -8,6 +8,7 @@ export const STAGE = 'stage';
 export const PRODUCTION = 'prod';
 export const USER_REPOSITORY = 'USER_REPOSITORY';
 export const TEST_REPOSITORY = 'TEST_REPOSITORY';
+export const TREATMENT_REPOSITORY = 'TREATMENT_REPOSITORY';
 export const NOTIFICATION_REPOSITORY = 'NOTIFICATION_REPOSITORY';
 export const ADMIN_REPOSITORY = 'ADMIN_REPOSITORY';
 export const KYC_REPOSITORY = 'KYC_REPOSITORY';
@@ -62,6 +63,9 @@ export const MESSAGES = {
     ALL_TESTS: 'Tests has benn fetched successfully',
     TEST_NOT_AVAILABLE: 'Test not availabe, Sorry visit again',
     WRONG_PATIENT_ID: 'You have given wrong patientId kindly check again',
+  },
+  PATIENT: {
+    PATIENT_ADDED: 'Patient data has been ended successfully',
   },
   ADMIN: {
     SIGN_IN_SUCCESS: 'You have logged in successfully',

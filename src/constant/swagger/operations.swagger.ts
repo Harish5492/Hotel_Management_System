@@ -49,4 +49,11 @@ export const SWAGGER_OPERATION = {
         'User gets all the test which is added and which is taken by labs',
     },
   },
+  PATIENT: {
+    ADD_PATIENT_DATA: {
+      summary: 'Add the patient data',
+      description:
+        ' Add the patient data for to check the details of treatment of particular patient',  
+    },
+  },
 };

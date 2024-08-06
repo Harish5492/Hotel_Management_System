@@ -33,15 +33,15 @@ export class IUserRegisterDto {
   })
   dateOfBirth?: string;
   
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    name: 'employeeId',
-    description: 'get the unique id of the employee',
-    example: 'HAR-7a53046d66c93b5e',
-    required:false
-  })
-  employeeId?: string;
+  // @IsOptional()
+  // @IsString()
+  // @ApiProperty({
+  //   name: 'employeeId',
+  //   description: 'get the unique id of the employee',
+  //   example: 'HAR-7a53046d66c93b5e',
+  //   required:false
+  // })
+  // employeeId?: string;
 
   @IsString()
   @IsNotEmpty()

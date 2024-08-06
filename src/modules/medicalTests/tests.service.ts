@@ -63,7 +63,6 @@ export default class TestService {
     if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
     await this.checkRole(userId);
     await this.checkPatientId(data.patientId);
-    console.log("yooooo")
     const testTaken = await this.patientTestExists(
       data.patientId,
       data.LabName,
