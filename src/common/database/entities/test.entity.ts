@@ -87,6 +87,7 @@ export class Tests extends Model<Tests> {
   @Column({
     type: DataType.STRING,
     allowNull: true,
+    defaultValue: null
   })
   ReportGivenAt: string;
 

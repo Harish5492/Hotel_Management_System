@@ -53,7 +53,16 @@ export const SWAGGER_OPERATION = {
     ADD_PATIENT_DATA: {
       summary: 'Add the patient data',
       description:
-        ' Add the patient data for to check the details of treatment of particular patient',  
+        ' Add the patient data for to check the details of treatment of particular patient',
+    },
+    UPDATE_PATIENT_DATA: {
+      summary: 'Update the patient data',
+      description:
+        'Update the record of the patient as treatment will changes according to the disease',
+    },
+    GET_PATIENT_DETAILS: {
+      summary: 'Get the patient detials',
+      description: 'get all the patient details',
     },
   },
 };

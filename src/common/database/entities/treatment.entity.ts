@@ -44,15 +44,15 @@ export class Treatment extends Model<Treatment> {
   })
   doctorName: string;
 
-  // @ForeignKey(() => Tests)
-  // @Column({
-  //   type: DataType.INTEGER,
-  //   allowNull: false,
-  // })
-  // testId: number;
+  @ForeignKey(() => Tests)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  testId: number;
 
-  // @BelongsTo(() => Tests)
-  // test: Tests;
+  @BelongsTo(() => Tests)
+  test: Tests;
 
   @Column({
     type: DataType.STRING,

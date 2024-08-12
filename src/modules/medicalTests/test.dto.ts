@@ -119,7 +119,7 @@ export class IReportGivenOrDecline extends PickType(ITestTakenByPatient, [
   'TestName',
 ]) {
   @ApiProperty({
-    name: 'Status',
+    name: 'status',
     description: 'status of the test ',
     example: 'Pending',
     required: true,

@@ -60,7 +60,7 @@ export const MESSAGES = {
     DISABLE_TEST: 'Test disabled successfully',
     TEST_TAKEN_OF_PATIENT: 'Test has been taken successfully',
     REPORT_GIVEN: 'Test report has been given successfully',
-    ALL_TESTS: 'Tests has benn fetched successfully',
+    ALL_TESTS: 'Tests has been fetched successfully',
     TEST_NOT_AVAILABLE: 'Test not availabe, Sorry visit again',
     WRONG_PATIENT_ID: 'You have given wrong patientId kindly check again',
   },
@@ -112,6 +112,7 @@ export const MESSAGES = {
     DO_NOT_MATCHED: 'Do not matched.',
     TEST_EXISTS: 'Test already exists.',
     TEST_NOT_EXISTS: 'Test not exists.',
+    TEST_DATA_NOT_EXISTS: 'Test report does not exists in database',
   },
 };
 // export const WALLET_GRPC_PACKAGE = 'gateway';

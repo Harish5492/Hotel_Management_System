@@ -36,4 +36,33 @@ export class patientTreatmentController {
       throw new HttpException(error.message, error.status);
     }
   }
+  // @ApiBearerAuth()
+  // @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.PATIENT.UPDATE_PATIENT_DATA)
+  @Post('updatePatientRecord')
+  async updatePatientRecord(
+    @Body() body: patientTreatmentDto.IUpdatePatientRecord,
+  ): Promise<any> {
+    try {
+      const result =
+        await this.patientTreatmentService.updatePatientRecord(body);
+      return successResponse(MESSAGES.PATIENT.PATIENT_ADDED, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @ApiOperation(API_OPERATIONS.PATIENT.GET_PATIENT_DETAILS)
+  @Get('getPatientDetails')
+  async getPatientDetails(
+    @Query() query: patientTreatmentDto.IGetDetails,
+  ): Promise<any> {
+    try {
+      const result =
+        await this.patientTreatmentService.getPatientDetails(query);
+      return successResponse(MESSAGES.PATIENT.PATIENT_ADDED, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
 }
