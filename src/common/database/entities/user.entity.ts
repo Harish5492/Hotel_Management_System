@@ -41,6 +41,12 @@ export class User extends Model<User> {
   fullName: string;
 
   @Column({
+    type: DataType.ENUM('Available', 'NotAvailable'),
+    allowNull: true,
+  })
+  Availability: string;
+
+  @Column({
     type: DataType.STRING,
     allowNull: false,
   })

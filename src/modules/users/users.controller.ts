@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Post, Controller, Body, HttpException, Get, UseGuards, Req, Query, Param } from "@nestjs/common";
+import { Post, Controller, Body, HttpException, Get, UseGuards, Req, Query, Param, Put } from "@nestjs/common";
 import UserService from './users.service'
 import * as usersDto from './users.dto'
 import { User } from '../../common/decorators'
@@ -7,6 +7,7 @@ import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { API_OPERATIONS, MESSAGES } from "src/constant"
 import { AccessTokenGuard } from "src/common/guard/accesstoken.guard";
+import { UserDefinedMessageInstance } from "twilio/lib/rest/api/v2010/account/call/userDefinedMessage";
 
 
 @ApiTags('USERS')
@@ -28,7 +29,8 @@ export class UserController {
     @ApiOperation(API_OPERATIONS.USER.REGISTER_USER)
     @Post('register')
     async register(@Body() body: usersDto.IUserRegisterDto): Promise<any> {
-        try { console.log("yoooo")
+        try {
+            console.log("yoooo")
             const result = await this.userservice.register(body);
             return successResponse(MESSAGES.USER.SIGN_UP_SUCCESS, result)
         }
@@ -65,7 +67,8 @@ export class UserController {
     @ApiOperation(API_OPERATIONS.USER.VERIFY_OTP)
     @Post('verifyOTP')
     async verifyOTP(@Body() body: usersDto.IVerifyOneTimeCodeDto): Promise<any> {
-        try {  console.log("yooooooooooooo ")   
+        try {
+            console.log("yooooooooooooo ")
             const result = await this.userservice.verifyOTP(body);
             return successResponse(MESSAGES.USER.OTP_VERIFIED, result)
         }
@@ -189,4 +192,39 @@ export class UserController {
             throw new HttpException(error.message, error.status)
         }
     }
+
+    @ApiOperation(API_OPERATIONS.USER.DOCTOR_AVALIABLITY)
+    @Get('doctorAvaliablity/:page/:limit')
+    async doctorAvalliability(
+        @Param() params: usersDto.GetParamsRequestDto,
+        @Query() query: usersDto.GetFiltersDto,
+        )
+        : Promise<any> {
+        try {
+            const result = await this.userservice.doctorAvailability(params, query)
+            return successResponse(MESSAGES.USER.DOCTOR_AVALIABLITY, result)
+        } 
+        catch (error) {
+            throw new HttpException(error.message, error.status)
+        }
+    }
+    @ApiBearerAuth()
+    @UseGuards(AccessTokenGuard)
+    @ApiOperation(API_OPERATIONS.USER.DOCTOR_AVALIABLITY)
+    @Put('changeAvaliablity')
+    async changeAvaliablity(
+        @User () user: Record<string,any>,
+        @Body () body : usersDto.IUpdateTheAvaliablity
+    ):Promise<any>{
+        try {
+            const userId  = user.userId
+            const result = await this.userservice.changeAvaliablity(userId,body)
+            return successResponse(MESSAGES.USER.DOCTOR_AVALIABLITY, result)
+        }
+        catch (error) {
+            throw new HttpException(error.message, error.status)
+        }
+    }
+
+
 }

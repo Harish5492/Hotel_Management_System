@@ -31,18 +31,17 @@ export class IUserRegisterDto {
     example: '10/June/2022',
     required: true,
   })
-  dateOfBirth?: string;
+  dateOfBirth?: string;  
   
-  // @IsOptional()
-  // @IsString()
-  // @ApiProperty({
-  //   name: 'employeeId',
-  //   description: 'get the unique id of the employee',
-  //   example: 'HAR-7a53046d66c93b5e',
-  //   required:false
-  // })
-  // employeeId?: string;
-
+  @IsString()
+  @ApiProperty({
+    name: 'Availability',
+    description: 'Enter the status of the doctor',
+    example: 'Available',
+    required: false,
+  })
+  Availability?: string;
+  
   @IsString()
   @IsNotEmpty()
   @ApiProperty({
@@ -236,3 +235,5 @@ export class IVerifyOneTimeCodeDto {
 export class ISendOneTimeCodeDto extends PickType(IUserRegisterDto,['email','mobileNo'] as const) {
 
 }
+
+export class IUpdateTheAvaliablity extends PickType(IUserRegisterDto,['Availability'] as const){}

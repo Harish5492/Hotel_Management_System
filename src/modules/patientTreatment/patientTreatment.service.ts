@@ -1,13 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   MESSAGES,
+  SEQUELIZE,
   TEST_REPOSITORY,
   TREATMENT_REPOSITORY,
   USER_REPOSITORY,
 } from '../../constant';
 import * as patientTreatmentDto from './patientTreatment.dto';
-import { Tests, Treatment, User } from ' ../../../src/common/database/entities';
 import { throwError } from '../../helpers/responseHadnlers';
+import { Tests, Treatment, User } from 'src/common/database/entities';
+import { Sequelize } from 'sequelize-typescript';
+
+import { databaseProviders } from 'src/common/database/database.provider';
+import { QueryTypes } from 'sequelize';
 
 @Injectable()
 export default class patientTreatmentService {
@@ -18,6 +23,7 @@ export default class patientTreatmentService {
     private readonly userRepository: typeof User,
     @Inject(TEST_REPOSITORY)
     private readonly testRepository: typeof Tests,
+    @Inject(SEQUELIZE) private readonly sequelize: Sequelize,
   ) {}
 
   async patientAdded(
@@ -60,9 +66,73 @@ export default class patientTreatmentService {
 
   async getPatientDetails(
     query: patientTreatmentDto.IGetDetails,
-  ): Promise<{ message: string }> {
-    return { message: 'patientData has been fetched successfully' };
+    params: patientTreatmentDto.IGetParamsRequestDto,
+  ): Promise<{ list: Array<Treatment>; totalCount: number }> {
+    const { patientName, doctorName } = query;
+    console.log(query);
+    const { page, limit } = params;
+    await this.getPatientData(patientName);
+    const { count, rows: patientData } =
+      await this.patientTreatmentRepository.findAndCountAll({
+        where: { patientName: patientName, doctorName: doctorName },
+        limit: limit,
+        offset: (page - 1) * limit,
+        order: [['createdAt', 'DESC']],
+        attributes: {
+          exclude: [
+            'createdAt',
+            'updatedAt',
+            'id',
+            'patientId',
+            'testId',
+            'userId',
+            'doctorId',
+          ],
+        },
+        include: [
+          {
+            model: User,
+            as: 'patient',
+            where: { fullName: patientName },
+            attributes: {
+              exclude: [
+                'id',
+                'token',
+                'IsTokenUsed',
+                'otp',
+                'IsOtpUsed',
+                'refreshToken',
+                'expirationDate',
+                'password',
+                'createdAt',
+                'updatedAt',
+              ],
+            },
+          },
+          {
+            model: Tests,
+            as: 'test',
+            attributes: {
+              exclude: ['id', 'patientId', 'createdAt', 'updatedAt'],
+            },
+          },
+        ],
+      });
+    return { list: patientData, totalCount: count };
   }
+
+  async patientRefer(data: patientTreatmentDto.IReferToDto): Promise<void> {
+    const patient = await this.getPatientData(data.patientName);
+    if (!patient) throwError(MESSAGES.ERROR.USER_NOT_EXIST);
+    await this.patientTreatmentRepository.update(
+      {
+        referTo: data.referTo,
+        referFrom: data.referFrom,
+      },
+      { where: { patientName: data.patientName } },
+    );
+  }
+
   async checkUser(name: string) {
     const user = await this.userRepository.findOne({
       where: { fullName: name },

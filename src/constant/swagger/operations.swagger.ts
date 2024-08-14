@@ -29,6 +29,11 @@ export const SWAGGER_OPERATION = {
       summary: 'Change Password',
       description: 'Change Password of the User',
     },
+    DOCTOR_AVALIABLITY: {
+      summary: 'Check the avaliability of the doctor ',
+      description:
+        'check the avaliability of the doctor is doctor present or not',
+    },
   },
   TEST: {
     ADD_TEST: {
@@ -63,6 +68,10 @@ export const SWAGGER_OPERATION = {
     GET_PATIENT_DETAILS: {
       summary: 'Get the patient detials',
       description: 'get all the patient details',
+    },
+    PATIENT_REFER: {
+      summary: 'Regarding Patient Refer',
+      description: 'Patient refer to the next hospital',
     },
   },
 };

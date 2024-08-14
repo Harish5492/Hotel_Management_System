@@ -42,8 +42,8 @@ export const MESSAGES = {
     ACCOUNT_DELETED: 'Your account has been deleted successfully.',
     REFRESH_TOKEN: 'Refresh token successfully',
     OTP_VERIFIED: 'One time password has been verified successfully.',
-    GET_USER_DETAILE: 'Get user detaile successfully.',
-    GET_S3_DETAILE: 'Get S3 detaile successfully.',
+    GET_USER_DETAILE: 'Got user detail successfully.',
+    GET_S3_DETAILE: 'Got S3 detaile successfully.',
     RESEND_OTP: 'Your otp resend successfully.',
     SEND_OTP: 'Your otp send successfully.',
     UPDATE_PASSWORD: 'Your password update successfully.',
@@ -54,6 +54,9 @@ export const MESSAGES = {
     GET_RECORD: 'record get successfully.',
     SEND_TRANSACTION_SUCCESSFULL: 'Transaction successfull',
     SEND_TRANSACTION_FAILED: 'Transaction failed',
+    DOCTOR_AVALIABLITY:
+      'List of doctor present in hospital has been fetched successfully',
+    CHANGE_AVALIABLITY: 'Avaliablity status has been changed',
   },
   TEST: {
     ADD_TEST_SUCCESS: 'Test added successfully.',
@@ -65,7 +68,10 @@ export const MESSAGES = {
     WRONG_PATIENT_ID: 'You have given wrong patientId kindly check again',
   },
   PATIENT: {
-    PATIENT_ADDED: 'Patient data has been ended successfully',
+    PATIENT_ADDED: 'Patient data has been added successfully',
+    UPDATED_PATIENT_DATA: 'Patient data has been updated successfully',
+    FETCHED_PATIENT_DETAILS: 'Patient data has been fetched successfully',
+    PATIENT_REFER: 'Patient refered successfully',
   },
   ADMIN: {
     SIGN_IN_SUCCESS: 'You have logged in successfully',
@@ -83,6 +89,7 @@ export const MESSAGES = {
   ROLE: {
     ONLY_MANAGEMENT: 'Only Mangement have the access to do the particular task',
     ONLY_DOCTOR: 'Only Doctor have the access to do the particular task',
+    ONLY_DOCTOR_AVIALIBILITY_CHECK: 'Only Doctor Availability will check ',
     ONLY_PATIENT: 'Only Patient have the access to do the particular task',
   },
   ERROR: {

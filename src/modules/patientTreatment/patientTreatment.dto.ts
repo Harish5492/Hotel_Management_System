@@ -1,5 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsString, IsDate, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
+import * as userDto from '../users/users.dto';
 
 export class IPatientTreatmentAdd {
   @IsString()
@@ -194,3 +195,32 @@ export class IGetDetails extends PickType(IPatientTreatmentAdd, [
   'patientName',
   'doctorName',
 ] as const) {}
+
+export class IGetParamsRequestDto extends PickType(
+  userDto.GetParamsRequestDto,
+  ['page', 'limit'],
+) {}
+
+export class IReferToDto extends PickType(IPatientTreatmentAdd, [
+  'patientName',
+] as const) {
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    name: 'referTo',
+    description: 'refer to specific hospital',
+    example: 'Tanda Medical College',
+    required: false,
+  })
+  referTo?: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    name: 'referFrom',
+    description: 'refer from which doctor',
+    example: 'Harish Rana',
+    required: false,
+  })
+  referFrom?: string;
+}

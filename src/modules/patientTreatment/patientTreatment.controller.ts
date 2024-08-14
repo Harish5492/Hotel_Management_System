@@ -22,8 +22,8 @@ export class patientTreatmentController {
     private readonly patientTreatmentService: patientTreatmentService,
   ) {}
 
-  // @ApiBearerAuth()
-  // @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.PATIENT.ADD_PATIENT_DATA)
   @Post('patientTreatmentAdd')
   async patientTreatmentAdd(
@@ -36,8 +36,8 @@ export class patientTreatmentController {
       throw new HttpException(error.message, error.status);
     }
   }
-  // @ApiBearerAuth()
-  // @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.PATIENT.UPDATE_PATIENT_DATA)
   @Post('updatePatientRecord')
   async updatePatientRecord(
@@ -46,21 +46,41 @@ export class patientTreatmentController {
     try {
       const result =
         await this.patientTreatmentService.updatePatientRecord(body);
-      return successResponse(MESSAGES.PATIENT.PATIENT_ADDED, result);
+      return successResponse(MESSAGES.PATIENT.UPDATED_PATIENT_DATA, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.PATIENT.GET_PATIENT_DETAILS)
-  @Get('getPatientDetails')
+  @Get('getPatientDetails/:page/:limit')
   async getPatientDetails(
     @Query() query: patientTreatmentDto.IGetDetails,
+    @Param() params: patientTreatmentDto.IGetParamsRequestDto,
   ): Promise<any> {
     try {
-      const result =
-        await this.patientTreatmentService.getPatientDetails(query);
-      return successResponse(MESSAGES.PATIENT.PATIENT_ADDED, result);
+      const result = await this.patientTreatmentService.getPatientDetails(
+        query,
+        params,
+      );
+      return successResponse(MESSAGES.PATIENT.FETCHED_PATIENT_DETAILS, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  // @ApiBearerAuth()
+  // @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.PATIENT.PATIENT_REFER)
+  @Post('patientReferTo')
+  async patientRefer(
+    @Body() body: patientTreatmentDto.IReferToDto,
+  ): Promise<any> {
+    try {
+      await this.patientTreatmentService.patientRefer(body);
+      return successResponse(MESSAGES.PATIENT.PATIENT_REFER);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

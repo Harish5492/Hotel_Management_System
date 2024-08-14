@@ -11,7 +11,6 @@ import Tests from './test.entity';
 
 @Table
 export class Treatment extends Model<Treatment> {
-
   @ForeignKey(() => User)
   @Column({
     type: DataType.UUID,
@@ -19,8 +18,8 @@ export class Treatment extends Model<Treatment> {
   })
   patientId: string;
 
-  @BelongsTo(() => User)
-  user: User;
+  @BelongsTo(() => User, { as: 'patient' })
+  patient: User;
 
   @Column({
     type: DataType.STRING,
@@ -35,7 +34,7 @@ export class Treatment extends Model<Treatment> {
   })
   doctorId: string;
 
-  @BelongsTo(() => User) // Refer to the User model for doctor
+  @BelongsTo(() => User, { as: 'doctor' })
   doctor: User;
 
   @Column({
@@ -51,7 +50,7 @@ export class Treatment extends Model<Treatment> {
   })
   testId: number;
 
-  @BelongsTo(() => Tests)
+  @BelongsTo(() => Tests, { as: 'test' })
   test: Tests;
 
   @Column({
@@ -83,6 +82,18 @@ export class Treatment extends Model<Treatment> {
     allowNull: true,
   })
   medication: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  referTo: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  referFrom: string;
 
   @Column({
     type: DataType.ENUM('ONGOING', 'COMPLETED', 'CANCELLED', 'SCHEDULED'),

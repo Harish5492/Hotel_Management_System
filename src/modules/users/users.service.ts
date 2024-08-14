@@ -28,7 +28,12 @@ export default class UsersService {
     const user = await this.checkIfUserExists(data);
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
     data.password = await Utilities.hashPassword(data.password)
-
+    if (data.role === 'DOCTOR' || data.role === 'MANAGEMENT') {
+      data.Availability = 'Available'
+    }
+    else {
+      data.Availability = null
+    }
     const userId = await Utilities.generateHexadecimal(data.fullName)
     await this.userRepository.create<User>({ ...data, employeeId: userId });
     return { message: "Registration successful" };
@@ -111,11 +116,9 @@ export default class UsersService {
 
     const DecyptToken = await Utilities.decryptCipher(token);
 
-    const User = await this.userWithError({ id: DecyptToken }) 
+    const User = await this.userWithError({ id: DecyptToken })
 
     if (User.IsTokenUsed === true) throwError(MESSAGES.ERROR.OTPANDTOKENUSED)
-    console.log("toooooooooooooooooo")
-
 
     if (token !== User.token) throwError(MESSAGES.ERROR.INVALID_TOKEN)
 
@@ -149,14 +152,16 @@ export default class UsersService {
   }
 
 
-  async getUserDetail(email?: string, mobileNo?: number): Promise<User | undefined> {
+  async getUserDetail(email?: string, mobileNo?: number | string, employeeId?: string, fullName?: string): Promise<User | undefined> {
     const query: any = {};
     if (email) query.email = email;
     if (mobileNo) query.mobileNo = mobileNo;
+    if (employeeId) query.employeeId = employeeId;
+    if (fullName) query.fullName = fullName;
 
     const user = await this.userRepository.findOne({
       where: query,
-      attributes: ['id', 'email', 'mobileNo', 'password'],
+      attributes: ['id', 'email', 'mobileNo', 'password', 'role'],
     });
 
     return user
@@ -194,11 +199,53 @@ export default class UsersService {
       order: [
         ['createdAt', 'DESC'],
       ],
-      attributes: ['email', 'fullName', 'employeeId', 'mobileNo']
+      attributes: ['email', 'fullName', 'employeeId', 'mobileNo', 'role']
     });
 
     return { list: users, totalCount: count };
   }
+
+  async doctorAvailability(
+    params: UserDto.GetParamsRequestDto,
+    filters: UserDto.GetFiltersDto,
+  ): Promise<{ list: Array<User>; totalCount: number }> {
+    const { page, limit } = params;
+    const { email, employeeId, fullName } = filters;
+
+    // Construct the where clause with role 'DOCTOR'
+    const where: WhereOptions<User> = {
+      role: 'DOCTOR'
+    };
+
+    // Add additional filters
+    if (email) where.email = email;
+    if (employeeId) where.employeeId = employeeId;
+    if (fullName) where.fullName = fullName;
+
+    const { count, rows: users } = await this.userRepository.findAndCountAll({
+      where,
+      limit: limit,
+      offset: (page - 1) * limit,
+      order: [['createdAt', 'DESC']],
+      attributes: ['availability', 'fullName', 'email', 'Sex', 'employeeId'] // Ensure 'availability' is correct
+    });
+
+    return { list: users, totalCount: count };
+  }
+
+  async changeAvaliablity(userId: string,
+    data: UserDto.IUpdateTheAvaliablity
+  ): Promise<{ message: string }> {
+    const userType = await this.checkRole(userId)
+    if (userType.role !== 'DOCTOR') throwError(MESSAGES.ROLE.ONLY_DOCTOR)
+    await this.userRepository.update({
+      Availability: data.Availability
+    },
+      { where: { id: userId } }
+    )
+    return { message: "Changed the status of avaliablity successfully" }
+  }
+
 
   async userWithError(data: object): Promise<User> {
     const User = await this.getUser(data)
@@ -230,7 +277,7 @@ export default class UsersService {
   }
   async verifyOTP(data: UserDto.IVerifyOneTimeCodeDto): Promise<object> {
 
-    const { oneTimeCode, token } = data; 
+    const { oneTimeCode, token } = data;
 
     const DecyptToken = await Utilities.decryptCipher(token);
 
@@ -278,11 +325,18 @@ export default class UsersService {
 
 
   async findOtp(decryptToken: string): Promise<User | undefined> {
-    console.log("reahed")
     return this.userRepository.findOne({
       where: { id: decryptToken },
       attributes: ['id', 'email', 'otp', 'token', 'expirationDate', 'IsTokenUsed', 'IsOtpUsed'],
     });
+  }
+
+  async checkRole(userId: string) {
+    const userType = await this.userRepository.findOne({
+      where: { id: userId },
+      attributes: ['role'],
+    });
+    return userType;
   }
 
 
