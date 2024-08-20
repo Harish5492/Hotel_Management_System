@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
-import { Tests, Treatment } from './index';
+import { Tests, Treatment, ServiceFacility, Ambulance } from './index';
 
 @Table
 export class User extends Model<User> {
@@ -86,6 +86,15 @@ export class User extends Model<User> {
 
   @HasMany(() => Treatment, 'userId')
   treatments: Treatment[];
+
+  @HasMany(() => ServiceFacility, 'assignedPatient')
+  ServiceFacility: ServiceFacility[];
+
+  @HasMany(() => Ambulance, {
+    foreignKey: 'assignedPatientId',
+    as: 'assignedPatient',
+  })
+  ambulances: Ambulance[];
 
   @HasMany(() => Treatment, 'doctorId')
   treatedPatients: Treatment[];

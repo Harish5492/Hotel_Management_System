@@ -68,9 +68,8 @@ export default class TestService {
       data.LabName,
       data.TestName,
     );
-    console.log('>>>>>>>>>>>', testTaken);
-    // if (!testTaken.ReportGivenAt || testTaken.ReportGivenAt === null)
-    //   throwError(MESSAGES.ERROR.TEST_EXISTS);
+    if (!testTaken.ReportGivenAt || testTaken.ReportGivenAt === null)
+      throwError(MESSAGES.ERROR.TEST_EXISTS);
     await this.testRepository.create<Tests>({ ...data, Cost: test.Cost });
     return { message: 'test has been taken successfully' };
   }

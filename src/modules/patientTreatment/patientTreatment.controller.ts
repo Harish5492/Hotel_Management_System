@@ -9,7 +9,7 @@ import {
   Param,
 } from '@nestjs/common';
 import * as patientTreatmentDto from './patientTreatment.dto';
-import patientTreatmentService from './patientTreatment.service';
+import patientTreatmentServices from './patientTreatment.service';
 import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { API_OPERATIONS, MESSAGES } from 'src/constant';
@@ -19,7 +19,7 @@ import { User } from 'src/common/decorators';
 @Controller('treatment')
 export class patientTreatmentController {
   constructor(
-    private readonly patientTreatmentService: patientTreatmentService,
+    private readonly patientTreatmentService: patientTreatmentServices,
   ) {}
 
   @ApiBearerAuth()

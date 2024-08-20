@@ -11,9 +11,6 @@ import { throwError } from '../../helpers/responseHadnlers';
 import { Tests, Treatment, User } from 'src/common/database/entities';
 import { Sequelize } from 'sequelize-typescript';
 
-import { databaseProviders } from 'src/common/database/database.provider';
-import { QueryTypes } from 'sequelize';
-
 @Injectable()
 export default class patientTreatmentService {
   constructor(

@@ -74,4 +74,39 @@ export const SWAGGER_OPERATION = {
       description: 'Patient refer to the next hospital',
     },
   },
+  MANAGEMENT: {
+    ADD_AMBULANCE: {
+      summary: 'Add the Ambulance',
+      description:
+        ' Add the Ambulance so that patient can transfer one hospital to other or also in home',
+    },
+    UPDATE_AMBULANCE_AVALIBILITY_STATUS: {
+      summary: 'Update the avalibility status of ambulance',
+      description: ' Update the Ambulance status',
+    },
+    GET_ALL_AMBULANCE: {
+      summary: 'All ambulance in the hospital',
+      description: 'Get all the Ambulance in the hospital',
+    },
+    FACILITY_ADDED: {
+      summary: 'Add the facility',
+      description: ' Add the facility for the patient convenience',
+    },
+    UPDATE_FACILITY_STATUS: {
+      summary: 'Update the facility status',
+      description: ' Update the service facility status',
+    },
+    GET_ALL_FACILITY: {
+      summary: 'All facility like bed and wheelchair',
+      description: 'get all the available wheelchair and bed in details',
+    },
+    AMBULANCE_TAKEN_BY_PATIENT: {
+      summary: 'Ambulance taken by patient',
+      description: 'Ambulance taken by the patient data',
+    },
+    FACILITY_TAKEN_BY_PATIENT: {
+      summary: 'Facility taken by patient',
+      description: 'Facility taken by the patient',
+    },
+  },
 };

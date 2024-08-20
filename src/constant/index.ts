@@ -9,6 +9,8 @@ export const PRODUCTION = 'prod';
 export const USER_REPOSITORY = 'USER_REPOSITORY';
 export const TEST_REPOSITORY = 'TEST_REPOSITORY';
 export const TREATMENT_REPOSITORY = 'TREATMENT_REPOSITORY';
+export const AMBULANCE_REPOSITORY = 'AMBULANCE_REPOSITORY';
+export const SERVICE_FACILITY_REPOSITORY = 'SERVICE_FACILITY_REPOSITORY';
 export const NOTIFICATION_REPOSITORY = 'NOTIFICATION_REPOSITORY';
 export const ADMIN_REPOSITORY = 'ADMIN_REPOSITORY';
 export const KYC_REPOSITORY = 'KYC_REPOSITORY';
@@ -73,6 +75,14 @@ export const MESSAGES = {
     FETCHED_PATIENT_DETAILS: 'Patient data has been fetched successfully',
     PATIENT_REFER: 'Patient refered successfully',
   },
+  MANAGEMENT: {
+    AMBULANCE_ADDED: 'Ambulance has been added successfully',
+    UPDATE_AMBULANCE_STATUS: 'Ambulance status has been updated successfully',
+    FACILITY_ADDED: 'Facility has been added successfully',
+    GET_AMBULANCE_DETAILS: 'Ambulance data has been fetched successfully',
+    GET_FACILITY_DETAILS: ' Facility data has been fetched successfully',
+    AMBULANCE_TAKEN: 'Ambulance has been taken successfully',
+  },
   ADMIN: {
     SIGN_IN_SUCCESS: 'You have logged in successfully',
     PASSWORD_UPDATED: 'Password updated successfully',
@@ -120,6 +130,8 @@ export const MESSAGES = {
     TEST_EXISTS: 'Test already exists.',
     TEST_NOT_EXISTS: 'Test not exists.',
     TEST_DATA_NOT_EXISTS: 'Test report does not exists in database',
+    AMBULANCE_EXISTS: 'Ambulance already exists',
+    FACILITY_EXISTS: 'Facility already exists',
   },
 };
 // export const WALLET_GRPC_PACKAGE = 'gateway';
