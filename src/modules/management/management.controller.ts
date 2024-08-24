@@ -22,8 +22,8 @@ import { User } from 'src/common/decorators';
 export class managementController {
   constructor(private readonly managementService: managementServices) {}
 
-  //   @ApiBearerAuth()
-  //   @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.ADD_AMBULANCE)
   @Post('addAmbulance')
   async addAmbulance(@Body() body: managementDto.IAddAmbulance): Promise<any> {
@@ -35,6 +35,8 @@ export class managementController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.AMBULANCE_TAKEN_BY_PATIENT)
   @Post('ambulanceTakenByPatient')
   async ambulanceTakenByPatient(
@@ -48,6 +50,8 @@ export class managementController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.UPDATE_AMBULANCE_AVALIBILITY_STATUS)
   @Put('updateAmbulanceAvailablityStatus')
   async updateAmbulanceStatus(
@@ -64,6 +68,8 @@ export class managementController {
       throw new HttpException(error.message, error.status);
     }
   }
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.GET_ALL_AMBULANCE)
   @Put('getAllAmbulance/:page/:limit')
   async getAmbulance(
@@ -78,6 +84,8 @@ export class managementController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.FACILITY_ADDED)
   @Post('addBedOrWheelChair')
   async addBedOrWheelChair(
@@ -90,6 +98,8 @@ export class managementController {
       throw new HttpException(error.message, error.status);
     }
   }
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.UPDATE_FACILITY_STATUS)
   @Put('updateBedOrWheelChairStatus')
   async updateBedOrWheelChairStatus(
@@ -107,6 +117,8 @@ export class managementController {
       throw new HttpException(error.message, error.status);
     }
   }
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.GET_ALL_AMBULANCE)
   @Get('getAllFacility/:page/:limit')
   async getAllFacility(
@@ -121,6 +133,8 @@ export class managementController {
       throw new HttpException(error.message, error.status);
     }
   }
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.MANAGEMENT.FACILITY_TAKEN_BY_PATIENT)
   @Post('facilityTakenByPatient')
   async facilityTakenByPatient(

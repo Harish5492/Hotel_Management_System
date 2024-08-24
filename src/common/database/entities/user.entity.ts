@@ -59,6 +59,12 @@ export class User extends Model<User> {
   mobileNo: number;
 
   @Column({
+    type: DataType.DOUBLE,
+    allowNull: false,
+  })
+  age: number;
+
+  @Column({
     type: DataType.BOOLEAN,
     defaultValue: false,
   })

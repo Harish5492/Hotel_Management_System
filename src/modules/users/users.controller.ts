@@ -7,7 +7,6 @@ import { successResponse } from '../../helpers/responseHadnlers';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { API_OPERATIONS, MESSAGES } from "src/constant"
 import { AccessTokenGuard } from "src/common/guard/accesstoken.guard";
-import { UserDefinedMessageInstance } from "twilio/lib/rest/api/v2010/account/call/userDefinedMessage";
 
 
 @ApiTags('USERS')
@@ -84,7 +83,7 @@ export class UserController {
    */
     @ApiOperation(API_OPERATIONS.USER.MOB_AND_EMAIL_VERIFICATION)
     @Post('mobAndEmailVerification')
-    async mobAndEmailVerification(@Body() body: usersDto.IVerifyOneTimeCodeDto): Promise<any> {
+    async mobAndEmailVerification(@Body() body: usersDto.IVerifyMobileAndEmail): Promise<any> {
         try {
             await this.userservice.mobAndEmailVerification(body);
             return successResponse(MESSAGES.USER.ACCOUNT_VERIFIED)
@@ -137,14 +136,14 @@ export class UserController {
     @Post('updateProfile')
     async updateProfile(
         @User() user: Record<string, any>,
-        @Body() body: usersDto.IUserRegisterDto
+        @Body() body: usersDto.IUserUpdateDto
     ) {
         try {
             const userId = user.userId
             await this.userservice.updateUser(userId, body);
             return successResponse(MESSAGES.USER.ACCOUNT_DELETED);
         }
-        catch (error) {
+        catch (error) { 
             throw new HttpException(error.message, error.status)
         }
     }
@@ -193,6 +192,8 @@ export class UserController {
         }
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AccessTokenGuard)
     @ApiOperation(API_OPERATIONS.USER.DOCTOR_AVALIABLITY)
     @Get('doctorAvaliablity/:page/:limit')
     async doctorAvalliability(
@@ -211,8 +212,8 @@ export class UserController {
     @ApiBearerAuth()
     @UseGuards(AccessTokenGuard)
     @ApiOperation(API_OPERATIONS.USER.DOCTOR_AVALIABLITY)
-    @Put('changeAvaliablity')
-    async changeAvaliablity(
+    @Put('changeDoctorAvaliablity')
+    async changeDoctorAvaliablity(
         @User () user: Record<string,any>,
         @Body () body : usersDto.IUpdateTheAvaliablity
     ):Promise<any>{

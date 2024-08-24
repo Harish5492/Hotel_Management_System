@@ -3,3 +3,4 @@ export { User } from './user.entity';
 export { Tests } from './test.entity';
 export { Treatment } from './treatment.entity';
 export { ServiceFacility } from './servicefacitlity.entity';
+export { Appointment } from './appointments.entity';

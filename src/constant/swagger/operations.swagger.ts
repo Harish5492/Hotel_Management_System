@@ -73,6 +73,15 @@ export const SWAGGER_OPERATION = {
       summary: 'Regarding Patient Refer',
       description: 'Patient refer to the next hospital',
     },
+    GET_APPOINTMENT: {
+      summary: 'Retrieve Appointment Details',
+      description:
+        'Fetches information about patient appointments, including referrals to other hospitals if applicable.',
+    },
+    GET_ALL_APPOINTMENT: {
+      summary: 'Get All Apointments',
+      description: 'Get All The Appointments which registers from the patients',
+    },
   },
   MANAGEMENT: {
     ADD_AMBULANCE: {

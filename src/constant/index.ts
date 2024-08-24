@@ -8,6 +8,7 @@ export const STAGE = 'stage';
 export const PRODUCTION = 'prod';
 export const USER_REPOSITORY = 'USER_REPOSITORY';
 export const TEST_REPOSITORY = 'TEST_REPOSITORY';
+export const APPOINTMENTS_REPOSITORY = 'APPOINTMENTS_REPOSITORY';
 export const TREATMENT_REPOSITORY = 'TREATMENT_REPOSITORY';
 export const AMBULANCE_REPOSITORY = 'AMBULANCE_REPOSITORY';
 export const SERVICE_FACILITY_REPOSITORY = 'SERVICE_FACILITY_REPOSITORY';
@@ -132,6 +133,7 @@ export const MESSAGES = {
     TEST_DATA_NOT_EXISTS: 'Test report does not exists in database',
     AMBULANCE_EXISTS: 'Ambulance already exists',
     FACILITY_EXISTS: 'Facility already exists',
+    PASSWORD_NOT_MATCHED: 'Password not matched',
   },
 };
 // export const WALLET_GRPC_PACKAGE = 'gateway';

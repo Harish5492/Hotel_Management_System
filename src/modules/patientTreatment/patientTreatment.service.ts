@@ -1,15 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  APPOINTMENTS_REPOSITORY,
   MESSAGES,
-  SEQUELIZE,
   TEST_REPOSITORY,
   TREATMENT_REPOSITORY,
   USER_REPOSITORY,
 } from '../../constant';
 import * as patientTreatmentDto from './patientTreatment.dto';
 import { throwError } from '../../helpers/responseHadnlers';
-import { Tests, Treatment, User } from 'src/common/database/entities';
-import { Sequelize } from 'sequelize-typescript';
+import {
+  Appointment,
+  Tests,
+  Treatment,
+  User,
+} from 'src/common/database/entities';
 
 @Injectable()
 export default class patientTreatmentService {
@@ -20,14 +24,15 @@ export default class patientTreatmentService {
     private readonly userRepository: typeof User,
     @Inject(TEST_REPOSITORY)
     private readonly testRepository: typeof Tests,
-    @Inject(SEQUELIZE) private readonly sequelize: Sequelize,
+    @Inject(APPOINTMENTS_REPOSITORY)
+    private readonly appointmentsRepository: typeof Appointment,
   ) {}
 
   async patientAdded(
     data: patientTreatmentDto.IPatientTreatmentAdd,
   ): Promise<{ message: string }> {
-    const patientId = await this.checkUser(data.patientName);
-    const doctorId = await this.checkUser(data.doctorName);
+    const patientId = await this.checkUser(data.patientEmail);
+    const doctorId = await this.checkUser(data.doctorEmail);
     const testId = await this.checkTest(patientId.id);
     await this.patientTreatmentRepository.create({
       ...data,
@@ -41,11 +46,10 @@ export default class patientTreatmentService {
   async updatePatientRecord(
     data: patientTreatmentDto.IUpdatePatientRecord,
   ): Promise<{ message: string }> {
-    const getPatient = await this.getPatientData(data.patientName);
+    const getPatient = await this.getPatientData(data.patientEmail);
 
     await this.patientTreatmentRepository.update(
       {
-        doctorName: data.doctorName,
         disease: data.disease,
         nextScheduleAt: data.nextScheduleAt,
         fullyCuredAt: data.fullyCuredAt,
@@ -65,13 +69,13 @@ export default class patientTreatmentService {
     query: patientTreatmentDto.IGetDetails,
     params: patientTreatmentDto.IGetParamsRequestDto,
   ): Promise<{ list: Array<Treatment>; totalCount: number }> {
-    const { patientName, doctorName } = query;
+    const { patientEmail, doctorEmail } = query;
     console.log(query);
     const { page, limit } = params;
-    await this.getPatientData(patientName);
+    await this.getPatientData(patientEmail);
     const { count, rows: patientData } =
       await this.patientTreatmentRepository.findAndCountAll({
-        where: { patientName: patientName, doctorName: doctorName },
+        where: { patientEmail, doctorEmail },
         limit: limit,
         offset: (page - 1) * limit,
         order: [['createdAt', 'DESC']],
@@ -90,7 +94,7 @@ export default class patientTreatmentService {
           {
             model: User,
             as: 'patient',
-            where: { fullName: patientName },
+            where: { email: patientEmail },
             attributes: {
               exclude: [
                 'id',
@@ -119,21 +123,21 @@ export default class patientTreatmentService {
   }
 
   async patientRefer(data: patientTreatmentDto.IReferToDto): Promise<void> {
-    const patient = await this.getPatientData(data.patientName);
+    const patient = await this.getPatientData(data.patientEmail);
     if (!patient) throwError(MESSAGES.ERROR.USER_NOT_EXIST);
     await this.patientTreatmentRepository.update(
       {
         referTo: data.referTo,
         referFrom: data.referFrom,
       },
-      { where: { patientName: data.patientName } },
+      { where: { patientEmail: data.patientEmail } },
     );
   }
 
-  async checkUser(name: string) {
+  async checkUser(email: string) {
     const user = await this.userRepository.findOne({
-      where: { fullName: name },
-      attributes: ['id', 'role'],
+      where: { email },
+      attributes: ['id', 'role', 'fullName'],
     });
     if (!user) {
       throw new Error(MESSAGES.ERROR.USER_NOT_EXIST);
@@ -141,9 +145,9 @@ export default class patientTreatmentService {
     return user;
   }
 
-  async getPatientData(patientName: string) {
+  async getPatientData(patientEmail: string) {
     const patientData = await this.patientTreatmentRepository.findOne({
-      where: { patientName: patientName },
+      where: { patientEmail },
       attributes: ['id'],
     });
     if (!patientData) throwError(MESSAGES.ERROR.USER_NOT_EXIST);
@@ -158,14 +162,51 @@ export default class patientTreatmentService {
   // }
 
   async checkTest(patientId: string) {
-    console.log(patientId);
     const patientData = await this.testRepository.findOne({
-      where: { patientId: patientId },
+      where: { patientId },
     });
     console.log('>>>>>>patientData>>>>>', patientData);
     if (!patientData) {
       throw new Error(MESSAGES.ERROR.TEST_DATA_NOT_EXISTS);
     }
     return patientData;
+  }
+
+  async getAppointment(
+    data: patientTreatmentDto.IGetAppointment,
+  ): Promise<{ message: string }> {
+    const patientId = await this.checkUser(data.patientEmail);
+    console.log(patientId);
+    const doctorId = await this.checkUser(data.doctorEmail);
+    console.log(doctorId);
+    console.log('yo babay inside the ap9i');
+    await this.appointmentsRepository.create({
+      ...data,
+      patientId: patientId.id,
+      doctorId: doctorId.id,
+    });
+    return { message: 'Your Appointment has been submited successfully' };
+  }
+
+  async appoinmentStatus(
+    data: patientTreatmentDto.IGetAppointment,
+  ): Promise<{ message: string }> {
+    const doctorId = await this.checkUser(data.doctorEmail);
+    await this.checkRole(doctorId.id);
+    const patientId = await this.checkUser(data.patientEmail);
+    await this.appointmentsRepository.create({
+      ...data,
+      patientId: patientId.id,
+      doctorId: doctorId.id,
+    });
+    return { message: 'Your Appointment has been submited successfully' };
+  }
+
+  async checkRole(userId: string) {
+    const userType = await this.userRepository.findOne({
+      where: { id: userId },
+      attributes: ['role'],
+    });
+    if (userType.role !== 'DOCTOR') throwError(MESSAGES.ROLE.ONLY_DOCTOR);
   }
 }

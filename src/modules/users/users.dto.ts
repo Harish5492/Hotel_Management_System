@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsEmail,
@@ -71,7 +71,17 @@ export class IUserRegisterDto {
     example: '8872512811',
     required: true,
   })
-  mobileNo?: number;
+  mobileNo?: number; 
+  
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'age', 
+    description: 'Enter the age of the user',
+    example: '25',
+    required: true,
+  })
+  age?: number;
 
   @IsNotEmpty()
   @MinLength(3)
@@ -88,7 +98,7 @@ export class IUserRegisterDto {
   @ApiProperty({
     name: 'role',
     description: 'role length should be 3 or more than that',
-    example: 'PATIENT OR DOCTOR',
+    example: 'DOCTOR',
     required: true
   })
   role: string;
@@ -101,9 +111,20 @@ export class IUserRegisterDto {
     example: '12345678',
     required: true
   })
-  password: string;
+  password: string; 
+
+  @IsNotEmpty()
+  @MinLength(8)
+  @ApiProperty({
+    name: 'confirmPassword',
+    description: 'Password length should be 8 or more than that',
+    example: '12345678',
+    required: true
+  })
+  confirmPassword: string;
 
 }
+export class IUserUpdateDto extends OmitType(IUserRegisterDto , ['password','confirmPassword'] as const){}
 
 export class IUserLoginDto extends PickType(IUserRegisterDto ,['email','mobileNo','password'] as const){
 
@@ -207,7 +228,16 @@ export class IUpdatePassword {
     example: '12345678',
     required: true
   })
-  newPassword: string;
+  newPassword: string; 
+  @IsNotEmpty()
+  @MinLength(8)
+  @ApiProperty({
+    name: 'confirmNewPassword',
+    description: 'Password length should be 8 or more than that',
+    example: '12345678',
+    required: true
+  })
+  confirmNewPassword: string;
 }
 
 export class IVerifyOneTimeCodeDto {
@@ -220,6 +250,38 @@ export class IVerifyOneTimeCodeDto {
     required: true,
   })
   oneTimeCode: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'token',
+    description: 'Please provide the Token for verification',
+    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIx",
+    required: true,
+  })
+  token: string;
+}
+
+export class IVerifyMobileAndEmail {
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'mobileOtp',
+    description: 'You should provide OTP for verification',
+    example: '123456',
+    required: true,
+  })
+  mobileOtp: number; 
+  
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'emailOtp',
+    description: 'You should provide OTP for verification',
+    example: '123456',
+    required: true,
+  })
+  emailOtp: number;
 
   @IsString()
   @IsNotEmpty()

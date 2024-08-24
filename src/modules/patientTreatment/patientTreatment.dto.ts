@@ -1,27 +1,34 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNotEmpty,
+  IsEmail,
+  IsDate,
+} from 'class-validator';
 import * as userDto from '../users/users.dto';
+import { Type } from 'class-transformer';
 
 export class IPatientTreatmentAdd {
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
-    name: 'doctorName',
-    description: 'Name of the doctor whose under the treatment going through',
+    name: 'doctorEmail',
+    description: 'Send email if using logintype=EMAIL',
+    example: 'note@gmail.com',
     required: true,
-    example: 'Sourav Sharma',
   })
-  doctorName: string;
+  doctorEmail?: string;
 
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
-    name: 'patientName',
-    description: 'Name of the patient who suffered from the diseases',
+    name: 'patientEmail',
+    description: 'Send email if using logintype=EMAIL',
+    example: 'note@gmail.com',
     required: true,
-    example: 'Ayush Jamwal',
   })
-  patientName: string;
+  patientEmail?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -102,25 +109,25 @@ export class IPatientTreatmentAdd {
   notes?: string;
 }
 export class IUpdatePatientRecord {
-  @IsString()
+  @IsEmail()
   @IsNotEmpty()
   @ApiProperty({
-    name: 'doctorName',
-    description: 'Name of the doctor whose under the treatment going through',
-    required: false,
-    example: 'Sourav Sharma',
-  })
-  doctorName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    name: 'patientName',
-    description: 'Name of the patient who suffered from the diseases',
+    name: 'doctorEmail',
+    description: 'Send email if using logintype=EMAIL',
+    example: 'note@gmail.com',
     required: true,
-    example: 'Ayush Jamwal',
   })
-  patientName: string;
+  doctorEmail?: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'patientEmail',
+    description: 'Send email if using logintype=EMAIL',
+    example: 'note@gmail.com',
+    required: true,
+  })
+  patientEmail?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -192,8 +199,8 @@ export class IUpdatePatientRecord {
 }
 
 export class IGetDetails extends PickType(IPatientTreatmentAdd, [
-  'patientName',
-  'doctorName',
+  'patientEmail',
+  'doctorEmail',
 ] as const) {}
 
 export class IGetParamsRequestDto extends PickType(
@@ -202,7 +209,7 @@ export class IGetParamsRequestDto extends PickType(
 ) {}
 
 export class IReferToDto extends PickType(IPatientTreatmentAdd, [
-  'patientName',
+  'patientEmail',
 ] as const) {
   @IsString()
   @IsOptional()
@@ -223,4 +230,93 @@ export class IReferToDto extends PickType(IPatientTreatmentAdd, [
     required: false,
   })
   referFrom?: string;
+}
+
+export class IGetAppointment {
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'doctorEmail',
+    description:
+      'The email address of the doctor associated with the appointment.',
+    example: 'doctor@gmail.com',
+    required: true,
+  })
+  doctorEmail: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'patientEmail',
+    description:
+      'The email address of the patient associated with the appointment.',
+    example: 'patient@gmail.com',
+    required: true,
+  })
+  patientEmail: string;
+
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'appointmentDate',
+    description: 'The date of the appointment.',
+    example: '2024-08-06T00:00:00Z',
+    required: true,
+  })
+  appointmentDate: string;
+
+  @IsOptional()
+  @ApiProperty({
+    name: 'appointmentTime',
+    description: 'The time of the appointment.',
+    example: '2024-08-06T14:30:00Z',
+    required: false,
+  })
+  appointmentTime?: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'reason',
+    description: 'The reason for the appointment.',
+    example: 'Regular checkup, flu symptoms',
+    required: false,
+  })
+  reason?: string;
+
+  @IsNotEmpty()
+  @ApiProperty({
+    name: 'department',
+    description:
+      'The department or specialty of the doctor handling the appointment.',
+    example: 'Radiology',
+    required: true,
+  })
+  department: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'notes',
+    description: 'Any additional notes regarding the appointment.',
+    example: 'Patient needs to fast for 8 hours before the appointment.',
+    required: false,
+  })
+  notes?: string;
+}
+
+export class IUpdateStatusOfAppointmentextends extends 
+
+PickType(
+  IGetAppointment,
+  ['doctorEmail'] as const,
+) {
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    name: 'status',
+    description: 'The status of the appointment.',
+    example: 'PENDING',
+    required: false,
+  })
+  status?: string;
 }

@@ -1,7 +1,14 @@
 import { Sequelize } from 'sequelize-typescript';
 import { databaseConfig } from './database.config';
 import { SEQUELIZE } from '../../constant';
-import { User, Tests, Treatment, Ambulance, ServiceFacility } from './entities';
+import {
+  User,
+  Tests,
+  Treatment,
+  Ambulance,
+  ServiceFacility,
+  Appointment,
+} from './entities';
 export const databaseProviders = [
   {
     provide: SEQUELIZE,
@@ -18,7 +25,14 @@ export const databaseProviders = [
       });
 
       // Add models to the Sequelize instance
-      sequelize.addModels([User, Tests, Treatment, Ambulance, ServiceFacility]);
+      sequelize.addModels([
+        User,
+        Tests,
+        Treatment,
+        Ambulance,
+        ServiceFacility,
+        Appointment,
+      ]);
       // sequelize.addModels([__dirname + '/entities/**/*.entity{.ts,.js}']);
       console.log('Models added to Sequelize:', sequelize.models);
 

@@ -71,8 +71,8 @@ export class patientTreatmentController {
     }
   }
 
-  // @ApiBearerAuth()
-  // @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.PATIENT.PATIENT_REFER)
   @Post('patientReferTo')
   async patientRefer(
@@ -81,6 +81,34 @@ export class patientTreatmentController {
     try {
       await this.patientTreatmentService.patientRefer(body);
       return successResponse(MESSAGES.PATIENT.PATIENT_REFER);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  // @ApiBearerAuth()
+  // @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.PATIENT.GET_APPOINTMENT)
+  @Post('getAppointment')
+  async getAppointment(
+    @Body() body: patientTreatmentDto.IGetAppointment,
+  ): Promise<any> {
+    try {
+      const result = await this.patientTreatmentService.getAppointment(body);
+      return successResponse(MESSAGES.PATIENT.PATIENT_REFER, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }  
+  
+  @ApiOperation(API_OPERATIONS.PATIENT.GET_APPOINTMENT)
+  @Post('appoinmentStatus')
+  async appoinmentStatus(
+    @Body() body: patientTreatmentDto.IGetAppointment,
+  ): Promise<any> {
+    try {
+      const result = await this.patientTreatmentService.appoinmentStatus(body);
+      return successResponse(MESSAGES.PATIENT.PATIENT_REFER, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

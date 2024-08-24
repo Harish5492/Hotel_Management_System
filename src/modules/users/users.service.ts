@@ -27,6 +27,7 @@ export default class UsersService {
     }
     const user = await this.checkIfUserExists(data);
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
+      if(data.password !== data.confirmPassword) throwError(MESSAGES.ERROR.PASSWORD_NOT_MATCHED)
     data.password = await Utilities.hashPassword(data.password)
     if (data.role === 'DOCTOR' || data.role === 'MANAGEMENT') {
       data.Availability = 'Available'
@@ -44,7 +45,7 @@ export default class UsersService {
     const User = await this.getUserDetail(email, mobileNo)
 
     if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
-    // await this.IsMobileOrEmailValid(email, mobileNo)
+    await this.IsMobileOrEmailValid(email, mobileNo)
     if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
     const tokens = await this.getJwtTokens({ userId: User.id, email: User.email }, true, TIME.JWT.THIRTY_DAYS);
 
@@ -52,11 +53,13 @@ export default class UsersService {
     return tokens
 
   }
-
   async IsMobileOrEmailValid(email: string, mobileNo: number): Promise<void> {
-    const User = await this.getUserDetail(email, mobileNo)
-    if (!User.isMobVerified || !User.isEmailVerified) throwError(MESSAGES.ERROR.USER_NOT_VERIFIED);
+    const User = await this.getUserDetail(email, mobileNo);
+    if (!User.isMobVerified || !User.isEmailVerified) {
+      throwError(MESSAGES.ERROR.USER_NOT_VERIFIED);
+    }
   }
+  
   async getJwtTokens(
     data: any,
     isAccessNedeed: boolean,
@@ -112,7 +115,8 @@ export default class UsersService {
  * @throws Throws an error if the token is invalid, expired, or the user has already used it.
  */
   async forgotPassword(data: UserDto.IUpdatePassword): Promise<{ message: string }> {
-    const { token, newPassword } = data
+    const { token, newPassword, confirmNewPassword} = data
+    if(newPassword !== confirmNewPassword) throwError(MESSAGES.ERROR.PASSWORD_NOT_MATCHED)
 
     const DecyptToken = await Utilities.decryptCipher(token);
 
@@ -161,7 +165,7 @@ export default class UsersService {
 
     const user = await this.userRepository.findOne({
       where: query,
-      attributes: ['id', 'email', 'mobileNo', 'password', 'role'],
+      attributes: ['id', 'email', 'mobileNo', 'password', 'role' ,'isEmailVerified', 'isMobVerified'],
     });
 
     return user
@@ -310,15 +314,15 @@ export default class UsersService {
     }
   }
 
-  async mobAndEmailVerification(data: UserDto.IVerifyOneTimeCodeDto): Promise<void> {
-    const { oneTimeCode, token } = data
-
+  async mobAndEmailVerification(data: UserDto.IVerifyMobileAndEmail): Promise<void> {
+    const { mobileOtp,emailOtp, token } = data
+    if(emailOtp !==mobileOtp) throwError(MESSAGES.ERROR.INCORRECT_OTP)
     const DecyptToken = await Utilities.decryptCipher(token);
     await this.IstokenAndOtpUsed(DecyptToken)
 
-    await this.OtpError(DecyptToken, oneTimeCode, token)
+    await this.OtpError(DecyptToken, mobileOtp, token)
 
-    await this.updateUser({ id: DecyptToken }, { isMobVerified: true, isTokenUsed: true })
+    await this.updateUser({ id: DecyptToken }, { isMobVerified: true, isEmailVerified: true, isTokenUsed: true })
 
   }
 

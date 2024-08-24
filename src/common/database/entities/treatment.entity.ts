@@ -25,7 +25,7 @@ export class Treatment extends Model<Treatment> {
     type: DataType.STRING,
     allowNull: false,
   })
-  patientName: string;
+  patientEmail: string;
 
   @ForeignKey(() => User) // Refer to the User model for doctor
   @Column({
@@ -41,7 +41,7 @@ export class Treatment extends Model<Treatment> {
     type: DataType.STRING,
     allowNull: false,
   })
-  doctorName: string;
+  doctorEmail: string;
 
   @ForeignKey(() => Tests)
   @Column({

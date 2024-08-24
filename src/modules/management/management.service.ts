@@ -82,7 +82,7 @@ export default class managementService {
 
   async checkBedOrWheelChairNo(facilityNumber: string) {
     const facilityNo = await this.serviceRepository.findOne({
-      where: { facilityNumber: facilityNumber },
+      where: { facilityNumber },
     });
     return !!facilityNo;
   }
