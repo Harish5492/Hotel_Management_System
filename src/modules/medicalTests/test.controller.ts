@@ -75,6 +75,26 @@ export class TestController {
   @ApiBearerAuth()
   @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.TEST.TEST_STATUS)
+  @Post('testTakenByPatientByOnline')
+  async testTakenByPatientByOnline(
+    @Body() body: testDto.ITestTakenByPatientByOnline,
+    @User() user: Record<string, any>,
+  ): Promise<any> {
+    try {
+      const userId = user.userId;
+      const result = await this.testService.testTakenByPatientByOnline(
+        body,
+        userId,
+      );
+      return successResponse(MESSAGES.TEST.TEST_TAKEN_OF_PATIENT, result);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.TEST.TEST_STATUS)
   @Post('reportGivenOrDecline')
   async reportGivenOrDecline(
     @Body() body: testDto.IReportGivenOrDecline,

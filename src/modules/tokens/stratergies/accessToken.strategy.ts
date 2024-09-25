@@ -13,21 +13,5 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   validate(payload: { userId: string }) {
     return payload;
-    // }
-    // async validate(payload: { userId: string }) {
-    //   const user = await this.userService.getUserDetail({ id: payload?.userId });
-
-    //   if (user && user?.status === 'BLOCKED') {
-    //     // throwForbidden()
-    //     throw new HttpException(
-    //       {
-    //         statusCode: 403,
-    //         isLogout: true,
-    //       },
-    //       HttpStatus.FORBIDDEN,
-    //     );
-    //   }
-    //   return payload;
-    // }
   }
 }

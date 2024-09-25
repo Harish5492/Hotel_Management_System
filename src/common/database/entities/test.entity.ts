@@ -7,6 +7,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import User from './user.entity';
+import { All } from '@nestjs/common';
 
 @Table
 export class Tests extends Model<Tests> {
@@ -83,6 +84,12 @@ export class Tests extends Model<Tests> {
     allowNull: true,
   })
   TestTakenAt: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  TestScheduleAt: string;
 
   @Column({
     type: DataType.STRING,

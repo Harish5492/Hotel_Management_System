@@ -35,4 +35,8 @@ export const ENVIROMENT_MANAGER = {
     USERNAME: process.env.MAILTRAP_USERNAME,
     PASSWORD: process.env.MAILTRAP_PASSWORD,
   },
+  RAZORPAY: {
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+  },
 };

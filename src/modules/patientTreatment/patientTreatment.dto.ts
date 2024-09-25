@@ -304,9 +304,7 @@ export class IGetAppointment {
   notes?: string;
 }
 
-export class IUpdateStatusOfAppointmentextends extends 
-
-PickType(
+export class IUpdateStatusOfAppointmentextends extends PickType(
   IGetAppointment,
   ['doctorEmail'] as const,
 ) {

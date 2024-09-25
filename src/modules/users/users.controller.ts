@@ -29,7 +29,6 @@ export class UserController {
     @Post('register')
     async register(@Body() body: usersDto.IUserRegisterDto): Promise<any> {
         try {
-            console.log("yoooo")
             const result = await this.userservice.register(body);
             return successResponse(MESSAGES.USER.SIGN_UP_SUCCESS, result)
         }

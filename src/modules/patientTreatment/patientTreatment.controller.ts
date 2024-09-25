@@ -86,8 +86,8 @@ export class patientTreatmentController {
     }
   }
 
-  // @ApiBearerAuth()
-  // @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
   @ApiOperation(API_OPERATIONS.PATIENT.GET_APPOINTMENT)
   @Post('getAppointment')
   async getAppointment(
@@ -99,8 +99,8 @@ export class patientTreatmentController {
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
-  }  
-  
+  }
+
   @ApiOperation(API_OPERATIONS.PATIENT.GET_APPOINTMENT)
   @Post('appoinmentStatus')
   async appoinmentStatus(

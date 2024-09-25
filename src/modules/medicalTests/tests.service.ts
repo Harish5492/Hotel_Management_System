@@ -74,6 +74,27 @@ export default class TestService {
     return { message: 'test has been taken successfully' };
   }
 
+  async testTakenByPatientByOnline(
+    data: testDto.ITestTakenByPatientByOnline,
+    userId: string,
+  ): Promise<{ message: string }> {
+    const test = await this.IsTestExists(data.LabName, data.TestName);
+    if (test.Availability !== 'Available')
+      throwError(MESSAGES.TEST.TEST_NOT_AVAILABLE);
+    if (!test) throwError(MESSAGES.ERROR.TEST_NOT_EXISTS);
+    await this.isPatient(userId);
+    await this.checkPatientId(data.patientId);
+    const testTaken = await this.patientTestExists(
+      data.patientId,
+      data.LabName,
+      data.TestName,
+    );
+    if (!testTaken.ReportGivenAt || testTaken.ReportGivenAt === null)
+      throwError(MESSAGES.ERROR.TEST_EXISTS);
+    await this.testRepository.create<Tests>({ ...data, Cost: test.Cost });
+    return { message: 'test has been taken successfully' };
+  }
+
   async reportGivenOrDecline(
     data: testDto.IReportGivenOrDecline,
     userId: string,
@@ -148,6 +169,14 @@ export default class TestService {
     });
     if (userType.role !== 'MANAGEMENT')
       throwError(MESSAGES.ROLE.ONLY_MANAGEMENT);
+  }
+
+  async isPatient(userId: string) {
+    const userType = await this.userRepository.findOne({
+      where: { id: userId },
+      attributes: ['role'],
+    });
+    if (userType.role !== 'PATIENT') throwError(MESSAGES.ROLE.ONLY_MANAGEMENT);
   }
 
   async checkPatientId(patientId: string) {

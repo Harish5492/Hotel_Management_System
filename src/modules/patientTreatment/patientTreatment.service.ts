@@ -70,7 +70,6 @@ export default class patientTreatmentService {
     params: patientTreatmentDto.IGetParamsRequestDto,
   ): Promise<{ list: Array<Treatment>; totalCount: number }> {
     const { patientEmail, doctorEmail } = query;
-    console.log(query);
     const { page, limit } = params;
     await this.getPatientData(patientEmail);
     const { count, rows: patientData } =
@@ -165,7 +164,6 @@ export default class patientTreatmentService {
     const patientData = await this.testRepository.findOne({
       where: { patientId },
     });
-    console.log('>>>>>>patientData>>>>>', patientData);
     if (!patientData) {
       throw new Error(MESSAGES.ERROR.TEST_DATA_NOT_EXISTS);
     }
@@ -176,10 +174,7 @@ export default class patientTreatmentService {
     data: patientTreatmentDto.IGetAppointment,
   ): Promise<{ message: string }> {
     const patientId = await this.checkUser(data.patientEmail);
-    console.log(patientId);
     const doctorId = await this.checkUser(data.doctorEmail);
-    console.log(doctorId);
-    console.log('yo babay inside the ap9i');
     await this.appointmentsRepository.create({
       ...data,
       patientId: patientId.id,

@@ -35,7 +35,7 @@ export default class UsersService {
     else {
       data.Availability = null
     }
-    const userId = await Utilities.generateHexadecimal(data.fullName)
+    const userId = Utilities.generateHexadecimal(data.fullName)
     await this.userRepository.create<User>({ ...data, employeeId: userId });
     return { message: "Registration successful" };
   }
@@ -45,7 +45,7 @@ export default class UsersService {
     const User = await this.getUserDetail(email, mobileNo)
 
     if (!User) throwError(MESSAGES.ERROR.USER_NOT_EXIST)
-    await this.IsMobileOrEmailValid(email, mobileNo)
+    // await this.IsMobileOrEmailValid(email, mobileNo)
     if (!await Utilities.comparePassword(password, User.password)) throwError(MESSAGES.ERROR.INCORRECT_PASSWORD)
     const tokens = await this.getJwtTokens({ userId: User.id, email: User.email }, true, TIME.JWT.THIRTY_DAYS);
 

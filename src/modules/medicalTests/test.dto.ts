@@ -113,6 +113,51 @@ export class ITestTakenByPatient extends PickType(IAddTest, [
   status: string;
 }
 
+export class ITestTakenByPatientByOnline extends PickType(IAddTest, [
+  'TestName',
+  'LabName',
+] as const) {
+  @IsNotEmpty()
+  @IsString()
+  @IsUUID()
+  @ApiProperty({
+    name: 'patientId', // Corrected name
+    description: 'The ID of the patient who took the test.',
+    example: '123e4567-e89b-12d3-a456-426614174000', // Example UUID
+    required: true,
+  })
+  patientId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    name: 'TestTakenAt',
+    description:
+      'A string containing the day and time when the test was taken, formatted as "Day:HH:mm" (e.g., "Monday:14:00,Tuesday:09:30").',
+    example: 'Monday:14:00,Tuesday:09:30',
+    required: true,
+  })
+  TestTakenAt: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    name: 'TestScheduleAt',
+    description:
+      'A string contain the day and time when the test is scheduled after the payment',
+    example: 'Monday:14:00,Tuesday:09:30',
+    required: true,
+  })
+  TestScheduleAt: string;
+
+  @ApiProperty({
+    name: 'status',
+    description: 'status of the test ',
+    example: 'Pending',
+  })
+  status: string;
+}
+
 export class IReportGivenOrDecline extends PickType(ITestTakenByPatient, [
   'patientId',
   'LabName',
