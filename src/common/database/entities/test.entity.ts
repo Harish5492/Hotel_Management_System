@@ -7,7 +7,6 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import User from './user.entity';
-import { All } from '@nestjs/common';
 
 @Table
 export class Tests extends Model<Tests> {
@@ -43,6 +42,12 @@ export class Tests extends Model<Tests> {
   Cost: number;
 
   @Column({
+    type: DataType.BOOLEAN,
+    allowNull: true,
+  })
+  Payment: boolean;
+
+  @Column({
     type: DataType.ENUM('Available', 'NotAvailable'),
     defaultValue: 'Available',
   })
@@ -55,6 +60,15 @@ export class Tests extends Model<Tests> {
   DayTiming: {
     startTime: string;
     endTime: string;
+  };
+
+  @Column({
+    type: DataType.JSON,
+    allowNull: true,
+  })
+  PaymentDetails: {
+    orderId: string;
+    paymentId: string;
   };
 
   @Column({

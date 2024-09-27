@@ -65,6 +65,7 @@ export const MESSAGES = {
     ADD_TEST_SUCCESS: 'Test added successfully.',
     DISABLE_TEST: 'Test disabled successfully',
     TEST_TAKEN_OF_PATIENT: 'Test has been taken successfully',
+    ORDER_ID_GENERATED: 'Order Id has been generated successfully',
     REPORT_GIVEN: 'Test report has been given successfully',
     ALL_TESTS: 'Tests has been fetched successfully',
     TEST_NOT_AVAILABLE: 'Test not availabe, Sorry visit again',
@@ -119,6 +120,10 @@ export const MESSAGES = {
     INCORRECT_PASSWORD: 'Incorrect old password, Please try again.',
     INCORRECT_SECURITY_PIN: 'Incorrect old security pin, Please try again.',
     ACCESS_DENIED: 'ACCESS_DENIED',
+    RAZORPAY_PAYMENT_FAILED:
+      'Sorry, an error occurred while creating the payment',
+    RAZORPAY_VERIFICATION_FAILED:
+      'Sorry, an error occurred while verifing the payment',
     USER_VERIFIED: 'Your account is already verified.',
     INVALID_CREDENTIALS: 'Invalid credentials provided',
     INVALID_2FA_CODE: 'Invalid code provided.',

@@ -82,10 +82,22 @@ export class TestController {
   ): Promise<any> {
     try {
       const userId = user.userId;
-      const result = await this.testService.testTakenByPatientByOnline(
-        body,
-        userId,
-      );
+      await this.testService.testTakenByPatientByOnline(body, userId);
+      return successResponse(MESSAGES.TEST.ORDER_ID_GENERATED);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AccessTokenGuard)
+  @ApiOperation(API_OPERATIONS.TEST.TEST_STATUS)
+  @Post('verifyThePaymentAddTest')
+  async verifyThePaymentAdddTest(
+    @Body() body: testDto.IVerifyPaymentDto,
+  ): Promise<any> {
+    try {
+      const result = await this.testService.verifyThePaymentAddTest(body);
       return successResponse(MESSAGES.TEST.TEST_TAKEN_OF_PATIENT, result);
     } catch (error) {
       throw new HttpException(error.message, error.status);

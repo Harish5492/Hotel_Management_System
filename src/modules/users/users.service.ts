@@ -35,6 +35,7 @@ export default class UsersService {
     else {
       data.Availability = null
     }
+    data.email = data.email.toLowerCase();
     const userId = Utilities.generateHexadecimal(data.fullName)
     await this.userRepository.create<User>({ ...data, employeeId: userId });
     return { message: "Registration successful" };

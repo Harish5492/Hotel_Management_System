@@ -193,6 +193,30 @@ export class IReportGivenOrDecline extends PickType(ITestTakenByPatient, [
   ReportGivenAt: string;
 }
 
+export class IVerifyPaymentDto {
+  @ApiProperty({
+    name: 'razorpay_order_id',
+    description: 'The unique identifier for the Razorpay order.',
+    example: 'order_9A33XWu170gUtm',
+  })
+  razorpay_order_id: string;
+
+  @ApiProperty({
+    name: 'razorpay_payment_id',
+    description: 'The unique identifier for the Razorpay payment.',
+    example: 'pay_FjJ1axk1u78yX2',
+  })
+  razorpay_payment_id: string;
+
+  @ApiProperty({
+    name: 'razorpay_signature',
+    description:
+      'The signature generated for verifying the payment authenticity.',
+    example: '6a929de36efb4bb1d334d255eb124db4361ab568',
+  })
+  razorpay_signature: string;
+}
+
 export class IGetFilterDto {
   @IsOptional()
   @IsUUID()

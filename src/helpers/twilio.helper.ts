@@ -1,4 +1,4 @@
-import * as twilio from 'twilio';
+import twilio from 'twilio';
 import { EM } from '../constant';
 
 class TwilioHelper {

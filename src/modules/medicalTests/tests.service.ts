@@ -4,6 +4,7 @@ import { USER_REPOSITORY, TEST_REPOSITORY, MESSAGES } from '../../constant';
 import * as testDto from './test.dto';
 import { throwError } from '../../helpers/responseHadnlers';
 import { WhereOptions } from 'sequelize';
+import razorpayPayment from 'src/helpers/razorpay.payment';
 
 @Injectable()
 export default class TestService {
@@ -77,7 +78,7 @@ export default class TestService {
   async testTakenByPatientByOnline(
     data: testDto.ITestTakenByPatientByOnline,
     userId: string,
-  ): Promise<{ message: string }> {
+  ): Promise<object> {
     const test = await this.IsTestExists(data.LabName, data.TestName);
     if (test.Availability !== 'Available')
       throwError(MESSAGES.TEST.TEST_NOT_AVAILABLE);
@@ -91,8 +92,42 @@ export default class TestService {
     );
     if (!testTaken.ReportGivenAt || testTaken.ReportGivenAt === null)
       throwError(MESSAGES.ERROR.TEST_EXISTS);
-    await this.testRepository.create<Tests>({ ...data, Cost: test.Cost });
-    return { message: 'test has been taken successfully' };
+    const orderId = await razorpayPayment.razorpayPaymentCreate(test.Cost);
+    await this.testRepository.create<Tests>({
+      ...data,
+      Cost: test.Cost,
+      Payment: false,
+      PaymentDetails: {
+        orderId: orderId.toString(),
+        paymentId: null,
+      },
+    });
+    return orderId;
+  }
+
+  async verifyThePaymentAddTest(
+    data: testDto.IVerifyPaymentDto,
+  ): Promise<{ message: string }> {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = data;
+    await razorpayPayment.razorpayPaymentVerification(
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    );
+    await this.testRepository.update(
+      {
+        Payment: true,
+        PaymentDetails: {
+          paymentId: razorpay_payment_id,
+          orderId: razorpay_order_id,
+        },
+      },
+      { where: { PaymentDetails: { orderId: razorpay_order_id } } },
+    );
+    return {
+      message:
+        'your payment has been confirmed and test also schedule please come in time',
+    };
   }
 
   async reportGivenOrDecline(
