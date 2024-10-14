@@ -12,7 +12,7 @@ export default class TestService {
     @Inject(TEST_REPOSITORY)
     private readonly testRepository: typeof Tests,
     @Inject(USER_REPOSITORY) private readonly userRepository: typeof User,
-  ) {}
+  ) { }
 
   async addTest(
     data: testDto.IAddTest,

@@ -216,7 +216,7 @@ export class IReferToDto extends PickType(IPatientTreatmentAdd, [
   @ApiProperty({
     name: 'referTo',
     description: 'refer to specific hospital',
-    example: 'Tanda Medical College',
+    example: 'Dr. Rajinder Prasad Tanda Medical College',
     required: false,
   })
   referTo?: string;

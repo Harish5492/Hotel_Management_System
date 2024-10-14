@@ -101,8 +101,10 @@ export const MESSAGES = {
   ROLE: {
     ONLY_MANAGEMENT: 'Only Mangement have the access to do the particular task',
     ONLY_DOCTOR: 'Only Doctor have the access to do the particular task',
-    ONLY_DOCTOR_AVIALIBILITY_CHECK: 'Only Doctor Availability will check ',
     ONLY_PATIENT: 'Only Patient have the access to do the particular task',
+    ONLY_DOCTOR_AND_MANAGEMENT:
+      'Only Doctor and Management have the access to do the particular task',
+    ONLY_DOCTOR_AVIALIBILITY_CHECK: 'Only Doctor Availability will check ',
   },
   ERROR: {
     INCORRECT_OTP: 'Incorrect OTP or Token, Please try again with resend code.',

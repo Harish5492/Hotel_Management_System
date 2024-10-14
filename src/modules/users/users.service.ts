@@ -27,7 +27,7 @@ export default class UsersService {
     }
     const user = await this.checkIfUserExists(data);
     if (user) throwError(MESSAGES.ERROR.USER_EXIST)
-      if(data.password !== data.confirmPassword) throwError(MESSAGES.ERROR.PASSWORD_NOT_MATCHED)
+    if (data.password !== data.confirmPassword) throwError(MESSAGES.ERROR.PASSWORD_NOT_MATCHED)
     data.password = await Utilities.hashPassword(data.password)
     if (data.role === 'DOCTOR' || data.role === 'MANAGEMENT') {
       data.Availability = 'Available'
@@ -60,7 +60,7 @@ export default class UsersService {
       throwError(MESSAGES.ERROR.USER_NOT_VERIFIED);
     }
   }
-  
+
   async getJwtTokens(
     data: any,
     isAccessNedeed: boolean,
@@ -116,8 +116,8 @@ export default class UsersService {
  * @throws Throws an error if the token is invalid, expired, or the user has already used it.
  */
   async forgotPassword(data: UserDto.IUpdatePassword): Promise<{ message: string }> {
-    const { token, newPassword, confirmNewPassword} = data
-    if(newPassword !== confirmNewPassword) throwError(MESSAGES.ERROR.PASSWORD_NOT_MATCHED)
+    const { token, newPassword, confirmNewPassword } = data
+    if (newPassword !== confirmNewPassword) throwError(MESSAGES.ERROR.PASSWORD_NOT_MATCHED)
 
     const DecyptToken = await Utilities.decryptCipher(token);
 
@@ -166,7 +166,7 @@ export default class UsersService {
 
     const user = await this.userRepository.findOne({
       where: query,
-      attributes: ['id', 'email', 'mobileNo', 'password', 'role' ,'isEmailVerified', 'isMobVerified'],
+      attributes: ['id', 'email', 'mobileNo', 'password', 'role', 'isEmailVerified', 'isMobVerified'],
     });
 
     return user
@@ -182,10 +182,13 @@ export default class UsersService {
 
   async searchUser(
     params: UserDto.GetParamsRequestDto,
-    filters: UserDto.GetFiltersDto
+    filters: UserDto.GetFiltersDto,
+    userId: string,
   ): Promise<{ list: Array<User>; totalCount: number }> {
     const { page, limit } = params;
     const { email, employeeId, fullName, mobileNo } = filters
+    const role = await this.checkRole(userId);
+    if (role.role !== 'DOCTOR' && role.role !== 'MANAGEMENT') throwError(MESSAGES.ROLE.ONLY_DOCTOR_AND_MANAGEMENT)
     // const where: WhereOptions<User> = {
     //   ...(email && { email }),
     //   ...(userId && { userId }),
@@ -316,8 +319,8 @@ export default class UsersService {
   }
 
   async mobAndEmailVerification(data: UserDto.IVerifyMobileAndEmail): Promise<void> {
-    const { mobileOtp,emailOtp, token } = data
-    if(emailOtp !==mobileOtp) throwError(MESSAGES.ERROR.INCORRECT_OTP)
+    const { mobileOtp, emailOtp, token } = data
+    if (emailOtp !== mobileOtp) throwError(MESSAGES.ERROR.INCORRECT_OTP)
     const DecyptToken = await Utilities.decryptCipher(token);
     await this.IstokenAndOtpUsed(DecyptToken)
 
@@ -326,8 +329,6 @@ export default class UsersService {
     await this.updateUser({ id: DecyptToken }, { isMobVerified: true, isEmailVerified: true, isTokenUsed: true })
 
   }
-
-
 
   async findOtp(decryptToken: string): Promise<User | undefined> {
     return this.userRepository.findOne({

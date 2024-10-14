@@ -66,7 +66,6 @@ export class UserController {
     @Post('verifyOTP')
     async verifyOTP(@Body() body: usersDto.IVerifyOneTimeCodeDto): Promise<any> {
         try {
-            console.log("yooooooooooooo ")
             const result = await this.userservice.verifyOTP(body);
             return successResponse(MESSAGES.USER.OTP_VERIFIED, result)
         }
@@ -142,7 +141,7 @@ export class UserController {
             await this.userservice.updateUser(userId, body);
             return successResponse(MESSAGES.USER.ACCOUNT_DELETED);
         }
-        catch (error) { 
+        catch (error) {
             throw new HttpException(error.message, error.status)
         }
     }
@@ -154,9 +153,11 @@ export class UserController {
     @Get('searchUser/:page/:limit')
     async getDetailOfuser(
         @Param() params: usersDto.GetParamsRequestDto,
+        @Req() req: Record<string, any>,
         @Query() querys: usersDto.GetFiltersDto): Promise<any> {
         try {
-            const result = await this.userservice.searchUser(params, querys)
+            const userId = req.user.userId
+            const result = await this.userservice.searchUser(params, querys, userId)
             return successResponse(MESSAGES.USER.GET_USER_DETAILE, result);
         }
         catch (error) {
@@ -198,12 +199,12 @@ export class UserController {
     async doctorAvalliability(
         @Param() params: usersDto.GetParamsRequestDto,
         @Query() query: usersDto.GetFiltersDto,
-        )
+    )
         : Promise<any> {
         try {
             const result = await this.userservice.doctorAvailability(params, query)
             return successResponse(MESSAGES.USER.DOCTOR_AVALIABLITY, result)
-        } 
+        }
         catch (error) {
             throw new HttpException(error.message, error.status)
         }
@@ -213,12 +214,12 @@ export class UserController {
     @ApiOperation(API_OPERATIONS.USER.DOCTOR_AVALIABLITY)
     @Put('changeDoctorAvaliablity')
     async changeDoctorAvaliablity(
-        @User () user: Record<string,any>,
-        @Body () body : usersDto.IUpdateTheAvaliablity
-    ):Promise<any>{
+        @User() user: Record<string, any>,
+        @Body() body: usersDto.IUpdateTheAvaliablity
+    ): Promise<any> {
         try {
-            const userId  = user.userId
-            const result = await this.userservice.changeAvaliablity(userId,body)
+            const userId = user.userId
+            const result = await this.userservice.changeAvaliablity(userId, body)
             return successResponse(MESSAGES.USER.DOCTOR_AVALIABLITY, result)
         }
         catch (error) {
